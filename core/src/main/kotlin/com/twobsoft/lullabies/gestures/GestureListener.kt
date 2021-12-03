@@ -15,6 +15,7 @@ class MyGestureListener(private val directionListener: DirectionListener)
          fun onUp()
          fun onDown()
          fun onPan(x: Float, y: Float, deltaX: Float, deltaY: Float)
+         fun onTap(x: Float, y: Float, count: Int, button: Int)
     }
 
 
@@ -23,6 +24,7 @@ class MyGestureListener(private val directionListener: DirectionListener)
     }
 
     override fun tap(x: Float, y: Float, count: Int, button: Int): Boolean {
+        directionListener.onTap(x, y, count, button)
         return false
     }
 

@@ -3,10 +3,11 @@ package com.twobsoft.lullabies
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.scenes.scene2d.Action
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+
 
 
 class GameComponent(val tex: String): Actor() {
@@ -19,24 +20,24 @@ class GameComponent(val tex: String): Actor() {
     var xBounds = Vector2(-MainScreen.BG_WIDTH, MainScreen.BG_WIDTH)
 
 
-
     fun init() {
         val imgTexture = Assets.getAsset(tex).also {
             it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         }
         if (width == 0f) {
-            width = imgTexture.width.toFloat()
+            width = MainScreen.BG_HEIGHT * 0.64f
         }
         if (height == 0f) {
-            height = imgTexture.height.toFloat()
+            height = MainScreen.BG_HEIGHT
         }
-        y += MainScreen.BG_HEIGHT * 0.03f
 
-        originX = width / 2
-        originY = height / 2
+        originX = MainScreen.BG_WIDTH / 2
+        originY = MainScreen.BG_HEIGHT / 2
 
         layers.add(imgTexture)
+
     }
+
 
     fun reInit() {
         addAction(Actions.moveBy(-xOffset.toFloat(), 0f))
@@ -75,3 +76,4 @@ class GameComponent(val tex: String): Actor() {
 
 
 }
+

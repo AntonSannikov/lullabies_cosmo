@@ -1,5 +1,6 @@
 package com.twobsoft.lullabies
-import com.badlogic.gdx.Gdx
+
+
 import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
@@ -9,17 +10,14 @@ import ktx.assets.getAsset
 
 
 
-
 object Assets {
 
     val manager: AssetManager = AssetManager()
-
 
     // UI
     val uiTextures = arrayOf(
         AssetDescriptor<Texture>(UiModel.frameTex, Texture::class.java),
     )
-
 
     // MENU
     val menuTextures = arrayOf(
@@ -186,6 +184,16 @@ object Assets {
         AssetDescriptor<Texture>(AlienshipModel.flareTex        , Texture::class.java),
     )
 
+    // MISC
+    val rgbNoise = AssetDescriptor<Texture>("misc/rgb_noise.png", Texture::class.java)
+
+    fun loadMisc() {
+        manager.load(rgbNoise)
+    }
+
+    fun getMisc() {
+        return manager.getAsset("misc/rgb_noise.png")
+    }
 
     fun getAsset(fileName: String): Texture {
         return manager.getAsset(fileName)

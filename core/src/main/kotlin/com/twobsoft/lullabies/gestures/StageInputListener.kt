@@ -1,25 +1,36 @@
 package com.twobsoft.lullabies.gestures
 
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.twobsoft.lullabies.*
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.ui.UiActor
 import ktx.scene2d.actors
+import javax.swing.GroupLayout
 
-class StageSwipeHandler(val screen: MainScreen): MyGestureListener.DirectionListener {
+class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
     override fun onLeft() {
-        if (screen.currentStageNumber == screen.STAGES_COUNT) {
+        if (screen.currentStageNumber == screen.STAGES_COUNT || screen.isSwiping) {
             return
         }
         changeStage(1)
     }
 
     override fun onRight() {
-        if (screen.currentStageNumber == 1) {
+        if (screen.currentStageNumber == 1 || screen.isSwiping) {
             return
         }
         changeStage(-1)
+    }
+
+    override fun onTap(x: Float, y: Float, count: Int, button: Int) {
+        screen.isInterStellar = true
+//        screen.stage.actors.forEach {
+//            if (it is GameComponent) {
+//                it.addAction(Actions.scaleBy(-2f, -2f, 15f))
+//            }
+//        }
     }
 
     override fun onUp() {}
@@ -28,11 +39,12 @@ class StageSwipeHandler(val screen: MainScreen): MyGestureListener.DirectionList
 
     override fun onPan(x: Float, y: Float, deltaX: Float, deltaY: Float) {}
 
+
     fun createStage(planetModel: Entity, increment: Int) {
         planetModel.all.forEach {
             it.init()
-            screen.stage.addActor(it)
             it.x = MainScreen.BG_WIDTH * increment
+            screen.stage.addActor(it)
             it.actions.forEach { action ->
                 it.addAction(action)
             }
@@ -43,6 +55,8 @@ class StageSwipeHandler(val screen: MainScreen): MyGestureListener.DirectionList
         screen.currentStageNumber += increment
 
         var newPlanetModel: Entity? =null
+
+        screen.isSwiping = true
 
         when(screen.currentStageNumber){
             1 -> newPlanetModel     = SunModel()
@@ -66,25 +80,24 @@ class StageSwipeHandler(val screen: MainScreen): MyGestureListener.DirectionList
             return
         }
 
-        val hudElements = arrayListOf<UiActor>()
-
         screen.stage.actors.forEach {
             if (it is GameComponent) {
                 it.isNeedRemove = true
-            } else if (it is UiActor) {
-                hudElements.add(it)
             }
         }
 
         createStage(newPlanetModel, increment)
 
-        hudElements.forEach {
-            it.remove()
-            screen.stage.addActor(it)
+        val hudActors = arrayListOf<UiActor>()
+        screen.stage.actors.forEach {
+            if (it is UiActor) {
+                hudActors.add(it)
+                it.remove()
+            }
         }
+        hudActors.forEach { screen.stage.addActor(it) }
 
         screen.resetShader()
-
         var isReseted = false
 
         screen.stage.actors.forEach {
@@ -95,6 +108,7 @@ class StageSwipeHandler(val screen: MainScreen): MyGestureListener.DirectionList
                         Actions.run {
                             if (!isReseted) {
                                 isReseted = true
+                                screen.isSwiping = false
                                 screen.currentModel = newPlanetModel
                                 screen.barrelShaderPower =
                                     LullabiesGame.BARREL_SHADER_PULSE_START_POWER

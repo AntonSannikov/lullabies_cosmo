@@ -11,6 +11,7 @@ class UiActor(val tex: String): Actor() {
     var texture: Texture? = null
 
     fun init() {
+
         val imgTexture = Assets.getAsset(tex).also {
             it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         }
@@ -26,9 +27,7 @@ class UiActor(val tex: String): Actor() {
 
         texture = imgTexture
 
-
     }
-
 
 
     override fun draw(batch: Batch?, parentAlpha: Float) {

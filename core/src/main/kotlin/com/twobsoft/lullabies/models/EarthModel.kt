@@ -58,6 +58,7 @@ class EarthModel: Entity() {
     }
 
     val cloud3 = GameComponent(tex = cloud3Tex).also {
+
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
