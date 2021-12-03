@@ -36,7 +36,7 @@ class LullabiesGame : KtxGame<KtxScreen>() {
     override fun create() {
         KtxAsync.initiate()
         val assets = Assets
-        //assets.loadUi()
+        assets.loadUi()
         assets.load(0)
         assets.load(1)
         assets.load(2)
@@ -66,6 +66,7 @@ class MainScreen : KtxScreen {
     companion object {
         val BG_WIDTH    = Gdx.graphics.width.toFloat()
         val BG_HEIGHT   = Gdx.graphics.height.toFloat()
+        val ratio       = BG_WIDTH / BG_HEIGHT
     }
 
 
@@ -115,12 +116,11 @@ class MainScreen : KtxScreen {
         //
         currentModel = SunModel()
         inputListener.createStage(currentModel, 0)
-//        val uiModel = UiModel()
-//        uiModel.all.forEach {
-//            it.init()
-//            it.zIndex = 0
-//            stage.addActor(it)
-//        }
+        val uiModel = UiModel()
+        uiModel.all.forEach {
+            it.init()
+            stage.addActor(it)
+        }
 
         Gdx.input.inputProcessor = GestureDetector(
             MyGestureListener(inputListener)

@@ -10,8 +10,8 @@ class UiModel {
     }
 
     val frame = UiActor(tex = frameTex).also {
-        it.scaleBy(0.34f)
-        it.addAction(Actions.moveBy(-40f, -90f))
+
+//        it.addAction(Actions.moveBy(-40f, -90f))
     }
 
     val all = arrayOf(frame)

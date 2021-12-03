@@ -10,20 +10,28 @@ class UiActor(val tex: String): Actor() {
 
     var texture: Texture? = null
 
+    val offsetX = (MainScreen.BG_WIDTH * 0.09f).toInt()
+    val offsetY = 0
+
+    val yScale = MainScreen.ratio * 2.2f
+    val xScale = MainScreen.ratio * 2f
+
+
     fun init() {
 
         val imgTexture = Assets.getAsset(tex).also {
             it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         }
+
         if (width == 0f) {
-            width = MainScreen.BG_WIDTH
+            width = MainScreen.BG_HEIGHT * 0.64f
         }
         if (height == 0f) {
             height = MainScreen.BG_HEIGHT
         }
 
-        originX = width / 2
-        originY = height / 2
+        originX = MainScreen.BG_WIDTH / 2
+        originY = MainScreen.BG_HEIGHT / 2
 
         texture = imgTexture
 
@@ -42,11 +50,11 @@ class UiActor(val tex: String): Actor() {
             x, y,
             originX, originY,
             width, height,
-            scaleX, scaleY,
+            xScale, yScale,
             rotation,
-            0,0,
-            width.toInt(),
-            height.toInt(),
+            offsetX, offsetY,
+            MainScreen.BG_WIDTH.toInt(),
+            MainScreen.BG_HEIGHT.toInt(),
             false, false
         )
 
