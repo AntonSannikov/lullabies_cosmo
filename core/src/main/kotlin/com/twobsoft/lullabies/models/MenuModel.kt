@@ -36,6 +36,19 @@ class MenuModel: Entity() {
 
     val sun = AnimatedActor( sunSS, 5, 4, 820f,820f).also {
         it.xOffset = MainScreen.BG_WIDTH / 2 - 450
+        // 1
+        it.hitBox.add(it.xOffset)
+        it.hitBox.add(0f)
+        // 2
+        it.hitBox.add(it.xOffset)
+        it.hitBox.add(400f)
+        // 3
+        it.hitBox.add(it.xOffset + 400)
+        it.hitBox.add(400f)
+        // 4
+        it.hitBox.add(it.xOffset + 400)
+        it.hitBox.add(0f)
+
     }
 
     val mercury = AnimatedActor( mercurySS, 5, 4, 230f ,230f).also {
@@ -84,7 +97,7 @@ class MenuModel: Entity() {
         it.yOffset = MainScreen.BG_HEIGHT * 0.62f
     }
 
-    val pluto = AnimatedActor( plutoSS, 5, 4, 280f ,280f).also {
+    val pluto = AnimatedActor( plutoSS, 5, 4, 300f ,270f).also {
         it.xOffset = MainScreen.BG_WIDTH * 0.02f
         it.yOffset = MainScreen.BG_HEIGHT * 0.13f
     }

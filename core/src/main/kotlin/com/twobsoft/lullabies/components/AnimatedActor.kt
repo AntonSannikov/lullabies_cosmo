@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.FloatArray
 import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
 
@@ -25,7 +26,7 @@ class AnimatedActor(val texturePath: String,
                     )
     : Actor() {
 
-    var hitBox: Rectangle? = null
+    val hitBox = arrayListOf<Float>()
     var animation: Animation<TextureRegion>? = null
     var textureRegion: TextureRegion? = null
     var stateTime = 0f
@@ -37,7 +38,6 @@ class AnimatedActor(val texturePath: String,
 
         height  = sizeY
         width   = sizeX
-        hitBox  = Rectangle(xOffset, yOffset, width, height)
 
         val spriteSheet = Assets.getAsset(texturePath).also {
             it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
@@ -97,9 +97,12 @@ class AnimatedActor(val texturePath: String,
             rotation
         )
 
-//        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-//        MainScreen.shapeRenderer.color = Color.RED
+        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+        MainScreen.shapeRenderer.color = Color.RED
 //        MainScreen.shapeRenderer.rect(xOffset, yOffset, width, height)
+        if (hitBox.size > 2) {
+            MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
+        }
 
     }
 }

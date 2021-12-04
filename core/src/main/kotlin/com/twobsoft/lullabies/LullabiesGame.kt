@@ -19,8 +19,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_MAX_POWER
 import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_POWER
+import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.gestures.StageInputListener
 import com.twobsoft.lullabies.models.*
+import ktx.scene2d.actors
 
 
 class LullabiesGame : KtxGame<KtxScreen>() {
@@ -28,7 +30,7 @@ class LullabiesGame : KtxGame<KtxScreen>() {
     companion object {
         const val ANIMATION_TIME = 10f
         const val BARREL_SHADER_PULSE_START_POWER = 0.33f
-        const val BARREL_SHADER_PULSE_MAX_POWER = 0.30f
+        const val BARREL_SHADER_PULSE_MAX_POWER = 0.27f
     }
 
     override fun create() {
@@ -83,12 +85,12 @@ class MainScreen : KtxScreen {
     var barrelShaderPower: Float                = BARREL_SHADER_PULSE_START_POWER
     private var barrelShaderMaxPower: Float     = BARREL_SHADER_PULSE_MAX_POWER
     var powerDelta                              = -(barrelShaderPower - barrelShaderMaxPower) / 600
-    var isBarrelShaderReseted : Boolean               = false
+    var isBarrelShaderReseted : Boolean         = false
     val barrelShader = ShaderProgram(
         Gdx.files.internal("shaders/barrel/vertex.glsl").readString(),
         Gdx.files.internal("shaders/barrel/fragment.glsl").readString()
     )
-    var isBarrel = true
+    var isBarrel = false
 
 
     // INTERSTELLAR SHADER

@@ -1,14 +1,17 @@
 package com.twobsoft.lullabies.gestures
 
 import com.badlogic.gdx.math.Intersector
+import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.utils.Array
 import com.twobsoft.lullabies.*
 import com.twobsoft.lullabies.components.AnimatedActor
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.components.UiActor
 import com.twobsoft.lullabies.ui.UiModel
+import com.twobsoft.lullabies.utils.Utils
 
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
@@ -31,16 +34,18 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         val xNorm = x / MainScreen.BG_WIDTH
         val yNorm = y / MainScreen.BG_HEIGHT
         screen.shaderFocusOffset = Vector2(-(xNorm - 0.5f),yNorm-0.5f)
-        screen.isInterStellar = true
+//        screen.isInterStellar = true
+//        screen.isBarrel = true
 
-//        Intersector.isPointInPolygon()
 
         screen.stage.actors.forEach {
-            if (it is AnimatedActor) {
-               it.isNeedAnimate = true
-                it.addAction(Actions.scaleBy(0.6f, 0.6f, 5f))
-            } else {
-                it.addAction(Actions.scaleBy(0.2f, 0.2f, 5f))
+            if (it is AnimatedActor && it.hitBox.size > 2) {
+                if (isPointInPolygon(Utils.floatArrayToVec2Array(it.hitBox.toFloatArray()),
+                        Vector2(x, MainScreen.BG_HEIGHT - y))
+                ) {
+                    it.isNeedAnimate = true
+                    it.addAction(Actions.scaleBy(0.6f, 0.6f, 5f))
+                }
             }
         }
     }
