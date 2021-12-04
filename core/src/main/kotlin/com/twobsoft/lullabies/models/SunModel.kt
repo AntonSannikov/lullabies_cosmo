@@ -1,9 +1,10 @@
 package com.twobsoft.lullabies.models
 
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
-import com.twobsoft.lullabies.GameComponent
+import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
 
 
@@ -22,11 +23,11 @@ class SunModel: Entity() {
 
     override val stageNumber = 1
 
-    val background = GameComponent(tex = backgroundTex)
+    val background = LayerActor(tex = backgroundTex)
 
-    val stars = GameComponent(tex = starsTex)
+    val stars = LayerActor(tex = starsTex)
 
-    val planet = GameComponent(tex = planetTex).also {
+    val planet = LayerActor(tex = planetTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -38,7 +39,7 @@ class SunModel: Entity() {
         )
     }
 
-    val lava = GameComponent(tex = lavaTex).also {
+    val lava = LayerActor(tex = lavaTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -50,7 +51,7 @@ class SunModel: Entity() {
         )
     }
 
-    val protuberance = GameComponent(tex = protuberanceTex).also {
+    val protuberance = LayerActor(tex = protuberanceTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -62,7 +63,7 @@ class SunModel: Entity() {
         )
     }
 
-    val plan2 = GameComponent(tex = plan2Tex).also {
+    val plan2 = LayerActor(tex = plan2Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -74,7 +75,7 @@ class SunModel: Entity() {
         )
     }
 
-    val plan1 = GameComponent(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -86,7 +87,7 @@ class SunModel: Entity() {
         )
     }
 
-    val sparks = GameComponent(tex = sparksTex).also {
+    val sparks = LayerActor(tex = sparksTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -100,5 +101,5 @@ class SunModel: Entity() {
     }
 
 
-    override val all = arrayOf(background, stars, planet, lava, protuberance, plan2, plan1, sparks)
+    override val all = arrayOf<Actor>(background, stars, planet, lava, protuberance, plan2, plan1, sparks)
 }

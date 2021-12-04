@@ -1,4 +1,4 @@
-package com.twobsoft.lullabies.ui
+package com.twobsoft.lullabies.components
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -10,25 +10,28 @@ class UiActor(val tex: String): Actor() {
 
     var texture: Texture? = null
 
-    val offsetX = (MainScreen.BG_WIDTH * 0.09f).toInt()
+//    val offsetX = (MainScreen.BG_WIDTH * 0.025f).toInt()
+//    val offsetY = -(MainScreen.BG_HEIGHT * 0.015f).toInt()
+    val offsetX = 0
     val offsetY = 0
-
-    val yScale = MainScreen.ratio * 2.2f
-    val xScale = MainScreen.ratio * 2f
-
+    var srcWidth: Int = 0
+    var scrHeight: Int = 0
+//    val yScale = MainScreen.ratio * 2.3f
+//    val xScale = MainScreen.ratio * 2.3f
+//    val yScale = 1f
+//    val xScale = 1f
 
     fun init() {
 
         val imgTexture = Assets.getAsset(tex).also {
             it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         }
+        srcWidth = imgTexture.width
+        scrHeight = imgTexture.height
 
-        if (width == 0f) {
-            width = MainScreen.BG_HEIGHT * 0.64f
-        }
-        if (height == 0f) {
-            height = MainScreen.BG_HEIGHT
-        }
+        width = MainScreen.BG_WIDTH
+        height = MainScreen.BG_HEIGHT
+
 
         originX = MainScreen.BG_WIDTH / 2
         originY = MainScreen.BG_HEIGHT / 2
@@ -50,11 +53,11 @@ class UiActor(val tex: String): Actor() {
             x, y,
             originX, originY,
             width, height,
-            xScale, yScale,
+            scaleX, scaleY,
             rotation,
             offsetX, offsetY,
-            MainScreen.BG_WIDTH.toInt(),
-            MainScreen.BG_HEIGHT.toInt(),
+            srcWidth,
+            scrHeight,
             false, false
         )
 

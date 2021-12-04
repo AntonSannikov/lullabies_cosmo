@@ -21,7 +21,23 @@ object Assets {
 
     // MENU
     val menuTextures = arrayOf(
-        AssetDescriptor<Texture>(SunModel.backgroundTex     , Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.backgroundTex, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.radarTex, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.sunSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.mercurySS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.venusSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.earthSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.moonSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.marsSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.jupiterSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.saturnSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.uranusSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.neptuneSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.plutoSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.asteroidSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.cometSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.spaceshipSS, Texture::class.java),
+        AssetDescriptor<Texture>(MenuModel.alienshipSS, Texture::class.java),
     )
 
     // SUN
@@ -187,6 +203,20 @@ object Assets {
     // MISC
     val rgbNoise = AssetDescriptor<Texture>("misc/rgb_noise.png", Texture::class.java)
 
+
+    // ANIMATIONS
+    val animations = arrayOf(
+        AssetDescriptor<Texture>(AlienshipModel.backgroundTex   , Texture::class.java),
+        AssetDescriptor<Texture>(AlienshipModel.plan4Tex        , Texture::class.java),
+        AssetDescriptor<Texture>(AlienshipModel.plan3Tex        , Texture::class.java),
+        AssetDescriptor<Texture>(AlienshipModel.plan2Tex        , Texture::class.java),
+        AssetDescriptor<Texture>(AlienshipModel.plan1Tex        , Texture::class.java),
+        AssetDescriptor<Texture>(AlienshipModel.hologramTex     , Texture::class.java),
+        AssetDescriptor<Texture>(AlienshipModel.flareTex        , Texture::class.java),
+    )
+
+
+
     fun loadMisc() {
         manager.load(rgbNoise)
     }
@@ -223,6 +253,10 @@ object Assets {
 
     fun loadUi() {
         uiTextures.forEach { manager.load(it) }
+    }
+
+    fun loadAnimation() {
+
     }
 
 

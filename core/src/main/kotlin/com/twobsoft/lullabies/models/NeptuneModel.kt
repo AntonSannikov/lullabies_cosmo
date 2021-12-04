@@ -1,6 +1,7 @@
 package com.twobsoft.lullabies.models
 
-import com.twobsoft.lullabies.GameComponent
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.twobsoft.lullabies.components.LayerActor
 
 class NeptuneModel: Entity() {
 
@@ -13,10 +14,10 @@ class NeptuneModel: Entity() {
 
     override val stageNumber = 10
 
-    val background    = GameComponent(tex = backgroundTex)
-    val plan3         = GameComponent(tex = plan3Tex)
-    val plan2         = GameComponent(tex = plan2Tex)
-    val plan1         = GameComponent(tex = plan1Tex)
+    val background    = LayerActor(tex = backgroundTex)
+    val plan3         = LayerActor(tex = plan3Tex)
+    val plan2         = LayerActor(tex = plan2Tex)
+    val plan1         = LayerActor(tex = plan1Tex)
 
-    override val all = arrayOf(background, plan3, plan2, plan1)
+    override val all = arrayOf<Actor>(background, plan3, plan2, plan1)
 }

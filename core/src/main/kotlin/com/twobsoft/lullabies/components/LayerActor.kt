@@ -1,4 +1,4 @@
-package com.twobsoft.lullabies
+package com.twobsoft.lullabies.components
 
 
 import com.badlogic.gdx.graphics.Texture
@@ -6,16 +6,18 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.twobsoft.lullabies.Assets
+import com.twobsoft.lullabies.MainScreen
 
 
-
-class GameComponent(val tex: String): Actor() {
+class LayerActor(val tex: String): Actor() {
 
     val actions = arrayListOf<Action>()
     val layers = arrayListOf<Texture>()
     var isNeedRemove = false
     var isNeedReinit = false
+    var srcWidth = 0
+    var srcHeight = 0
     var xOffset = 0
     var xBounds = Vector2(-MainScreen.BG_WIDTH, MainScreen.BG_WIDTH)
 
@@ -24,12 +26,12 @@ class GameComponent(val tex: String): Actor() {
         val imgTexture = Assets.getAsset(tex).also {
             it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         }
-        if (width == 0f) {
-            width = MainScreen.BG_HEIGHT * 0.64f
-        }
-        if (height == 0f) {
-            height = MainScreen.BG_HEIGHT
-        }
+
+        srcWidth = imgTexture.width
+        srcHeight = imgTexture.height
+
+        width = MainScreen.BG_WIDTH
+        height = MainScreen.BG_HEIGHT
 
         originX = MainScreen.BG_WIDTH / 2
         originY = MainScreen.BG_HEIGHT / 2
@@ -60,8 +62,8 @@ class GameComponent(val tex: String): Actor() {
                 scaleX, scaleY,
                 rotation,
                 xOffset,0,
-                layer.width,
-                layer.height,
+                srcWidth,
+                srcHeight,
                 false, false
             )
         }

@@ -1,9 +1,10 @@
 package com.twobsoft.lullabies.models
 
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
-import com.twobsoft.lullabies.GameComponent
+import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
 
 
@@ -19,9 +20,9 @@ class VenusModel: Entity() {
 
     override val stageNumber = 3
 
-    val background = GameComponent(tex = backgroundTex)
+    val background = LayerActor(tex = backgroundTex)
 
-    val plan4 = GameComponent(tex = plan4Tex).also {
+    val plan4 = LayerActor(tex = plan4Tex).also {
             it.actions.add(
                 Actions.repeat(
                     RepeatAction.FOREVER,
@@ -32,7 +33,7 @@ class VenusModel: Entity() {
                 )
             )
     }
-    val plan3 = GameComponent(tex = plan3Tex).also {
+    val plan3 = LayerActor(tex = plan3Tex).also {
             it.actions.add(
                 Actions.repeat(
                     RepeatAction.FOREVER,
@@ -43,7 +44,7 @@ class VenusModel: Entity() {
                 )
             )
     }
-    val plan2 = GameComponent(tex = plan2Tex).also {
+    val plan2 = LayerActor(tex = plan2Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -55,7 +56,7 @@ class VenusModel: Entity() {
         )
     }
 
-    val plan1 = GameComponent(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -68,5 +69,5 @@ class VenusModel: Entity() {
     }
 
 
-    override val all = arrayOf(background, plan4, plan3, plan2, plan1)
+    override val all = arrayOf<Actor>(background, plan4, plan3, plan2, plan1)
 }

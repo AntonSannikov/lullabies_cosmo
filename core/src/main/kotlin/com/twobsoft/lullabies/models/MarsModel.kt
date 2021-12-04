@@ -2,13 +2,12 @@ package com.twobsoft.lullabies.models
 
 
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
-import com.twobsoft.lullabies.GameComponent
+import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.MainScreen
-import ktx.math.random
 
 
 class MarsModel: Entity() {
@@ -27,9 +26,9 @@ class MarsModel: Entity() {
 
     override val stageNumber = 6
 
-    val background = GameComponent(tex = backgroundTex)
+    val background = LayerActor(tex = backgroundTex)
 
-    val oblako5 = GameComponent(tex = oblako5Tex).also {
+    val oblako5 = LayerActor(tex = oblako5Tex).also {
 
         it.xOffset = -MainScreen.BG_WIDTH.toInt()
         it.isNeedReinit = true
@@ -45,7 +44,7 @@ class MarsModel: Entity() {
         )
     }
 
-    val oblako4  = GameComponent(tex = oblako4Tex).also {
+    val oblako4  = LayerActor(tex = oblako4Tex).also {
 
         it.actions.add(
             Actions.repeat(
@@ -58,7 +57,7 @@ class MarsModel: Entity() {
         )
     }
 
-    val oblako3 = GameComponent(tex = oblako3Tex).also {
+    val oblako3 = LayerActor(tex = oblako3Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -70,7 +69,7 @@ class MarsModel: Entity() {
         )
     }
 
-    val oblako2 = GameComponent(tex = oblako2Tex).also {
+    val oblako2 = LayerActor(tex = oblako2Tex).also {
         it.xOffset = (MainScreen.BG_WIDTH * 0.2).toInt()
         it.isNeedReinit = true
         it.actions.add(
@@ -84,7 +83,7 @@ class MarsModel: Entity() {
         )
     }
 
-    val oblako1 = GameComponent(tex = oblako1Tex).also {
+    val oblako1 = LayerActor(tex = oblako1Tex).also {
         it.xOffset = (MainScreen.BG_WIDTH * 0.2).toInt()
         it.isNeedReinit = true
         it.actions.add(
@@ -98,7 +97,7 @@ class MarsModel: Entity() {
         )
     }
 
-    val plan3 = GameComponent(tex = plan3Tex).also {
+    val plan3 = LayerActor(tex = plan3Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -110,7 +109,7 @@ class MarsModel: Entity() {
         )
     }
 
-    val plan2 = GameComponent(tex = plan2Tex).also {
+    val plan2 = LayerActor(tex = plan2Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -122,7 +121,7 @@ class MarsModel: Entity() {
         )
     }
 
-    val plan1 = GameComponent(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -135,7 +134,7 @@ class MarsModel: Entity() {
     }
 
 
-    override val all = arrayOf(
+    override val all = arrayOf<Actor>(
         background,
         oblako5,
         oblako4,

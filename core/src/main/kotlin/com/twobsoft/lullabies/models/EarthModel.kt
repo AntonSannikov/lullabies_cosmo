@@ -1,16 +1,13 @@
 package com.twobsoft.lullabies.models
 
 
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
-import com.twobsoft.lullabies.Assets
-import com.twobsoft.lullabies.GameComponent
+import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.MainScreen
-import ktx.actors.alpha
 
 
 class EarthModel: Entity() {
@@ -30,7 +27,7 @@ class EarthModel: Entity() {
 
     override val stageNumber = 4
 
-    val cloud1 = GameComponent(tex = cloud1Tex).also {
+    val cloud1 = LayerActor(tex = cloud1Tex).also {
         it.xOffset = (MainScreen.BG_WIDTH * 0.5f).toInt()
         it.isNeedReinit = true
 
@@ -45,7 +42,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val cloud2 = GameComponent(tex = cloud2Tex).also {
+    val cloud2 = LayerActor(tex = cloud2Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -57,7 +54,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val cloud3 = GameComponent(tex = cloud3Tex).also {
+    val cloud3 = LayerActor(tex = cloud3Tex).also {
 
         it.actions.add(
             Actions.repeat(
@@ -70,9 +67,9 @@ class EarthModel: Entity() {
         )
     }
 
-    val sky = GameComponent(tex = skyTex)
+    val sky = LayerActor(tex = skyTex)
 
-    val rock = GameComponent(tex = rockTex).also {
+    val rock = LayerActor(tex = rockTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -84,7 +81,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val river = GameComponent(tex = riverTex).also {
+    val river = LayerActor(tex = riverTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -96,7 +93,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val forest = GameComponent(tex = forestTex).also {
+    val forest = LayerActor(tex = forestTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -108,7 +105,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val smoke = GameComponent(tex = smokeTex).also {
+    val smoke = LayerActor(tex = smokeTex).also {
         it.width = MainScreen.BG_WIDTH
         it.scaleX = 1.5f
         it.height = MainScreen.BG_HEIGHT * 0.45f
@@ -125,7 +122,7 @@ class EarthModel: Entity() {
     }
 
 
-    val coast = GameComponent(tex = coastTex).also {
+    val coast = LayerActor(tex = coastTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -137,7 +134,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val treerock = GameComponent(tex = treerockTex).also {
+    val treerock = LayerActor(tex = treerockTex).also {
         it.originX = MainScreen.BG_WIDTH / 2
         it.originY = MainScreen.BG_HEIGHT
         it.actions.add(
@@ -159,10 +156,10 @@ class EarthModel: Entity() {
         )
     }
 
-    val leaf = GameComponent(
+    val leaf = LayerActor(
         tex = leafTex
     )
 
-    override val all = arrayOf(sky, cloud2, rock, cloud3, cloud1, river, forest, smoke, coast, treerock)
+    override val all = arrayOf<Actor>(sky, cloud2, rock, cloud3, cloud1, river, forest, smoke, coast, treerock)
 
 }

@@ -1,12 +1,14 @@
 package com.twobsoft.lullabies.gestures
 
-import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.math.Intersector
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.twobsoft.lullabies.*
+import com.twobsoft.lullabies.components.AnimatedActor
+import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.models.*
-import com.twobsoft.lullabies.ui.UiActor
-import ktx.scene2d.actors
-import javax.swing.GroupLayout
+import com.twobsoft.lullabies.components.UiActor
+import com.twobsoft.lullabies.ui.UiModel
 
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
@@ -25,12 +27,22 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     }
 
     override fun onTap(x: Float, y: Float, count: Int, button: Int) {
+
+        val xNorm = x / MainScreen.BG_WIDTH
+        val yNorm = y / MainScreen.BG_HEIGHT
+        screen.shaderFocusOffset = Vector2(-(xNorm - 0.5f),yNorm-0.5f)
         screen.isInterStellar = true
-//        screen.stage.actors.forEach {
-//            if (it is GameComponent) {
-//                it.addAction(Actions.scaleBy(-2f, -2f, 15f))
-//            }
-//        }
+
+//        Intersector.isPointInPolygon()
+
+        screen.stage.actors.forEach {
+            if (it is AnimatedActor) {
+               it.isNeedAnimate = true
+                it.addAction(Actions.scaleBy(0.6f, 0.6f, 5f))
+            } else {
+                it.addAction(Actions.scaleBy(0.2f, 0.2f, 5f))
+            }
+        }
     }
 
     override fun onUp() {}
@@ -40,9 +52,19 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     override fun onPan(x: Float, y: Float, deltaX: Float, deltaY: Float) {}
 
 
-    fun createStage(planetModel: Entity, increment: Int) {
-        planetModel.all.forEach {
-            it.init()
+
+    fun createStage(stageModel: Entity, increment: Int) {
+
+        if (screen.currentStageNumber != 0) {
+            val uiModel = UiModel()
+            uiModel.all.forEach {
+                it.init()
+                screen.stage.addActor(it)
+            }
+        }
+
+        stageModel.all.forEach {
+            if (it is LayerActor) { it.init() }
             it.x = MainScreen.BG_WIDTH * increment
             screen.stage.addActor(it)
             it.actions.forEach { action ->
@@ -81,27 +103,30 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         }
 
         screen.stage.actors.forEach {
-            if (it is GameComponent) {
+            if (it is LayerActor) {
                 it.isNeedRemove = true
             }
         }
 
         createStage(newPlanetModel, increment)
 
-        val hudActors = arrayListOf<UiActor>()
-        screen.stage.actors.forEach {
-            if (it is UiActor) {
-                hudActors.add(it)
-                it.remove()
+        if (screen.currentStageNumber != 0) {
+
+            val hudActors = arrayListOf<UiActor>()
+            screen.stage.actors.forEach {
+                if (it is UiActor) {
+                    hudActors.add(it)
+                    it.remove()
+                }
             }
+            hudActors.forEach { screen.stage.addActor(it) }
         }
-        hudActors.forEach { screen.stage.addActor(it) }
 
         screen.resetShader()
         var isReseted = false
 
         screen.stage.actors.forEach {
-            if (it is GameComponent) {
+            if (it is LayerActor) {
                 it.addAction(
                     Actions.sequence(
                         Actions.moveBy(-MainScreen.BG_WIDTH * increment, 0f, 1f),
@@ -114,9 +139,9 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                                     LullabiesGame.BARREL_SHADER_PULSE_START_POWER
                                 screen.powerDelta =
                                     -(screen.barrelShaderPower - LullabiesGame.BARREL_SHADER_PULSE_MAX_POWER) / 600
-                                screen.isShaderReseted = false
+                                screen.isBarrelShaderReseted = false
                                 screen.stage.actors.forEach { component ->
-                                    if (component is GameComponent && component.isNeedReinit) {
+                                    if (component is LayerActor && component.isNeedReinit) {
                                         component.reInit()
                                     }
                                 }

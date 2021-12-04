@@ -1,5 +1,6 @@
 package com.twobsoft.lullabies.models
-import com.twobsoft.lullabies.GameComponent
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.twobsoft.lullabies.components.LayerActor
 
 class PlutoModel: Entity() {
     companion object {
@@ -15,16 +16,16 @@ class PlutoModel: Entity() {
 
     override val stageNumber = 11
 
-    val background  = GameComponent(tex = backgroundTex)
-    val sun         = GameComponent(tex = sunTex)
-    val stars       = GameComponent(tex = starsTex)
-    val planet      = GameComponent(tex = planetTex)
-    val plan3       = GameComponent(tex = plan3Tex)
-    val plan2       = GameComponent(tex = plan2Tex)
-    val plan1       = GameComponent(tex = plan1Tex)
-    val flare       = GameComponent(tex = flareTex)
+    val background  = LayerActor(tex = backgroundTex)
+    val sun         = LayerActor(tex = sunTex)
+    val stars       = LayerActor(tex = starsTex)
+    val planet      = LayerActor(tex = planetTex)
+    val plan3       = LayerActor(tex = plan3Tex)
+    val plan2       = LayerActor(tex = plan2Tex)
+    val plan1       = LayerActor(tex = plan1Tex)
+    val flare       = LayerActor(tex = flareTex)
 
 
-    override val all = arrayOf(background, sun, stars, planet, plan3, plan2, plan1)
+    override val all = arrayOf<Actor>(background, sun, stars, planet, plan3, plan2, plan1)
 
 }

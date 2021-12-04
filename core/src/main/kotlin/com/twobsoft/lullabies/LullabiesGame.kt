@@ -15,14 +15,12 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.Vector2
 import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_MAX_POWER
 import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_POWER
 import com.twobsoft.lullabies.gestures.StageInputListener
-import com.twobsoft.lullabies.models.EarthModel
-import com.twobsoft.lullabies.models.Entity
-import com.twobsoft.lullabies.models.MoonModel
-import com.twobsoft.lullabies.models.SunModel
-import com.twobsoft.lullabies.ui.UiModel
+import com.twobsoft.lullabies.models.*
 
 
 class LullabiesGame : KtxGame<KtxScreen>() {
@@ -38,21 +36,21 @@ class LullabiesGame : KtxGame<KtxScreen>() {
         val assets = Assets
         assets.loadUi()
         assets.load(0)
-        assets.load(1)
-        assets.load(2)
-        assets.load(3)
-        assets.load(4)
-        assets.load(5)
-        assets.load(6)
-        assets.load(7)
-        assets.load(8)
-        assets.load(9)
-        assets.load(10)
-        assets.load(11)
-        assets.load(12)
-        assets.load(13)
-        assets.load(14)
-        assets.load(15)
+//        assets.load(1)
+//        assets.load(2)
+//        assets.load(3)
+//        assets.load(4)
+//        assets.load(5)
+//        assets.load(6)
+//        assets.load(7)
+//        assets.load(8)
+//        assets.load(9)
+//        assets.load(10)
+//        assets.load(11)
+//        assets.load(12)
+//        assets.load(13)
+//        assets.load(14)
+//        assets.load(15)
 
         assets.manager.finishLoading()
         addScreen(MainScreen())
@@ -67,58 +65,64 @@ class MainScreen : KtxScreen {
         val BG_WIDTH    = Gdx.graphics.width.toFloat()
         val BG_HEIGHT   = Gdx.graphics.height.toFloat()
         val ratio       = BG_WIDTH / BG_HEIGHT
+        val shapeRenderer = ShapeRenderer()
     }
 
-
     val STAGES_COUNT = 15
-    var currentStageNumber = 1
+    var currentStageNumber = 0
 
     val stage: Stage
     private var camera: OrthographicCamera
     private var viewport: Viewport
 
     // SHADERS AND RENDERING
+    val fbo = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
+    var shaderFocusOffset = Vector2(0f, 0f)
+
+    // BARREL SHADER
     var barrelShaderPower: Float                = BARREL_SHADER_PULSE_START_POWER
     private var barrelShaderMaxPower: Float     = BARREL_SHADER_PULSE_MAX_POWER
     var powerDelta                              = -(barrelShaderPower - barrelShaderMaxPower) / 600
-    var time = 6f
-
-    val fbo = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
-
-    var isShaderReseted : Boolean = false
-
+    var isBarrelShaderReseted : Boolean               = false
     val barrelShader = ShaderProgram(
         Gdx.files.internal("shaders/barrel/vertex.glsl").readString(),
         Gdx.files.internal("shaders/barrel/fragment.glsl").readString()
     )
+    var isBarrel = true
+
+
+    // INTERSTELLAR SHADER
+    var time = 6f
+    val rgbNoiseTex = Texture(Gdx.files.internal("misc/rgb_noise.png"))
     val interStellarShader = ShaderProgram(
         Gdx.files.internal("shaders/interstellar/vertex.glsl").readString(),
         Gdx.files.internal("shaders/interstellar/fragment.glsl").readString()
     )
+    var isInterStellar = false
 
-    val rgbNoiseTex = Texture(Gdx.files.internal("misc/rgb_noise.png"))
+
+
     //
     var currentModel: Entity
     val inputListener: StageInputListener
 
     var isSwiping = false
-    var isInterStellar = false
+
 
     init {
         //ShaderProgram.pedantic = false
-        camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT)
-        viewport = ExtendViewport(BG_WIDTH, BG_HEIGHT, camera)
+        shapeRenderer.setAutoShapeType(true)
+        Gdx.gl.glLineWidth(10f)
+
+        camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT )
+        viewport = FitViewport(BG_WIDTH, BG_HEIGHT , camera)
         stage = Stage(viewport)
 
         inputListener = StageInputListener(this)
-
-        //
-        //
-        currentModel = SunModel()
+        currentModel = MenuModel()
         inputListener.createStage(currentModel, 0)
-        val uiModel = UiModel()
-        uiModel.all.forEach {
-            it.init()
+
+        currentModel.all.forEach {
             stage.addActor(it)
         }
 
@@ -132,7 +136,7 @@ class MainScreen : KtxScreen {
     // ==============================      METHODS     =============================================
 
     fun resetShader() {
-        isShaderReseted = true
+        isBarrelShaderReseted = true
         powerDelta = (barrelShaderPower - barrelShaderMaxPower) / 20
     }
 
@@ -146,24 +150,28 @@ class MainScreen : KtxScreen {
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
+        shapeRenderer.begin()
+        if (isBarrel) {
+            barrelShaderPower += powerDelta
 
-        barrelShaderPower += powerDelta
+            if (!isBarrelShaderReseted) {
+                if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
+                    powerDelta = -powerDelta
+                } else if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER && powerDelta > 0) {
+                    powerDelta = -powerDelta
+                }
+            } else {
+                if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER) {
+                    powerDelta = 0f
+                }
+            }
 
-        if (!isShaderReseted) {
-            if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
-                powerDelta = -powerDelta
-            } else if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER && powerDelta > 0) {
-                powerDelta = -powerDelta
-            }
-        } else {
-            if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER) {
-                powerDelta = 0f
-            }
+            barrelShader.bind()
+            stage.batch.shader = barrelShader
+            barrelShader.setUniformf("iTime", barrelShaderPower)
+//            barrelShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
         }
 
-        barrelShader.bind()
-        stage.batch.shader = barrelShader
-        barrelShader.setUniformf("iTime", barrelShaderPower)
         fbo.begin()
         stage.act()
         stage.draw()
@@ -177,6 +185,7 @@ class MainScreen : KtxScreen {
             Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE1)
             texture0.bind(1);
             interStellarShader.setUniformi("u_texture", 1)
+            interStellarShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
 
             Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE0)
             rgbNoiseTex.bind(0);
@@ -192,13 +201,15 @@ class MainScreen : KtxScreen {
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
 
+        shapeRenderer.end()
+
     }
     //                                  RENDER
     // =============================================================================================
 
 
     override fun resize(width: Int, height: Int) {
-        viewport.update(width, height, false)
+        viewport.update(width, height, true)
         super.resize(width, height)
     }
 

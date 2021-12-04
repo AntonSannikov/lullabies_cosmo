@@ -1,6 +1,7 @@
 package com.twobsoft.lullabies.models
 
-import com.twobsoft.lullabies.GameComponent
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.twobsoft.lullabies.components.LayerActor
 
 class AsteroidModel: Entity() {
 
@@ -16,13 +17,13 @@ class AsteroidModel: Entity() {
 
     override val stageNumber = 12
 
-    val background    = GameComponent(tex = backgroundTex)
-    val plan5         = GameComponent(tex = plan5Tex)
-    val plan4         = GameComponent(tex = plan4Tex)
-    val plan3         = GameComponent(tex = plan3Tex)
-    val plan2         = GameComponent(tex = plan2Tex)
-    val plan1         = GameComponent(tex = plan1Tex)
-    val flare         = GameComponent(tex = flareTex)
+    val background    = LayerActor(tex = backgroundTex)
+    val plan5         = LayerActor(tex = plan5Tex)
+    val plan4         = LayerActor(tex = plan4Tex)
+    val plan3         = LayerActor(tex = plan3Tex)
+    val plan2         = LayerActor(tex = plan2Tex)
+    val plan1         = LayerActor(tex = plan1Tex)
+    val flare         = LayerActor(tex = flareTex)
 
-    override val all = arrayOf(background, plan5, plan4, plan3, plan2, plan1)
+    override val all = arrayOf<Actor>(background, plan5, plan4, plan3, plan2, plan1)
 }

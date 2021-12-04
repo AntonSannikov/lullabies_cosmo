@@ -1,8 +1,9 @@
 package com.twobsoft.lullabies.models
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
-import com.twobsoft.lullabies.GameComponent
+import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
 
 class MercuryModel: Entity() {
@@ -17,7 +18,7 @@ class MercuryModel: Entity() {
 
     override val stageNumber = 2
 
-    val background = GameComponent(tex = backgroundTex).also {
+    val background = LayerActor(tex = backgroundTex).also {
             it.originX = 0f
             it.actions.add(
                 Actions.repeat(
@@ -30,7 +31,7 @@ class MercuryModel: Entity() {
             )
     }
 
-    val planet1 = GameComponent(tex = planet1Tex).also {
+    val planet1 = LayerActor(tex = planet1Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -41,7 +42,7 @@ class MercuryModel: Entity() {
             )
         )
     }
-    val planet2 = GameComponent(tex = planet2Tex).also {
+    val planet2 = LayerActor(tex = planet2Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -53,7 +54,7 @@ class MercuryModel: Entity() {
         )
     }
 
-    val plan2 = GameComponent(tex = plan2Tex).also {
+    val plan2 = LayerActor(tex = plan2Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -64,7 +65,7 @@ class MercuryModel: Entity() {
             )
         )
     }
-    val plan1 = GameComponent(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -76,5 +77,5 @@ class MercuryModel: Entity() {
         )
     }
 
-    override val all = arrayOf(background, planet1, planet2, plan2, plan1)
+    override val all = arrayOf<Actor>(background, planet1, planet2, plan2, plan1)
 }
