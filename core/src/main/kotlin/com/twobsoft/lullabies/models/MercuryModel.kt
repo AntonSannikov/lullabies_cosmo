@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
+import com.twobsoft.lullabies.MainScreen
 
 class MercuryModel: Entity() {
 
@@ -23,9 +24,15 @@ class MercuryModel: Entity() {
             it.actions.add(
                 Actions.repeat(
                     RepeatAction.FOREVER,
-                    Actions.sequence(
-                        Actions.scaleBy(0.03f, 0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.scaleBy(-0.03f, -0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    Actions.parallel(
+                        Actions.sequence(
+                            Actions.scaleBy(0.03f, 0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                            Actions.scaleBy(-0.03f, -0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                        ),
+                        Actions.sequence(
+                            Actions.moveBy(MainScreen.BG_WIDTH * 0.03f, MainScreen.BG_HEIGHT * 0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                            Actions.moveBy(-MainScreen.BG_WIDTH * 0.03f, -MainScreen.BG_HEIGHT * 0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade)
+                        )
                     )
                 )
             )
@@ -42,6 +49,7 @@ class MercuryModel: Entity() {
             )
         )
     }
+
     val planet2 = LayerActor(tex = planet2Tex).also {
         it.actions.add(
             Actions.repeat(
@@ -65,13 +73,14 @@ class MercuryModel: Entity() {
             )
         )
     }
+
     val plan1 = LayerActor(tex = plan1Tex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.scaleBy(0.08f, 0.08f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    Actions.scaleBy(-0.08f, -0.08f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    Actions.scaleBy(0.1f, 0.1f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    Actions.scaleBy(-0.1f, -0.1f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                 )
             )
         )

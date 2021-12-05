@@ -1,6 +1,6 @@
 package com.twobsoft.lullabies.gestures
 
-import com.badlogic.gdx.math.Intersector
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -9,9 +9,9 @@ import com.twobsoft.lullabies.*
 import com.twobsoft.lullabies.components.AnimatedActor
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.models.*
-import com.twobsoft.lullabies.components.UiActor
-import com.twobsoft.lullabies.ui.UiModel
+import com.twobsoft.lullabies.components.HudActor
 import com.twobsoft.lullabies.utils.Utils
+import ktx.scene2d.actors
 
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
@@ -34,19 +34,41 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         println("${x / MainScreen.BG_WIDTH}:${1 - y / MainScreen.BG_HEIGHT}")
         val xNorm = x / MainScreen.BG_WIDTH
         val yNorm = y / MainScreen.BG_HEIGHT
-        screen.shaderFocusOffset = Vector2(-(xNorm - 0.5f),yNorm-0.5f)
 
-//        screen.isInterStellar = true
-//        screen.isBarrel = true
-
-
-        screen.stage.actors.forEach {
+        for (it in screen.stage.actors) {
             if (it is AnimatedActor && it.hitBox.size > 2) {
                 if (isPointInPolygon(Utils.floatArrayToVec2Array(it.hitBox.toFloatArray()),
                         Vector2(x, MainScreen.BG_HEIGHT - y))
                 ) {
+                    it.remove()
+                    screen.stage.addActor(it)
+                    screen.shaderFocusOffset = Vector2(-(xNorm - 0.5f),yNorm-0.5f)
+                    screen.isBarrel = true
                     it.isNeedAnimate = true
-                    it.addAction(Actions.scaleBy(0.6f, 0.6f, 5f))
+                    it.addAction(
+                        Actions.parallel(
+                            Actions.sequence(
+                                Actions.delay(0.5f),
+                                Actions.run {
+                                    screen.isInterStellar = true
+                                    addRollingHud(true) },
+                                Actions.moveTo(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT / 2, 3f)
+                            ),
+                            Actions.sequence(
+                                Actions.scaleBy(1f, 1f, 2.7f, Interpolation.slowFast),
+                                Actions.run {
+                                    screen.isBarrel = false
+                                    screen.resetBarrelShader()
+                                    screen.isInterStellar = false
+                                    screen.resetInterstellarShader()
+                                    screen.currentStageNumber = it.stageNumber
+                                    createStage(getStageModel(it.stageNumber))
+                                    screen.isShade = true
+                                },
+                            )
+                        )
+                    )
+                    break
                 }
             }
         }
@@ -59,77 +81,136 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     override fun onPan(x: Float, y: Float, deltaX: Float, deltaY: Float) {}
 
 
+    fun refreshHud() {
+        val hudActors = arrayListOf<HudActor>()
+        var length = screen.stage.actors.size - 1
+        var i = 0
+        while (i < length) {
+            val actor = screen.stage.actors[i]
+            if (actor is HudActor) {
+                hudActors.add(actor)
+                actor.remove()
+                length --
+            } else { i++ }
+        }
 
-    fun createStage(stageModel: Entity, increment: Int) {
-
-        if (screen.currentStageNumber != 0) {
-            val uiModel = UiModel()
-            uiModel.all.forEach {
-                it.init()
-                screen.stage.addActor(it)
+        if (hudActors.isEmpty()) {
+            for (hudActor in screen.hudModel.all) {
+                if (hudActor is HudActor) { hudActor.init() }
+                screen.stage.addActor(hudActor)
             }
+        } else {
+            hudActors.forEach { screen.stage.addActor(it) }
+        }
+    }
+
+    fun addRollingHud(isForward: Boolean) {
+        var startingScale = Vector2()
+        var targetScale = Vector2()
+
+        if (isForward) {
+            startingScale = Vector2(MainScreen.BG_WIDTH * 0.0003f, MainScreen.BG_HEIGHT * 0.0003f)
+            targetScale = Vector2(-MainScreen.BG_WIDTH * 0.0003f, -MainScreen.BG_HEIGHT * 0.0003f)
+        }
+
+        screen.hudModel.all.forEach {
+            if (it is HudActor) { it.init() }
+            it.scaleBy(startingScale.x, startingScale.y)
+            screen.stage.addActor(it)
+            it.addAction(Actions.scaleBy(targetScale.x, targetScale.y, 2f))
+        }
+
+    }
+
+
+    fun createStage(stageModel: Entity,) {
+
+        screen.stage.actors.forEach {
+            if (it is LayerActor) it.isNeedRemove = true
+            if (it is AnimatedActor) it.isNeedRemove = true
         }
 
         stageModel.all.forEach {
-            if (it is LayerActor) { it.init() }
-            it.x = MainScreen.BG_WIDTH * increment
+            if (it is LayerActor) {
+                it.init()
+                screen.stage.addActor(it)
+                if (it.isNeedReinit) { it.reInit() }
+                it.actions.forEach { action ->
+                    it.addAction(action)
+                }
+            }
+        }
+        screen.stage.actors.forEach {
+            if (it is LayerActor && it.isNeedRemove) it.addAction(Actions.removeActor())
+            if (it is AnimatedActor && it.isNeedRemove) it.addAction(Actions.removeActor())
+        }
+
+        refreshHud()
+    }
+
+
+    fun createSwipeStage(stageModel: Entity, increment: Int) {
+        stageModel.all.forEach {
+            if (it is LayerActor) {
+                it.init()
+                it.x = MainScreen.BG_WIDTH * increment
+            }
             screen.stage.addActor(it)
-            it.actions.forEach { action ->
-                it.addAction(action)
+        }
+    }
+
+
+    private fun getStageModel(stageNumber: Int): Entity {
+        var newModel: Entity? =null
+
+        when(stageNumber) {
+            0 -> newModel     = MenuModel()
+            1 -> newModel     = SunModel()
+            2 -> newModel     = MercuryModel()
+            3 -> newModel     = VenusModel()
+            4 -> newModel     = EarthModel()
+            5 -> newModel     = MoonModel()
+            6 -> newModel     = MarsModel()
+            7 -> newModel     = JupiterModel()
+            8 -> newModel     = SaturnModel()
+            9 -> newModel     = UranusModel()
+            10 -> newModel    = NeptuneModel()
+            11 -> newModel    = PlutoModel()
+            12 -> newModel    = AsteroidModel()
+            13 -> newModel    = CometModel()
+            14 -> newModel    = SpaceshipModel()
+            15 -> newModel    = AlienshipModel()
+        }
+
+        return  newModel!!
+    }
+
+    fun refreshStage() {
+        screen.stage.actors.forEach {
+            if (it is LayerActor) {
+                if (it.isNeedRemove) { it.remove() }
+                else { it.actions.forEach {action -> it.addAction(action) } }
             }
         }
     }
 
     private fun changeStage(increment: Int) {
         screen.currentStageNumber += increment
-
-        var newPlanetModel: Entity? =null
-
         screen.isSwiping = true
 
-        when(screen.currentStageNumber){
-            1 -> newPlanetModel     = SunModel()
-            2 -> newPlanetModel     = MercuryModel()
-            3 -> newPlanetModel     = VenusModel()
-            4 -> newPlanetModel     = EarthModel()
-            5 -> newPlanetModel     = MoonModel()
-            6 -> newPlanetModel     = MarsModel()
-            7 -> newPlanetModel     = JupiterModel()
-            8 -> newPlanetModel     = SaturnModel()
-            9 -> newPlanetModel     = UranusModel()
-            10 -> newPlanetModel    = NeptuneModel()
-            11 -> newPlanetModel    = PlutoModel()
-            12 -> newPlanetModel    = AsteroidModel()
-            13 -> newPlanetModel    = CometModel()
-            14 -> newPlanetModel    = SpaceshipModel()
-            15 -> newPlanetModel    = AlienshipModel()
-        }
-
-        if (newPlanetModel == null) {
-            return
-        }
+        val newStageModel = getStageModel(screen.currentStageNumber)
 
         screen.stage.actors.forEach {
-            if (it is LayerActor) {
-                it.isNeedRemove = true
-            }
+            if (it is LayerActor) { it.isNeedRemove = true }
         }
 
-        createStage(newPlanetModel, increment)
+        createSwipeStage(newStageModel, increment)
 
         if (screen.currentStageNumber != 0) {
-
-            val hudActors = arrayListOf<UiActor>()
-            screen.stage.actors.forEach {
-                if (it is UiActor) {
-                    hudActors.add(it)
-                    it.remove()
-                }
-            }
-            hudActors.forEach { screen.stage.addActor(it) }
+            refreshHud()
         }
 
-        screen.resetShader()
+        screen.reverseBarrelShader()
         var isReseted = false
 
         screen.stage.actors.forEach {
@@ -141,20 +222,13 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                             if (!isReseted) {
                                 isReseted = true
                                 screen.isSwiping = false
-                                screen.currentModel = newPlanetModel
-                                screen.barrelShaderPower =
-                                    LullabiesGame.BARREL_SHADER_PULSE_START_POWER
-                                screen.powerDelta =
-                                    -(screen.barrelShaderPower - LullabiesGame.BARREL_SHADER_PULSE_MAX_POWER) / 600
-                                screen.isBarrelShaderReseted = false
-                                screen.stage.actors.forEach { component ->
-                                    if (component is LayerActor && component.isNeedReinit) {
-                                        component.reInit()
+                                screen.resetBarrelShader()
+                                for (actor in screen.stage.actors) {
+                                    if (actor is LayerActor && actor.isNeedReinit) {
+                                        actor.reInit()
                                     }
                                 }
-                            }
-                            if (it.isNeedRemove) {
-                                it.remove()
+                                refreshStage()
                             }
                         }
                     )

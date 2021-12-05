@@ -1,6 +1,5 @@
 package com.twobsoft.lullabies.components
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
@@ -8,18 +7,13 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.FloatArray
 import com.twobsoft.lullabies.Assets
-import com.twobsoft.lullabies.MainScreen
 
 
 class AnimatedActor(val texturePath: String,
                     val frameCols: Int,
                     val frameRows: Int,
+                    val stageNumber: Int,
                     sizeX: Float,
                     sizeY: Float,
                     frameCount: Int? = null
@@ -30,9 +24,8 @@ class AnimatedActor(val texturePath: String,
     var animation: Animation<TextureRegion>? = null
     var textureRegion: TextureRegion? = null
     var stateTime = 0f
-    var xOffset = 0f
-    var yOffset = 0f
     var isNeedAnimate = false
+    var isNeedRemove = false
 
     init {
 
@@ -69,7 +62,6 @@ class AnimatedActor(val texturePath: String,
     }
 
 
-
     override fun act(delta: Float) {
         super.act(delta)
         if (isNeedAnimate) {
@@ -85,24 +77,23 @@ class AnimatedActor(val texturePath: String,
 
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-
+        super.draw(batch, parentAlpha)
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
 
         batch.draw(
             textureRegion,
-            xOffset, yOffset,
+            x, y,
             width / 2, height / 2,
             width, height,
             scaleX, scaleY,
             rotation
         )
 
-        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-        MainScreen.shapeRenderer.color = Color.RED
-//        MainScreen.shapeRenderer.rect(xOffset, yOffset, width, height)
-        if (hitBox.size > 2) {
-            MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
-        }
+//        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+//        MainScreen.shapeRenderer.color = Color.RED
+//        if (hitBox.size > 2) {
+//            MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
+//        }
 
     }
 }

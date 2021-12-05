@@ -31,13 +31,15 @@ class LayerActor(val tex: String): Actor() {
         srcHeight = imgTexture.height
 
         width = MainScreen.BG_WIDTH
-        height = MainScreen.BG_HEIGHT
+        height = if (tex != "menu/background.png") width * 100 / 64 else MainScreen.BG_HEIGHT
 
-        originX = MainScreen.BG_WIDTH / 2
+        y = (MainScreen.BG_HEIGHT - height) / 2
+
+        originX = width / 2
         originY = MainScreen.BG_HEIGHT / 2
 
-        layers.add(imgTexture)
 
+        layers.add(imgTexture)
     }
 
 
@@ -47,6 +49,7 @@ class LayerActor(val tex: String): Actor() {
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
+        super.draw(batch, parentAlpha)
 
         if (x < xBounds.x || x >= xBounds.y) {
             return
@@ -67,15 +70,7 @@ class LayerActor(val tex: String): Actor() {
                 false, false
             )
         }
-
     }
-
-    fun stop() {
-        actions.forEach {
-            removeAction(it)
-        }
-    }
-
 
 }
 

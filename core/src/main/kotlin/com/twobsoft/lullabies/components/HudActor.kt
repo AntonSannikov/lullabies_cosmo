@@ -6,20 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
 
-class UiActor(val tex: String): Actor() {
+class HudActor(val tex: String): Actor() {
 
     var texture: Texture? = null
 
-//    val offsetX = (MainScreen.BG_WIDTH * 0.025f).toInt()
-//    val offsetY = -(MainScreen.BG_HEIGHT * 0.015f).toInt()
     val offsetX = 0
     val offsetY = 0
     var srcWidth: Int = 0
     var scrHeight: Int = 0
-//    val yScale = MainScreen.ratio * 2.3f
-//    val xScale = MainScreen.ratio * 2.3f
-//    val yScale = 1f
-//    val xScale = 1f
+
 
     fun init() {
 
@@ -31,7 +26,6 @@ class UiActor(val tex: String): Actor() {
 
         width = MainScreen.BG_WIDTH
         height = MainScreen.BG_HEIGHT
-
 
         originX = MainScreen.BG_WIDTH / 2
         originY = MainScreen.BG_HEIGHT / 2
@@ -56,8 +50,7 @@ class UiActor(val tex: String): Actor() {
             scaleX, scaleY,
             rotation,
             offsetX, offsetY,
-            srcWidth,
-            scrHeight,
+            srcWidth, scrHeight,
             false, false
         )
 

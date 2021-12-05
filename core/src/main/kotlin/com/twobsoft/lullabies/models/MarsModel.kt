@@ -50,8 +50,8 @@ class MarsModel: Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 40f),
-                    Actions.moveBy(MainScreen.BG_WIDTH, 0f)
+                    Actions.moveBy(MainScreen.BG_WIDTH, 0f, 20f),
+                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f)
                 )
             )
         )
@@ -70,13 +70,13 @@ class MarsModel: Entity() {
     }
 
     val oblako2 = LayerActor(tex = oblako2Tex).also {
-        it.xOffset = (MainScreen.BG_WIDTH * 0.2).toInt()
+        it.xOffset = (-MainScreen.BG_WIDTH * 0.2).toInt()
         it.isNeedReinit = true
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 50f),
+                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 40f),
                     Actions.moveBy(MainScreen.BG_WIDTH, 0f)
                 )
             )
@@ -90,7 +90,7 @@ class MarsModel: Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 42f),
+                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 56f),
                     Actions.moveBy(MainScreen.BG_WIDTH, 0f)
                 )
             )

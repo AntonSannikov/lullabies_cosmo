@@ -5,7 +5,7 @@ import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.twobsoft.lullabies.models.*
-import com.twobsoft.lullabies.ui.UiModel
+import com.twobsoft.lullabies.hud.HudModel
 import ktx.assets.getAsset
 
 
@@ -15,8 +15,8 @@ object Assets {
     val manager: AssetManager = AssetManager()
 
     // UI
-    val uiTextures = arrayOf(
-        AssetDescriptor<Texture>(UiModel.frameTex, Texture::class.java),
+    val hudTextures = arrayOf(
+        AssetDescriptor<Texture>(HudModel.frameTex, Texture::class.java),
     )
 
     // MENU
@@ -251,8 +251,8 @@ object Assets {
         }
     }
 
-    fun loadUi() {
-        uiTextures.forEach { manager.load(it) }
+    fun loadHud() {
+        hudTextures.forEach { manager.load(it) }
     }
 
     fun loadAnimation() {

@@ -34,9 +34,9 @@ class MenuModel: Entity() {
     val background  = LayerActor(tex = backgroundTex)
     val radar       = LayerActor(tex = radarTex)
 
-    val sun = AnimatedActor( sunSS, 5, 4,
+    val sun = AnimatedActor( sunSS, 5, 4, 1,
         MainScreen.BG_HEIGHT * 0.31f,MainScreen.BG_HEIGHT * 0.31f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.188f
+        it.x = MainScreen.BG_WIDTH * 0.188f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.5f)
         it.hitBox.add(0f)
@@ -58,10 +58,10 @@ class MenuModel: Entity() {
 
     }
 
-    val mercury = AnimatedActor( mercurySS, 5, 4,
+    val mercury = AnimatedActor( mercurySS, 5, 4, 2,
         MainScreen.BG_HEIGHT * 0.09f ,MainScreen.BG_HEIGHT * 0.09f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.74f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.23f
+        it.x = MainScreen.BG_WIDTH * 0.74f
+        it.y = MainScreen.BG_HEIGHT * 0.23f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.84f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.22f)
@@ -76,10 +76,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.28f)
     }
 
-    val venus = AnimatedActor( venusSS, 5, 4,
+    val venus = AnimatedActor( venusSS, 5, 4, 3,
         MainScreen.BG_HEIGHT * 0.114f ,MainScreen.BG_HEIGHT * 0.114f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.02f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.29f
+        it.x = MainScreen.BG_WIDTH * 0.02f
+        it.y = MainScreen.BG_HEIGHT * 0.29f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.13f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.28f)
@@ -97,11 +97,11 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.34f)
     }
 
-    val earth = AnimatedActor( earthSS, 5, 4,
+    val earth = AnimatedActor( earthSS, 5, 4, 4,
         MainScreen.BG_HEIGHT * 0.16f, MainScreen.BG_HEIGHT * 0.16f).also {
         it.rotation = -8f
-        it.xOffset = MainScreen.BG_WIDTH * 0.53f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.37f
+        it.x = MainScreen.BG_WIDTH * 0.53f
+        it.y = MainScreen.BG_HEIGHT * 0.37f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.51f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.42f)
@@ -119,10 +119,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.36f)
     }
 
-    val moon = AnimatedActor( moonSS, 5, 4,
+    val moon = AnimatedActor( moonSS, 5, 4, 5,
         MainScreen.BG_HEIGHT * 0.12f ,MainScreen.BG_HEIGHT * 0.12f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.517f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.5f
+        it.x = MainScreen.BG_WIDTH * 0.517f
+        it.y = MainScreen.BG_HEIGHT * 0.5f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.563f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.55f)
@@ -140,10 +140,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.538f)
     }
 
-    val mars = AnimatedActor( marsSS, 5, 4,
+    val mars = AnimatedActor( marsSS, 5, 4, 6,
         MainScreen.BG_HEIGHT * 0.117f ,MainScreen.BG_HEIGHT * 0.117f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.77f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.63f
+        it.x = MainScreen.BG_WIDTH * 0.77f
+        it.y = MainScreen.BG_HEIGHT * 0.63f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.89f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.622f)
@@ -158,10 +158,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.69f)
     }
 
-    val jupiter = AnimatedActor( jupiterSS, 5, 4,
+    val jupiter = AnimatedActor( jupiterSS, 5, 4, 7,
         MainScreen.BG_HEIGHT * 0.17f ,MainScreen.BG_HEIGHT * 0.17f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.11f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.31f
+        it.x = MainScreen.BG_WIDTH * 0.11f
+        it.y = MainScreen.BG_HEIGHT * 0.31f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.36f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.32f)
@@ -188,10 +188,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.4f)
     }
 
-    val saturn = AnimatedActor( saturnSS, 4, 5,
+    val saturn = AnimatedActor( saturnSS, 4, 5, 8,
         MainScreen.BG_HEIGHT * 0.218f ,MainScreen.BG_HEIGHT * 0.145f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.03f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.75f
+        it.x = MainScreen.BG_WIDTH * 0.03f
+        it.y = MainScreen.BG_HEIGHT * 0.75f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.128f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.769f)
@@ -209,10 +209,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.744f)
     }
 
-    val uranus = AnimatedActor( uranusSS, 4, 5,
+    val uranus = AnimatedActor( uranusSS, 4, 5, 9,
         MainScreen.BG_HEIGHT * 0.191f ,MainScreen.BG_HEIGHT * 0.145f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.65f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.76f
+        it.x = MainScreen.BG_WIDTH * 0.65f
+        it.y = MainScreen.BG_HEIGHT * 0.76f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.64f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.778f)
@@ -230,10 +230,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.761f)
     }
 
-    val neptune = AnimatedActor( neptuneSS, 5, 4,
+    val neptune = AnimatedActor( neptuneSS, 5, 4, 10,
         MainScreen.BG_HEIGHT * 0.11f ,MainScreen.BG_HEIGHT * 0.1f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.03f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.62f
+        it.x = MainScreen.BG_WIDTH * 0.03f
+        it.y = MainScreen.BG_HEIGHT * 0.62f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.126f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.613f)
@@ -248,10 +248,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.665f)
     }
 
-    val pluto = AnimatedActor( plutoSS, 5, 4,
+    val pluto = AnimatedActor( plutoSS, 5, 4, 11,
         MainScreen.BG_HEIGHT * 0.12f ,MainScreen.BG_HEIGHT * 0.1f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.02f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.13f
+        it.x = MainScreen.BG_WIDTH * 0.02f
+        it.y = MainScreen.BG_HEIGHT * 0.13f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.148f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.115f)
@@ -266,10 +266,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.184f)
     }
 
-    val asteroid = AnimatedActor( asteroidSS, 5, 4,
+    val asteroid = AnimatedActor( asteroidSS, 5, 4, 12,
         MainScreen.BG_HEIGHT * 0.16f ,MainScreen.BG_HEIGHT * 0.16f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.33f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.84f
+        it.x = MainScreen.BG_WIDTH * 0.33f
+        it.y = MainScreen.BG_HEIGHT * 0.84f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.356f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.88f)
@@ -287,11 +287,11 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.869f)
     }
 
-    val comet = AnimatedActor( cometSS, 5, 4,
+    val comet = AnimatedActor( cometSS, 5, 4, 13,
         MainScreen.BG_HEIGHT * 0.31f,MainScreen.BG_HEIGHT * 0.32f).also {
         it.rotation = -10f
-        it.xOffset = MainScreen.BG_WIDTH * 0.01f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.42f
+        it.x = MainScreen.BG_WIDTH * 0.01f
+        it.y = MainScreen.BG_HEIGHT * 0.42f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.08f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.47f)
@@ -309,12 +309,12 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.51f)
     }
 
-    val spaceship = AnimatedActor( spaceshipSS, 4, 6,
+    val spaceship = AnimatedActor( spaceshipSS, 4, 6, 14,
         MainScreen.BG_HEIGHT * 0.23f ,MainScreen.BG_HEIGHT * 0.15f,
         frameCount = 19).also {
         it.rotation = -9f
-        it.xOffset = MainScreen.BG_WIDTH * 0.3f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.63f
+        it.x = MainScreen.BG_WIDTH * 0.3f
+        it.y = MainScreen.BG_HEIGHT * 0.63f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.32f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.66f)
@@ -332,9 +332,10 @@ class MenuModel: Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.663f)
     }
 
-    val alienship = AnimatedActor( alienshipSS, 5, 4, 350f ,350f).also {
-        it.xOffset = MainScreen.BG_WIDTH * 0.74f
-        it.yOffset = MainScreen.BG_HEIGHT * 0.48f
+    val alienship = AnimatedActor( alienshipSS, 5, 4, 15,
+        MainScreen.BG_HEIGHT * 0.134f ,MainScreen.BG_HEIGHT * 0.134f).also {
+        it.x = MainScreen.BG_WIDTH * 0.74f
+        it.y = MainScreen.BG_HEIGHT * 0.48f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.72f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.54f)
