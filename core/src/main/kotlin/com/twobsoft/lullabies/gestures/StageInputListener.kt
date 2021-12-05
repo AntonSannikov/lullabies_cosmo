@@ -31,9 +31,11 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     override fun onTap(x: Float, y: Float, count: Int, button: Int) {
 
+        println("${x / MainScreen.BG_WIDTH}:${1 - y / MainScreen.BG_HEIGHT}")
         val xNorm = x / MainScreen.BG_WIDTH
         val yNorm = y / MainScreen.BG_HEIGHT
         screen.shaderFocusOffset = Vector2(-(xNorm - 0.5f),yNorm-0.5f)
+
 //        screen.isInterStellar = true
 //        screen.isBarrel = true
 
