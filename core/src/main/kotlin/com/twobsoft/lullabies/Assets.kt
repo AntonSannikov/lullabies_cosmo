@@ -16,7 +16,20 @@ object Assets {
 
     // UI
     val hudTextures = arrayOf(
-        AssetDescriptor<Texture>(HudModel.frameTex, Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.frameTex          , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.panelUpTex        , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.optionsTex        , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.lampLightTex      , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.lampTex           , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.shareButtonTex    , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.shareAntennasTex  , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.deckTex           , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.playlistTex       , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.joystickTex       , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.arrowLTex         , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.playTex           , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.clockTex          , Texture::class.java),
+        AssetDescriptor<Texture>(HudModel.arrowRTex         , Texture::class.java),
     )
 
     // MENU

@@ -3,6 +3,7 @@ package com.twobsoft.lullabies.gestures
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.utils.Array
 import com.twobsoft.lullabies.*
@@ -10,6 +11,7 @@ import com.twobsoft.lullabies.components.AnimatedActor
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.components.HudActor
+import com.twobsoft.lullabies.hud.HudGroup
 import com.twobsoft.lullabies.utils.Utils
 import ktx.scene2d.actors
 
@@ -36,6 +38,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         val yNorm = y / MainScreen.BG_HEIGHT
 
         for (it in screen.stage.actors) {
+            // ANIMATED ACTORS
             if (it is AnimatedActor && it.hitBox.size > 2) {
                 if (isPointInPolygon(Utils.floatArrayToVec2Array(it.hitBox.toFloatArray()),
                         Vector2(x, MainScreen.BG_HEIGHT - y))
@@ -71,6 +74,21 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                     break
                 }
             }
+            // HUD ACTORS
+            //
+            else if (it is HudGroup) {
+                it.children.map { it as HudActor }.forEach { child->
+                    if (child.hitBox.size > 2 &&
+                        isPointInPolygon(Utils.floatArrayToVec2Array(child.hitBox.toFloatArray()),
+                            Vector2(x, MainScreen.BG_HEIGHT - y))
+                    ) {
+                        println(child.tex)
+                    }
+                }
+
+            }
+            //
+            // HUD ACTORS
         }
     }
 
@@ -82,25 +100,24 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
 
     fun refreshHud() {
-        val hudActors = arrayListOf<HudActor>()
+        val hudGroups = arrayListOf<HudGroup>()
         var length = screen.stage.actors.size - 1
         var i = 0
         while (i < length) {
             val actor = screen.stage.actors[i]
-            if (actor is HudActor) {
-                hudActors.add(actor)
+            if (actor is HudGroup) {
+                hudGroups.add(actor)
                 actor.remove()
                 length --
             } else { i++ }
         }
 
-        if (hudActors.isEmpty()) {
+        if (hudGroups.isEmpty()) {
             for (hudActor in screen.hudModel.all) {
-                if (hudActor is HudActor) { hudActor.init() }
                 screen.stage.addActor(hudActor)
             }
         } else {
-            hudActors.forEach { screen.stage.addActor(it) }
+            hudGroups.forEach { screen.stage.addActor(it) }
         }
     }
 
@@ -114,7 +131,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         }
 
         screen.hudModel.all.forEach {
-            if (it is HudActor) { it.init() }
             it.scaleBy(startingScale.x, startingScale.y)
             screen.stage.addActor(it)
             it.addAction(Actions.scaleBy(targetScale.x, targetScale.y, 2f))
@@ -156,6 +172,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                 it.x = MainScreen.BG_WIDTH * increment
             }
             screen.stage.addActor(it)
+            it.actions.forEach {action-> it.addAction(action) }
         }
     }
 
@@ -217,7 +234,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             if (it is LayerActor) {
                 it.addAction(
                     Actions.sequence(
-                        Actions.moveBy(-MainScreen.BG_WIDTH * increment, 0f, 1f),
+                        Actions.moveBy(-MainScreen.BG_WIDTH * increment, 0f, 0.5f),
                         Actions.run {
                             if (!isReseted) {
                                 isReseted = true

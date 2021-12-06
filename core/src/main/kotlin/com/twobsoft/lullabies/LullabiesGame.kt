@@ -1,19 +1,16 @@
 package com.twobsoft.lullabies
 
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 import ktx.async.KtxAsync
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.utils.viewport.*
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
@@ -22,6 +19,8 @@ import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_
 import com.twobsoft.lullabies.gestures.StageInputListener
 import com.twobsoft.lullabies.hud.HudModel
 import com.twobsoft.lullabies.models.*
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 
 
 class LullabiesGame : KtxGame<KtxScreen>() {
@@ -41,17 +40,17 @@ class LullabiesGame : KtxGame<KtxScreen>() {
         assets.load(2)
         assets.load(3)
         assets.load(4)
-        assets.load(5)
-        assets.load(6)
-        assets.load(7)
-        assets.load(8)
-        assets.load(9)
-        assets.load(10)
-        assets.load(11)
-        assets.load(12)
-        assets.load(13)
-        assets.load(14)
-        assets.load(15)
+//        assets.load(5)
+//        assets.load(6)
+//        assets.load(7)
+//        assets.load(8)
+//        assets.load(9)
+//        assets.load(10)
+//        assets.load(11)
+//        assets.load(12)
+//        assets.load(13)
+//        assets.load(14)
+//        assets.load(15)
 
         assets.manager.finishLoading()
         addScreen(MainScreen())
@@ -70,7 +69,7 @@ class MainScreen : KtxScreen {
     }
 
     val STAGES_COUNT = 15
-    var currentStageNumber = 0
+    var currentStageNumber = 1
 
     val stage: Stage
     private var camera: OrthographicCamera
@@ -112,7 +111,7 @@ class MainScreen : KtxScreen {
 
     //
     val inputListener: StageInputListener
-    val hudModel = HudModel()
+    val hudModel : HudModel
     var isSwiping = false
 
 
@@ -124,14 +123,17 @@ class MainScreen : KtxScreen {
         camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT )
         viewport = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
         stage = Stage(viewport)
+        hudModel = HudModel()
 
         inputListener = StageInputListener(this)
 
-        val currentModel = MenuModel()
+        val currentModel = SunModel()
+//        val currentModel = MenuModel()
         inputListener.createSwipeStage(currentModel, 0)
         currentModel.all.forEach {
             stage.addActor(it)
         }
+        inputListener.refreshHud()
 
         Gdx.input.inputProcessor = GestureDetector(
             MyGestureListener(inputListener)
@@ -166,7 +168,7 @@ class MainScreen : KtxScreen {
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-//        shapeRenderer.begin()
+        shapeRenderer.begin()
         if (isBarrel) {
             barrelShaderPower += powerDelta
             if (!isBarrelShaderReseted) {
@@ -238,7 +240,7 @@ class MainScreen : KtxScreen {
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
-//        shapeRenderer.end()
+        shapeRenderer.end()
 
     }
     //                                  RENDER

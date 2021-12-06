@@ -31,7 +31,7 @@ class MenuModel: Entity() {
 
     override val stageNumber = 0
 
-    val background  = LayerActor(tex = backgroundTex)
+    val background  = LayerActor(tex = backgroundTex, isMenu = true)
     val radar       = LayerActor(tex = radarTex)
 
     val sun = AnimatedActor( sunSS, 5, 4, 1,

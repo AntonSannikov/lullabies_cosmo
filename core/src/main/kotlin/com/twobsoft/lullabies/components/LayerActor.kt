@@ -10,7 +10,7 @@ import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
 
 
-class LayerActor(val tex: String): Actor() {
+class LayerActor(val tex: String, val isMenu: Boolean = false): Actor() {
 
     val actions = arrayListOf<Action>()
     val layers = arrayListOf<Texture>()
@@ -33,7 +33,11 @@ class LayerActor(val tex: String): Actor() {
         width = MainScreen.BG_WIDTH
         height = if (tex != "menu/background.png") width * 100 / 64 else MainScreen.BG_HEIGHT
 
-        y = (MainScreen.BG_HEIGHT - height) / 2
+        if (!isMenu) {
+            y = MainScreen.BG_HEIGHT * 0.08f
+        }
+
+//        addAction(Actions.moveBy((MainScreen.BG_WIDTH - width) / 2, 0f))
 
         originX = width / 2
         originY = MainScreen.BG_HEIGHT / 2

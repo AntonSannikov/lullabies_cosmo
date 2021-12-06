@@ -15,5 +15,4 @@ class ActorRenderComparator : Comparator<Actor> {
     } else 1
 }
 
-
 }
