@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
+import com.twobsoft.lullabies.MainScreen
 
 
 class SunModel: Entity() {
@@ -25,7 +26,13 @@ class SunModel: Entity() {
 
     val background = LayerActor(tex = backgroundTex)
 
-    val stars = LayerActor(tex = starsTex)
+    val stars = LayerActor(
+        tex = starsTex,
+        isRepeated = true
+    ).also {
+        it.xDelta = 2
+        it.yDelta = -1
+    }
 
     val planet = LayerActor(tex = planetTex).also {
         it.actions.add(
@@ -53,13 +60,31 @@ class SunModel: Entity() {
 
     val protuberance = LayerActor(tex = protuberanceTex).also {
         it.actions.add(
-            Actions.repeat(
-                RepeatAction.FOREVER,
-                Actions.sequence(
-                    Actions.scaleBy(0.06f, 0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    Actions.scaleBy(-0.06f, -0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+            Actions.parallel(
+                Actions.repeat(
+                    RepeatAction.FOREVER,
+                    Actions.sequence(
+                        Actions.scaleBy(0.06f, 0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                        Actions.scaleBy(-0.06f, -0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    )
+                ),
+                Actions.repeat(
+                    RepeatAction.FOREVER,
+                    Actions.sequence(
+                        Actions.moveBy(-20f, -20f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                        Actions.moveBy(20f, 20f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    )
+                ),
+                Actions.repeat(
+                    RepeatAction.FOREVER,
+                    Actions.sequence(
+                        Actions.rotateBy(2f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                        Actions.rotateBy(-2f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    )
                 )
+
             )
+
         )
     }
 

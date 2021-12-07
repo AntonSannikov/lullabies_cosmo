@@ -20,7 +20,17 @@ class JupiterModel: Entity() {
 
     override val stageNumber = 7
 
-    val background = LayerActor(tex = backgroundTex)
+    val background = LayerActor(tex = backgroundTex).also {
+        it.actions.add(
+            Actions.repeat(
+                RepeatAction.FOREVER,
+                Actions.sequence(
+                    Actions.rotateBy(-2f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    Actions.rotateBy(2f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                )
+            )
+        )
+    }
 
     val plan5 = LayerActor(tex = plan5Tex).also {
         it.actions.add(

@@ -23,27 +23,35 @@ class VenusModel: Entity() {
     val background = LayerActor(tex = backgroundTex)
 
     val plan4 = LayerActor(tex = plan4Tex).also {
-            it.actions.add(
-                Actions.repeat(
-                    RepeatAction.FOREVER,
+        it.actions.add(
+            Actions.repeat(
+                RepeatAction.FOREVER,
+                Actions.parallel(
                     Actions.sequence(
                         Actions.scaleBy(0.02f, 0.02f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                         Actions.scaleBy(-0.02f, -0.02f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    )
-                )
-            )
-    }
-    val plan3 = LayerActor(tex = plan3Tex).also {
-            it.actions.add(
-                Actions.repeat(
-                    RepeatAction.FOREVER,
+                    ),
                     Actions.sequence(
-                        Actions.scaleBy(0.03f, 0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.scaleBy(-0.03f, -0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    )
+                        Actions.moveBy(50f, 50f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                        Actions.moveBy(-50f, -50f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    ),
                 )
             )
+        )
     }
+
+    val plan3 = LayerActor(tex = plan3Tex).also {
+        it.actions.add(
+            Actions.repeat(
+                RepeatAction.FOREVER,
+                Actions.sequence(
+                    Actions.scaleBy(0.03f, 0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    Actions.scaleBy(-0.03f, -0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                )
+            )
+        )
+    }
+
     val plan2 = LayerActor(tex = plan2Tex).also {
         it.actions.add(
             Actions.repeat(

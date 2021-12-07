@@ -38,6 +38,7 @@ class HudActor(val tex: String, val text: String = ""): Actor() {
             isTextDrawing = true
             font.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
             font.data.scale(MainScreen.BG_HEIGHT * 0.00153f)
+            font.color.set(144 / 255f, 210 / 255f, 1f, 1f)
             val glyphLayout = GlyphLayout(font, text)
             textWidth = glyphLayout.width
         }

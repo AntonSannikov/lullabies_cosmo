@@ -171,6 +171,7 @@ object Assets {
         AssetDescriptor<Texture>(PlutoModel.plan3Tex        , Texture::class.java),
         AssetDescriptor<Texture>(PlutoModel.plan2Tex        , Texture::class.java),
         AssetDescriptor<Texture>(PlutoModel.plan1Tex        , Texture::class.java),
+        AssetDescriptor<Texture>(PlutoModel.flareTex        , Texture::class.java),
     )
 
     // ASTEROID

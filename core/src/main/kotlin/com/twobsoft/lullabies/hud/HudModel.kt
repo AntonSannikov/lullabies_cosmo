@@ -38,16 +38,32 @@ class HudModel(): Entity() {
     override val stageNumber = -1
 
     val frame = HudActor(tex = frameTex).also {
-        it.y = MainScreen.BG_HEIGHT * 0.025f
-        it.scaleBy(MainScreen.BG_WIDTH * 0.00028f, MainScreen.BG_HEIGHT * 0.000006f)
+        if (MainScreen.BG_WIDTH > 1600) {
+            it.scaleBy(MainScreen.BG_WIDTH * 0.00005f, MainScreen.BG_HEIGHT * 0.00002f)
+            it.y = MainScreen.BG_HEIGHT * 0.02f
+        } else {
+            it.y = MainScreen.BG_HEIGHT * 0.025f
+            it.scaleBy(MainScreen.BG_WIDTH * 0.00028f, MainScreen.BG_HEIGHT * 0.000006f)
+        }
+
     }
 
     // upper panel
     val panelUp = HudActor(tex = panelUpTex, text = "Test S124141asfasfasfasfasf").also {
-        it.scaleBy(-MainScreen.BG_WIDTH * 0.00018f, -MainScreen.BG_HEIGHT * 0.00034f)
-        it.y = MainScreen.BG_HEIGHT * 0.448f
+
+        if (MainScreen.BG_WIDTH > 1600) {
+            it.y = MainScreen.BG_HEIGHT * 0.442f
+            it.scaleBy(-MainScreen.BG_WIDTH * 0.00018f, -MainScreen.BG_HEIGHT * 0.00036f)
+        } else {
+            it.y = MainScreen.BG_HEIGHT * 0.448f
+            it.scaleBy(-MainScreen.BG_WIDTH * 0.00018f, -MainScreen.BG_HEIGHT * 0.00034f)
+        }
         it.textX = MainScreen.BG_WIDTH * 0.2f
-        it.textY = MainScreen.BG_HEIGHT * 0.971f
+        if (MainScreen.BG_WIDTH > 1600) {
+            it.textY = MainScreen.BG_HEIGHT * 0.973f
+        } else {
+            it.textY = MainScreen.BG_HEIGHT * 0.971f
+        }
         it.textBound = MainScreen.BG_WIDTH * 0.83f
     }
 
@@ -85,7 +101,11 @@ class HudModel(): Entity() {
 
     val lamp = HudActor(tex = lampTex).also {
         it.scaleBy(-0.88f, -0.9f)
-        it.y = MainScreen.BG_HEIGHT * 0.388f
+        if (MainScreen.BG_WIDTH > 1600) {
+            it.y = MainScreen.BG_HEIGHT * 0.395f
+        } else {
+            it.y = MainScreen.BG_HEIGHT * 0.388f
+        }
     }
 
     val shareButton = HudActor(tex = shareButtonTex).also {

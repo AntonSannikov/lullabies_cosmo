@@ -40,17 +40,17 @@ class LullabiesGame : KtxGame<KtxScreen>() {
         assets.load(2)
         assets.load(3)
         assets.load(4)
-//        assets.load(5)
-//        assets.load(6)
-//        assets.load(7)
-//        assets.load(8)
-//        assets.load(9)
-//        assets.load(10)
-//        assets.load(11)
-//        assets.load(12)
-//        assets.load(13)
-//        assets.load(14)
-//        assets.load(15)
+        assets.load(5)
+        assets.load(6)
+        assets.load(7)
+        assets.load(8)
+        assets.load(9)
+        assets.load(10)
+        assets.load(11)
+        assets.load(12)
+        assets.load(13)
+        assets.load(14)
+        assets.load(15)
 
         assets.manager.finishLoading()
         addScreen(MainScreen())
@@ -64,12 +64,12 @@ class MainScreen : KtxScreen {
     companion object {
         val BG_WIDTH    = Gdx.graphics.width.toFloat()
         val BG_HEIGHT   = Gdx.graphics.height.toFloat()
-        val ratio       = BG_WIDTH / BG_HEIGHT
         val shapeRenderer = ShapeRenderer()
+        var layerWidth = 0f
     }
 
     val STAGES_COUNT = 15
-    var currentStageNumber = 1
+    var currentStageNumber = 0
 
     val stage: Stage
     private var camera: OrthographicCamera
@@ -116,24 +116,25 @@ class MainScreen : KtxScreen {
 
 
     init {
+
         //ShaderProgram.pedantic = false
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
 
         camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT )
-        viewport = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
+        viewport = ExtendViewport(BG_WIDTH, BG_HEIGHT, camera)
         stage = Stage(viewport)
-        hudModel = HudModel()
 
+        hudModel = HudModel()
         inputListener = StageInputListener(this)
 
-        val currentModel = SunModel()
-//        val currentModel = MenuModel()
+//        val currentModel = SunModel()
+        val currentModel = MenuModel()
         inputListener.createSwipeStage(currentModel, 0)
         currentModel.all.forEach {
             stage.addActor(it)
         }
-        inputListener.refreshHud()
+//        inputListener.refreshHud()
 
         Gdx.input.inputProcessor = GestureDetector(
             MyGestureListener(inputListener)

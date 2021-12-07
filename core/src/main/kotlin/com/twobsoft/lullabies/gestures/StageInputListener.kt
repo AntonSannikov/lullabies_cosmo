@@ -3,6 +3,7 @@ package com.twobsoft.lullabies.gestures
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.utils.Array
@@ -11,6 +12,7 @@ import com.twobsoft.lullabies.components.AnimatedActor
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.components.HudActor
+import com.twobsoft.lullabies.components.LayerGroup
 import com.twobsoft.lullabies.hud.HudGroup
 import com.twobsoft.lullabies.utils.Utils
 import ktx.scene2d.actors
@@ -147,16 +149,17 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         }
 
         stageModel.all.forEach {
-            if (it is LayerActor) {
-                it.init()
+            if (it is LayerActor || it is LayerGroup) {
                 screen.stage.addActor(it)
-                if (it.isNeedReinit) { it.reInit() }
+                if (it is LayerActor && it.isNeedReinit) { it.reInit() }
                 it.actions.forEach { action ->
                     it.addAction(action)
                 }
             }
         }
+
         screen.stage.actors.forEach {
+            if (it is LayerGroup && it.isNeedRemove) it.addAction(Actions.removeActor())
             if (it is LayerActor && it.isNeedRemove) it.addAction(Actions.removeActor())
             if (it is AnimatedActor && it.isNeedRemove) it.addAction(Actions.removeActor())
         }
@@ -167,12 +170,100 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     fun createSwipeStage(stageModel: Entity, increment: Int) {
         stageModel.all.forEach {
-            if (it is LayerActor) {
-                it.init()
-                it.x = MainScreen.BG_WIDTH * increment
+            if (it is LayerActor || it is LayerGroup) {
+                if (MainScreen.BG_WIDTH > 1660 && MainScreen.layerWidth != 0f) {
+                    it.x += MainScreen.BG_WIDTH * increment - increment * (MainScreen.BG_WIDTH - MainScreen.layerWidth) / 2
+                } else {
+                    it.x += MainScreen.BG_WIDTH * increment
+                }
             }
+
             screen.stage.addActor(it)
             it.actions.forEach {action-> it.addAction(action) }
+        }
+    }
+
+
+    fun refreshStage() {
+        var i = 0
+        var length = screen.stage.actors.size
+        while(i < length) {
+            val actor = screen.stage.actors[i]
+            if (actor is LayerActor) {
+                if (actor.isNeedRemove) {
+                    actor.remove()
+                    length--
+                } else {
+                    if (actor.isOrbit) actor.startAnimation()
+                    actor.actions.forEach { actor.addAction(it) }
+                    i++
+                }
+            } else if (actor is LayerGroup) {
+                if (actor.isNeedRemove) {
+                    actor.remove()
+                    length--
+                } else {
+                    actor.actions.forEach { actor.addAction(it) }
+                    i++
+                }
+
+            }
+            else { i++ }
+        }
+    }
+
+
+    private fun changeStage(increment: Int) {
+        screen.currentStageNumber += increment
+        screen.isSwiping = true
+
+        for (actor in screen.stage.actors) {
+            if (actor is LayerActor) { actor.isNeedRemove = true }
+            if (actor is LayerGroup) { actor.isNeedRemove = true }
+        }
+
+        val newStageModel = getStageModel(screen.currentStageNumber)
+
+        createSwipeStage(newStageModel, increment)
+
+        if (screen.currentStageNumber != 0) {
+            refreshHud()
+        }
+
+        screen.reverseBarrelShader()
+        var isReseted = false
+
+        screen.stage.actors.forEach {
+            if (it is LayerActor || it is LayerGroup) {
+                if (it is LayerActor && it.isOrbit) it.stopAnimation()
+                it.addAction(
+                    Actions.sequence(
+                        getSwipingAction(increment),
+                        Actions.run {
+                            if (!isReseted) {
+                                isReseted = true
+                                screen.isSwiping = false
+                                screen.resetBarrelShader()
+                                for (actor in screen.stage.actors) {
+                                    if (actor is LayerActor && actor.isNeedReinit) {
+                                        actor.reInit()
+                                    }
+                                }
+                                refreshStage()
+                            }
+                        }
+                    )
+                )
+            }
+        }
+    }
+
+
+    fun getSwipingAction(increment: Int) :Action {
+        if (MainScreen.BG_WIDTH > 1600) {
+            return Actions.moveBy(-MainScreen.BG_WIDTH * increment + increment * (MainScreen.BG_WIDTH - MainScreen.layerWidth) / 2, 0f, 0.5f)
+        } else {
+            return Actions.moveBy(-MainScreen.BG_WIDTH * increment, 0f, 0.5f)
         }
     }
 
@@ -202,56 +293,4 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         return  newModel!!
     }
 
-    fun refreshStage() {
-        screen.stage.actors.forEach {
-            if (it is LayerActor) {
-                if (it.isNeedRemove) { it.remove() }
-                else { it.actions.forEach {action -> it.addAction(action) } }
-            }
-        }
-    }
-
-    private fun changeStage(increment: Int) {
-        screen.currentStageNumber += increment
-        screen.isSwiping = true
-
-        val newStageModel = getStageModel(screen.currentStageNumber)
-
-        screen.stage.actors.forEach {
-            if (it is LayerActor) { it.isNeedRemove = true }
-        }
-
-        createSwipeStage(newStageModel, increment)
-
-        if (screen.currentStageNumber != 0) {
-            refreshHud()
-        }
-
-        screen.reverseBarrelShader()
-        var isReseted = false
-
-        screen.stage.actors.forEach {
-            if (it is LayerActor) {
-                it.addAction(
-                    Actions.sequence(
-                        Actions.moveBy(-MainScreen.BG_WIDTH * increment, 0f, 0.5f),
-                        Actions.run {
-                            if (!isReseted) {
-                                isReseted = true
-                                screen.isSwiping = false
-                                screen.resetBarrelShader()
-                                for (actor in screen.stage.actors) {
-                                    if (actor is LayerActor && actor.isNeedReinit) {
-                                        actor.reInit()
-                                    }
-                                }
-                                refreshStage()
-                            }
-                        }
-                    )
-                )
-            }
-        }
-
-    }
 }

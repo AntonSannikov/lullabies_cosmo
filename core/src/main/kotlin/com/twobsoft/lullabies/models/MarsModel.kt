@@ -26,32 +26,39 @@ class MarsModel: Entity() {
 
     override val stageNumber = 6
 
-    val background = LayerActor(tex = backgroundTex)
-
-    val oblako5 = LayerActor(tex = oblako5Tex).also {
-
-        it.xOffset = -MainScreen.BG_WIDTH.toInt()
-        it.isNeedReinit = true
-
+    val background = LayerActor(tex = backgroundTex).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH, 0f, 30f),
-                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f)
+                    Actions.rotateBy(7f, 20f, Interpolation.fade),
+                    Actions.rotateBy(-7f, 20f, Interpolation.fade),
+                )
+            )
+        )
+    }
+
+    val oblako5 = LayerActor(tex = oblako5Tex).also {
+        it.xOffset = -MainScreen.BG_WIDTH.toInt()
+        it.isNeedReinit = true
+        it.actions.add(
+            Actions.repeat(
+                RepeatAction.FOREVER,
+                Actions.sequence(
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 60f),
+                    Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
         )
     }
 
     val oblako4  = LayerActor(tex = oblako4Tex).also {
-
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH, 0f, 20f),
-                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f)
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 70f),
+                    Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
         )
@@ -62,8 +69,8 @@ class MarsModel: Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH, 0f, 28f),
-                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f)
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 55f),
+                    Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
         )
@@ -76,8 +83,8 @@ class MarsModel: Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 40f),
-                    Actions.moveBy(MainScreen.BG_WIDTH, 0f)
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 40f),
+                    Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
         )
@@ -90,8 +97,8 @@ class MarsModel: Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 56f),
-                    Actions.moveBy(MainScreen.BG_WIDTH, 0f)
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 66f),
+                    Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
         )

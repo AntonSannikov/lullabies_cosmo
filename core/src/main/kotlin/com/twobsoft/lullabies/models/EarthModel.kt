@@ -105,17 +105,18 @@ class EarthModel: Entity() {
         )
     }
 
-    val smoke = LayerActor(tex = smokeTex).also {
-        it.width = MainScreen.BG_WIDTH
-        it.scaleX = 1.5f
-        it.height = MainScreen.BG_HEIGHT * 0.45f
-        it.y = MainScreen.BG_HEIGHT * 0.14f
+    val smoke = LayerActor(
+        tex = smokeTex,
+        cHeight = MainScreen.BG_HEIGHT * 0.3f,
+        cY = MainScreen.BG_HEIGHT * 0.32f
+    ).also {
+        it.scaleBy(0.2f)
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH * 3f, 0f, 200f),
-                    Actions.run { it.x = MainScreen.BG_WIDTH * 1.7f }
+                    Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 100f),
+                    Actions.run { it.x = MainScreen.BG_WIDTH * 1.2f }
                 )
             )
         )
@@ -140,15 +141,15 @@ class EarthModel: Entity() {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
-                Actions.sequence(
-                    Actions.parallel(
+                Actions.parallel(
+                    Actions.sequence(
                         Actions.scaleBy(0.6f, 0.6f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.moveBy(-MainScreen.BG_WIDTH * 0.1f, MainScreen.BG_HEIGHT * 0.1f,
-                            LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    ),
-                    Actions.parallel(
                         Actions.scaleBy(-0.6f, -0.6f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.moveBy(MainScreen.BG_WIDTH * 0.1f, -MainScreen.BG_HEIGHT * 0.1f,
+                    ),
+                    Actions.sequence(
+                        Actions.moveBy(-MainScreen.BG_WIDTH * 0.1f, MainScreen.BG_HEIGHT * 0.4f,
+                            LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                        Actions.moveBy(MainScreen.BG_WIDTH * 0.1f, -MainScreen.BG_HEIGHT * 0.4f,
                             LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                     )
                 )
