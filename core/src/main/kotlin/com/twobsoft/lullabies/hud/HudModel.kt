@@ -39,11 +39,11 @@ class HudModel(): Entity() {
 
     val frame = HudActor(tex = frameTex).also {
         if (MainScreen.BG_WIDTH > 1600) {
-            it.scaleBy(MainScreen.BG_WIDTH * 0.00005f, MainScreen.BG_HEIGHT * 0.00002f)
-            it.y = MainScreen.BG_HEIGHT * 0.02f
+            it.scaleBy(0.072f, 0.0524f)
+            it.y = 53f
         } else {
-            it.y = MainScreen.BG_HEIGHT * 0.025f
-            it.scaleBy(MainScreen.BG_WIDTH * 0.00028f, MainScreen.BG_HEIGHT * 0.000006f)
+            it.y = 66f
+            it.scaleBy(0.403f, 0.016f)
         }
 
     }
@@ -56,7 +56,7 @@ class HudModel(): Entity() {
             it.scaleBy(-MainScreen.BG_WIDTH * 0.00018f, -MainScreen.BG_HEIGHT * 0.00036f)
         } else {
             it.y = MainScreen.BG_HEIGHT * 0.448f
-            it.scaleBy(-MainScreen.BG_WIDTH * 0.00018f, -MainScreen.BG_HEIGHT * 0.00034f)
+            it.scaleBy(-0.26f, -0.89f)
         }
         it.textX = MainScreen.BG_WIDTH * 0.2f
         if (MainScreen.BG_WIDTH > 1600) {
@@ -145,7 +145,7 @@ class HudModel(): Entity() {
     // deck -------------------------------------------------------------
     val deck = HudActor(tex = deckTex).also {
         it.y = -MainScreen.BG_HEIGHT * 0.335f
-        it.scaleBy(MainScreen.BG_WIDTH * 0.000021f, -MainScreen.BG_HEIGHT * 0.00031f)
+        it.scaleBy( 0.03f, -0.81f)
     }
 
     val playlist = HudActor(tex = playlistTex).also {

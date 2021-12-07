@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.utils.Array
@@ -20,14 +21,18 @@ import ktx.scene2d.actors
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
     override fun onLeft() {
-        if (screen.currentStageNumber == screen.STAGES_COUNT || screen.isSwiping) {
+        if (screen.currentStageNumber == screen.STAGES_COUNT
+            || screen.isSwiping
+            || screen.currentStageNumber == 0) {
             return
         }
         changeStage(1)
     }
 
     override fun onRight() {
-        if (screen.currentStageNumber == 1 || screen.isSwiping) {
+        if (screen.currentStageNumber == 1
+            || screen.isSwiping
+            || screen.currentStageNumber == 0) {
             return
         }
         changeStage(-1)
@@ -151,9 +156,11 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         stageModel.all.forEach {
             if (it is LayerActor || it is LayerGroup) {
                 screen.stage.addActor(it)
-                if (it is LayerActor && it.isNeedReinit) { it.reInit() }
                 it.actions.forEach { action ->
                     it.addAction(action)
+                }
+                if (it is LayerActor && it.isNeedReposition) {
+                    it.offsetToPosition()
                 }
             }
         }
@@ -164,6 +171,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             if (it is AnimatedActor && it.isNeedRemove) it.addAction(Actions.removeActor())
         }
 
+        refreshStage()
         refreshHud()
     }
 
@@ -195,6 +203,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                     length--
                 } else {
                     if (actor.isOrbit) actor.startAnimation()
+                    if (actor.isNeedReposition) actor.offsetToPosition()
                     actor.actions.forEach { actor.addAction(it) }
                     i++
                 }
@@ -244,11 +253,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                                 isReseted = true
                                 screen.isSwiping = false
                                 screen.resetBarrelShader()
-                                for (actor in screen.stage.actors) {
-                                    if (actor is LayerActor && actor.isNeedReinit) {
-                                        actor.reInit()
-                                    }
-                                }
                                 refreshStage()
                             }
                         }

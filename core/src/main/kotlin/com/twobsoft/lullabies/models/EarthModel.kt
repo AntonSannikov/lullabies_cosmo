@@ -27,10 +27,11 @@ class EarthModel: Entity() {
 
     override val stageNumber = 4
 
-    val cloud1 = LayerActor(tex = cloud1Tex).also {
-        it.xOffset = (MainScreen.BG_WIDTH * 0.5f).toInt()
-        it.isNeedReinit = true
-
+    val cloud1 = LayerActor(
+        tex = cloud1Tex,
+    ).also {
+        it.xOffset = (MainScreen.BG_WIDTH * 0.2f).toInt()
+        it.isNeedReposition = true
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -55,7 +56,6 @@ class EarthModel: Entity() {
     }
 
     val cloud3 = LayerActor(tex = cloud3Tex).also {
-
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

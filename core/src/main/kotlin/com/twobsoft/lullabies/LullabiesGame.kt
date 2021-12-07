@@ -64,6 +64,7 @@ class MainScreen : KtxScreen {
     companion object {
         val BG_WIDTH    = Gdx.graphics.width.toFloat()
         val BG_HEIGHT   = Gdx.graphics.height.toFloat()
+
         val shapeRenderer = ShapeRenderer()
         var layerWidth = 0f
     }

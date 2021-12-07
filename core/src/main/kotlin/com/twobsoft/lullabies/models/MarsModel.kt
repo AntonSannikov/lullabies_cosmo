@@ -38,9 +38,11 @@ class MarsModel: Entity() {
         )
     }
 
-    val oblako5 = LayerActor(tex = oblako5Tex).also {
-        it.xOffset = -MainScreen.BG_WIDTH.toInt()
-        it.isNeedReinit = true
+    val oblako5 = LayerActor(
+        tex = oblako5Tex,
+    ).also {
+        it.isNeedReposition = true
+        it.xOffset = -(MainScreen.BG_WIDTH * 0.2f).toInt()
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -76,23 +78,27 @@ class MarsModel: Entity() {
         )
     }
 
-    val oblako2 = LayerActor(tex = oblako2Tex).also {
-        it.xOffset = (-MainScreen.BG_WIDTH * 0.2).toInt()
-        it.isNeedReinit = true
+    val oblako2 = LayerActor(
+        tex = oblako2Tex,
+    ).also {
+        it.xOffset = -(MainScreen.BG_WIDTH * 0.2).toInt()
+        it.isNeedReposition = true
         it.actions.add(
-            Actions.repeat(
-                RepeatAction.FOREVER,
-                Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 40f),
-                    Actions.run { it.x = -MainScreen.BG_WIDTH }
-                )
+        Actions.repeat(
+            RepeatAction.FOREVER,
+            Actions.sequence(
+                Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 40f),
+                Actions.run { it.x = -MainScreen.BG_WIDTH }
             )
+        )
         )
     }
 
-    val oblako1 = LayerActor(tex = oblako1Tex).also {
-        it.xOffset = (MainScreen.BG_WIDTH * 0.2).toInt()
-        it.isNeedReinit = true
+    val oblako1 = LayerActor(
+        tex = oblako1Tex,
+    ).also {
+        it.xOffset = (MainScreen.BG_WIDTH * 0.6f).toInt()
+        it.isNeedReposition = true
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

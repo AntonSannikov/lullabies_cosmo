@@ -38,7 +38,7 @@ class LayerActor(val tex: String, val isMenu: Boolean = false,
     val actions = arrayListOf<Action>()
     val layers = arrayListOf<Texture>()
     var isNeedRemove = false
-    var isNeedReinit = false
+    var isNeedReposition = false
     var srcWidth = 0
     var srcHeight = 0
     var xOffset = 0
@@ -79,9 +79,10 @@ class LayerActor(val tex: String, val isMenu: Boolean = false,
             height = cHeight
         }
 
+        // tablet
         if (MainScreen.BG_WIDTH > 1600) {
-            height = MainScreen.BG_HEIGHT * 0.8f
-            width = height * 0.64f
+            height = if (tex != "menu/background.png") MainScreen.BG_HEIGHT * 0.8f else MainScreen.BG_HEIGHT
+            width = if (tex != "menu/background.png") height * 0.64f else MainScreen.BG_WIDTH
             MainScreen.layerWidth = width
         }
 
@@ -92,8 +93,10 @@ class LayerActor(val tex: String, val isMenu: Boolean = false,
 
         if (!isMenu) {
             if (MainScreen.BG_WIDTH <= 1600) {
-                y = if (cY == 0f) MainScreen.BG_HEIGHT * 0.08f else cY
-            } else {
+                y = if (cY == 0f) 210f else cY
+            }
+            // tablet
+            else {
                 x += (MainScreen.BG_WIDTH - width) / 2
                 y = if (cY == 0f) MainScreen.BG_HEIGHT * 0.15f else cY
             }
@@ -105,9 +108,8 @@ class LayerActor(val tex: String, val isMenu: Boolean = false,
         layers.add(imgTexture)
     }
 
-
-    fun reInit() {
-        addAction(Actions.moveBy(-xOffset.toFloat(), 0f))
+    fun offsetToPosition() {
+        x = -xOffset.toFloat()
         xOffset = 0
     }
 
