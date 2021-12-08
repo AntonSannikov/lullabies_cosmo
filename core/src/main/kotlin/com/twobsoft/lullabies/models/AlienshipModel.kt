@@ -42,7 +42,7 @@ class AlienshipModel(val assets: Assets): Entity() {
     }
 
     val plan4 = LayerActor(tex = plan4Tex, texture = assets.getAsset(plan4Tex)).also {
-        it.orbitRadius = 10f
+        it.orbitRadius = MainScreen.layerHeight * 0.04f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -71,11 +71,11 @@ class AlienshipModel(val assets: Assets): Entity() {
         texture = assets.getAsset(hologramTex),
         isOrbit = true,
         cWidth = MainScreen.BG_WIDTH * 0.14f,
-        cHeight = MainScreen.BG_HEIGHT * 0.08f,
+        cHeight = MainScreen.layerHeight * 0.084f,
         cX = MainScreen.BG_WIDTH * 0.59f,
-        cY = MainScreen.BG_HEIGHT * 0.3f,
+        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.31f - MainScreen.layerHeight * 0.042f,
     ).also {
-        it.orbitRadius = 40f
+        it.orbitRadius = MainScreen.layerHeight * 0.018f
         it.angleDelta = -0.8f
         it.orbitAnchor = Vector2(it.cX, it.cY)
         it.actions.add(

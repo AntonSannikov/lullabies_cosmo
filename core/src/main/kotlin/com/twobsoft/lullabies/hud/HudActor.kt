@@ -1,14 +1,11 @@
 package com.twobsoft.lullabies.hud
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
+
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
 
 
@@ -22,7 +19,8 @@ class HudActor(
     var srcWidth: Int = 0
     var scrHeight: Int = 0
     val hitBox = arrayListOf<Float>()
-    var tapHandler : (text: String) -> Unit = {}
+    var tapHandler : (() -> Unit)? = null
+
     var textX = 0f
     var textY = 0f
     val font = BitmapFont()
@@ -63,10 +61,6 @@ class HudActor(
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
-
-//        if (texture == null) {
-//            return
-//        }
 
         batch!!.setColor(color.r, color.g, color.b, color.a * parentAlpha)
 

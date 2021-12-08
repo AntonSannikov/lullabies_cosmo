@@ -53,7 +53,7 @@ class MarsModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 60f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 90f),
                     Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
@@ -65,7 +65,7 @@ class MarsModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 70f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 110f),
                     Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
@@ -77,7 +77,7 @@ class MarsModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 55f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 155f),
                     Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
@@ -94,7 +94,7 @@ class MarsModel(val assets: Assets): Entity() {
         Actions.repeat(
             RepeatAction.FOREVER,
             Actions.sequence(
-                Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 40f),
+                Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 140f),
                 Actions.run { it.x = -MainScreen.BG_WIDTH }
             )
         )
@@ -111,7 +111,7 @@ class MarsModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 66f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 100f),
                     Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )

@@ -43,19 +43,19 @@ class LullabiesGame : KtxGame<KtxScreen>() {
 class MainScreen(val game: LullabiesGame) : KtxScreen {
 
     companion object {
-        val BG_WIDTH    = Gdx.graphics.width.toFloat()
-        val BG_HEIGHT   = Gdx.graphics.height.toFloat()
-
-        val shapeRenderer = ShapeRenderer()
-        var layerWidth = 0f
+        val BG_WIDTH            = Gdx.graphics.width.toFloat()
+        val BG_HEIGHT           = Gdx.graphics.height.toFloat()
+        val layerHeight         = BG_WIDTH * 1.5625f
+        val shapeRenderer       = ShapeRenderer()
+        var layerWidth          = 0f
     }
 
     val STAGES_COUNT = 15
     var currentStageNumber = 0
 
     val stage: Stage
-    private var camera: OrthographicCamera
-    private var viewport: Viewport
+    private val camera: OrthographicCamera
+    private val viewport: Viewport
 
     // SHADERS AND RENDERING
     val fbo = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
@@ -91,6 +91,17 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     )
     var isInterStellar = false
 
+    // INVERSE SHADING SHADER
+    val inverseShader = ShaderProgram(
+        Gdx.files.internal("shaders/inverse_shade/vertex.glsl").readString(),
+        Gdx.files.internal("shaders/inverse_shade/fragment.glsl").readString()
+    )
+    var isInverseShading = false
+    var isFishEye = false
+    var inverseShadingTime = 0f
+    val fishEyeDelta = 0.002f
+    var inverseShadeTimeBound = 2.5f
+
 
     //
     val inputListener: StageInputListener
@@ -104,14 +115,15 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
 
-        camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT )
-        viewport = ExtendViewport(BG_WIDTH, BG_HEIGHT, camera)
+        camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT)
+        viewport = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
         stage = Stage(viewport)
 
-        hudModel = HudModel(game.assets)
-        inputListener = StageInputListener(this)
 
-//        val currentModel = PlutoModel()
+        inputListener = StageInputListener(this)
+        hudModel = HudModel(game.assets, inputListener)
+
+//        val currentModel = AlienshipModel(game.assets)
         val currentModel = MenuModel(game.assets)
         inputListener.createSwipeStage(currentModel, 0)
         currentModel.all.forEach {
@@ -148,79 +160,107 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     //                                  RENDER
     override fun render(delta: Float) {
 
-        val gl = if (Gdx.graphics.isGL30Available) Gdx.graphics.gL30 else Gdx.graphics.gL20
+        val gl = Gdx.graphics.gL20
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-//        shapeRenderer.begin()
-//        if (isBarrel) {
-//            barrelShaderPower += powerDelta
-//            if (!isBarrelShaderReseted) {
-//                if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
-//                    powerDelta = -powerDelta
-//                } else if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER && powerDelta > 0) {
-//                    powerDelta = -powerDelta
-//                }
-//            } else {
-//                if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER) {
-//                    powerDelta = 0f
-//                }
-//            }
-//            barrelShader.bind()
-//            stage.batch.shader = barrelShader
-//            barrelShader.setUniformf("iTime", barrelShaderPower)
-////            barrelShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
-//        }
+        shapeRenderer.begin()
+        if (isBarrel) {
+            barrelShaderPower += powerDelta
+            if (!isBarrelShaderReseted) {
+                if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
+                    powerDelta = -powerDelta
+                } else if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER && powerDelta > 0) {
+                    powerDelta = -powerDelta
+                }
+            } else {
+                if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER) {
+                    powerDelta = 0f
+                }
+            }
+            barrelShader.bind()
+            stage.batch.shader = barrelShader
+            barrelShader.setUniformf("iTime", barrelShaderPower)
+        }
 
+        stage.batch.projectionMatrix = camera.combined
         fbo.begin()
         stage.act()
         stage.draw()
         fbo.end()
 
         val texture0 = fbo.colorBufferTexture
-//
-//        if (isInterStellar) {
-//            time += delta
-//            interStellarShader.bind()
-//            Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE1)
-//            texture0.bind(1);
-//            interStellarShader.setUniformi("u_texture", 1)
-//            interStellarShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
-//
-//            Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE0)
-//            rgbNoiseTex.bind(0);
-//            interStellarShader.setUniformi("u_texture_noise", 0)
-//            interStellarShader.setUniformf("iTime", time)
-//            stage.batch.shader = interStellarShader
-//        }
-//
+
+        if (isInterStellar) {
+            time += delta
+            interStellarShader.bind()
+            Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE1)
+            texture0.bind(1);
+            interStellarShader.setUniformi("u_texture", 1)
+            interStellarShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
+
+            Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE0)
+            rgbNoiseTex.bind(0);
+            interStellarShader.setUniformi("u_texture_noise", 0)
+            interStellarShader.setUniformf("iTime", time)
+            stage.batch.shader = interStellarShader
+        } else if (isFishEye) {
+            barrelShaderPower += fishEyeDelta
+            isInverseShading = true
+            if (barrelShaderPower > 0.6) {
+                isFishEye = false
+                barrelShaderPower = BARREL_SHADER_PULSE_START_POWER
+            } else {
+                barrelShader.bind()
+                stage.batch.shader = barrelShader
+                barrelShader.setUniformf("iTime", barrelShaderPower)
+            }
+        }
+
         var textureRegion = TextureRegion(texture0, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
         textureRegion.flip(false, true)
-//
-//        gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-//        stage.batch.flush()
-//
-//        fbo.begin()
-//        stage.batch.begin()
-//        stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
-//        stage.batch.end()
-//        fbo.end()
-//
-//        if (isShade) {
-//            shadeTime += delta
-//            shadeShader.bind()
-//            shadeShader.setUniformf("iTime", shadeTime)
-//            stage.batch.shader = shadeShader
-//            if (shadeTime >= 1.9f) {
-//                isShade = false
-//                shadeTime = 0f
-//                stage.batch.shader = null
-//            }
-//        }
-//
-//        textureRegion = TextureRegion(fbo.colorBufferTexture, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
-//        textureRegion.flip(false, true)
-//
+
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        stage.batch.flush()
+
+        fbo2.begin()
+        stage.batch.begin()
+        stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
+        stage.batch.end()
+        fbo2.end()
+
+        if (isShade) {
+            shadeTime += delta
+            shadeShader.bind()
+            shadeShader.setUniformf("iTime", shadeTime)
+            stage.batch.shader = shadeShader
+            if (shadeTime >= 1.9f) {
+                isShade = false
+                shadeTime = 0f
+                stage.batch.shader = null
+            }
+        } else if (isInverseShading) {
+            if (inverseShadingTime >= inverseShadeTimeBound) {
+                isInverseShading = false
+                isShade = true
+                shadeTime += delta
+                shadeShader.bind()
+                shadeShader.setUniformf("iTime", shadeTime)
+                stage.batch.shader = shadeShader
+                inverseShadingTime = 0f
+                inputListener.createMenu()
+            } else {
+                inverseShadingTime += delta
+                inverseShader.bind()
+                inverseShader.setUniformf("iTime", inverseShadingTime)
+                stage.batch.shader = inverseShader
+            }
+
+        }
+
+        textureRegion = TextureRegion(fbo2.colorBufferTexture, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
+        textureRegion.flip(false, true)
+
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()

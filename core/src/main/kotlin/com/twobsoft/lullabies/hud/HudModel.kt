@@ -8,13 +8,14 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
+import com.twobsoft.lullabies.gestures.StageInputListener
 import com.twobsoft.lullabies.models.Entity
 
 
 class HudGroup: Group()
 
 
-class HudModel(val assets: Assets): Entity() {
+class HudModel(val assets: Assets, val appListener: StageInputListener): Entity() {
 
     companion object {
         const val frameTex = "hud/frame_mod.png"
@@ -181,8 +182,10 @@ class HudModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.129f)
     }
 
-    val joystick = HudActor(tex = joystickTex,
-        actorTexture = assets.getAsset(joystickTex)).also {
+    val joystick = HudActor(
+        tex = joystickTex,
+        actorTexture = assets.getAsset(joystickTex)
+    ).also {
         it.scaleBy(-0.86f, -0.88f)
         it.x = -MainScreen.BG_WIDTH * 0.21f
         it.y = -MainScreen.BG_HEIGHT * 0.3f
@@ -198,6 +201,8 @@ class HudModel(val assets: Assets): Entity() {
         // 4
         it.hitBox.add(MainScreen.BG_WIDTH * 0.34f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.17f)
+
+        it.tapHandler = { appListener.backToMenu() }
     }
 
     val play = HudActor(tex = playTex,

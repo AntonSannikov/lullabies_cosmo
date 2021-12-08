@@ -17,6 +17,7 @@ import kotlin.random.Random
 
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
+
     override fun onLeft() {
         if (screen.currentStageNumber == screen.STAGES_COUNT
             || screen.isSwiping
@@ -41,6 +42,8 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         val xNorm = x / MainScreen.BG_WIDTH
         val yNorm = y / MainScreen.BG_HEIGHT
 
+        var hudTapHandler : (() -> Unit)? = null
+
         for (it in screen.stage.actors) {
             // ANIMATED ACTORS
             if (it is AnimatedActor && it.hitBox.size > 2) {
@@ -58,11 +61,15 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                                 Actions.delay(0.5f),
                                 Actions.run {
                                     screen.isInterStellar = true
-                                    addRollingHud(true) },
-                                Actions.moveTo(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT / 2, 3f)
+                                    addRollingHud() },
+                                Actions.moveTo(
+                                    MainScreen.BG_WIDTH / 2 - it.width / 2,
+                                    MainScreen.BG_HEIGHT / 2 - it.height / 2,
+                                    2f
+                                )
                             ),
                             Actions.sequence(
-                                Actions.scaleBy(1f, 1f, 2.7f, Interpolation.slowFast),
+                                Actions.scaleBy(0.8f, 0.8f, 2f, Interpolation.slowFast),
                                 Actions.run {
                                     screen.isBarrel = false
                                     screen.resetBarrelShader()
@@ -81,19 +88,26 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             // HUD ACTORS
             //
             else if (it is HudGroup) {
-                it.children.map { it as HudActor }.forEach { child->
-                    if (child.hitBox.size > 2 &&
-                        isPointInPolygon(Utils.floatArrayToVec2Array(child.hitBox.toFloatArray()),
+                for (child in it.children) {
+                    val hudActor = child as HudActor
+                    if (hudActor.hitBox.size > 2 &&
+                        isPointInPolygon(Utils.floatArrayToVec2Array(hudActor.hitBox.toFloatArray()),
                             Vector2(x, MainScreen.BG_HEIGHT - y))
-                    ) {
-                        println(child.tex)
+                    )
+                    {
+                        hudTapHandler = hudActor.tapHandler
+                        break
                     }
                 }
-
             }
             //
             // HUD ACTORS
+            if (hudTapHandler != null) {
+                break
+            }
         }
+
+        hudTapHandler?.invoke()
     }
 
     override fun onUp() {}
@@ -103,6 +117,8 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     override fun onPan(x: Float, y: Float, deltaX: Float, deltaY: Float) {}
 
 
+    // =============================================================================================
+    //                                          HUD
     fun refreshHud() {
         val hudGroups = arrayListOf<HudGroup>()
         var length = screen.stage.actors.size - 1
@@ -125,22 +141,118 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         }
     }
 
-    fun addRollingHud(isForward: Boolean) {
-        var startingScale = Vector2()
-        var targetScale = Vector2()
+    fun addRollingHud() {
 
-        if (isForward) {
-            startingScale = Vector2(MainScreen.BG_WIDTH * 0.0003f, MainScreen.BG_HEIGHT * 0.0003f)
-            targetScale = Vector2(-MainScreen.BG_WIDTH * 0.0003f, -MainScreen.BG_HEIGHT * 0.0003f)
-        }
+        val startingScale = Vector2(MainScreen.BG_WIDTH * 0.0003f, MainScreen.BG_HEIGHT * 0.0003f)
+        val targetScale = Vector2(-MainScreen.BG_WIDTH * 0.0003f, -MainScreen.BG_HEIGHT * 0.0003f)
 
         screen.hudModel.all.forEach {
+            it.y = -MainScreen.BG_HEIGHT * 0.4f
+            it.x = -MainScreen.BG_WIDTH * 0.2f
             it.scaleBy(startingScale.x, startingScale.y)
             screen.stage.addActor(it)
-            it.addAction(Actions.scaleBy(targetScale.x, targetScale.y, 2f))
+            it.addAction(
+                Actions.parallel(
+                    Actions.scaleBy(targetScale.x, targetScale.y, 2f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 0.2f, MainScreen.BG_HEIGHT * 0.4f, 2f)
+                )
+            )
+        }
+    }
+    //                                          HUD
+    // =============================================================================================
+
+
+
+
+    // =============================================================================================
+    //                                    BACK TO MENU
+
+    fun backToMenu() {
+        startMenuTransition()
+    }
+
+
+    fun rollbackHud() {
+        screen.stage.actors.forEach {
+            if (it is HudGroup) {
+                it.addAction(
+                    Actions.sequence(
+                        Actions.delay(2f),
+                        Actions.run { removeHud() }
+                    )
+                )
+            }
+        }
+    }
+
+
+    fun removeHud() {
+        var i = 0
+        var length = screen.stage.actors.size
+
+        while (i < length) {
+            val actor = screen.stage.actors[i]
+            if (actor is HudGroup) {
+                actor.remove()
+                length--
+            } else {
+                i++
+            }
+        }
+    }
+
+
+    fun startMenuTransition() {
+        screen.stage.actors.forEach {
+            if (it is LayerActor || it is LayerGroup) {
+                if (it is LayerGroup) {
+                    it.isNeedRemove = true
+                    var length = it.actions.size
+                    while (0 < length) {
+                        it.actions.removeAt(0)
+                        length--
+                    }
+                }
+                if (it is LayerActor) {
+                    it.isNeedRemove = true
+                    var length = it.actions.size
+                    while (0 < length) {
+                        it.actions.removeAt(0)
+                        length--
+                    }
+                }
+                it.addAction(
+                    Actions.parallel(
+                        Actions.sequence(
+                            Actions.delay(1f),
+                            Actions.run {
+                                screen.isFishEye = true
+                                rollbackHud()
+                            }
+                        ),
+                        Actions.scaleBy(-0.3f, -0.3f, 2.2f, Interpolation.slowFast)
+                    )
+                )
+            }
+        }
+    }
+
+    fun createMenu() {
+        var length = screen.stage.actors.size
+
+        while (0 < length) {
+            screen.stage.actors[0].remove()
+            length--
         }
 
+        createSwipeStage(MenuModel(screen.game.assets), 0)
+        screen.isFishEye = false
+        screen.isInverseShading = false
     }
+
+    //                                    BACK TO MENU
+    // =============================================================================================
 
 
     fun createStage(stageModel: Entity,) {
@@ -158,7 +270,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                         it.addAction(action)
                     }
                 }
-
                 if (it is LayerActor && it.isNeedReposition) {
                     it.offsetToPosition()
                 }

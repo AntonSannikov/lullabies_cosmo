@@ -108,8 +108,8 @@ class MoonModel(val assets: Assets): Entity() {
         texture = assets.getAsset(flagTex),
         cWidth = MainScreen.BG_WIDTH * 0.15f,
         cHeight = MainScreen.BG_HEIGHT * 0.15f,
-        cX = MainScreen.BG_WIDTH * 0.3f,
-        cY = MainScreen.BG_HEIGHT * 0.25f
+        cX = MainScreen.BG_WIDTH * 0.28f,
+        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.24f
     )
 
     init {

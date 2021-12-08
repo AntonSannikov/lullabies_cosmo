@@ -40,7 +40,7 @@ class MenuModel(val assets: Assets): Entity() {
 
     val sun = AnimatedActor( sunSS, 5, 4, 1, assets.getAsset(sunSS),
         MainScreen.BG_HEIGHT * 0.31f,MainScreen.BG_HEIGHT * 0.31f).also {
-        it.x = MainScreen.BG_WIDTH * 0.188f
+        it.x = MainScreen.BG_WIDTH / 2 - MainScreen.BG_HEIGHT * 0.155f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.5f)
         it.hitBox.add(0f)

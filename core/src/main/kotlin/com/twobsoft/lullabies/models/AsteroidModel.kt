@@ -115,9 +115,9 @@ class AsteroidModel(val assets: Assets): Entity() {
         tex = flareTex,
         texture = assets.getAsset(flareTex),
         cWidth = MainScreen.BG_WIDTH * 0.3f,
-        cHeight = MainScreen.BG_HEIGHT * 0.15f,
-        cX = MainScreen.BG_WIDTH * 0.2f,
-        cY = MainScreen.BG_HEIGHT * 0.376f
+        cHeight = MainScreen.layerHeight * 0.175f,
+        cX = MainScreen.BG_WIDTH * 0.337f - MainScreen.BG_WIDTH * 0.15f,
+        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.425f - MainScreen.layerHeight * 0.088f
     ).also {
         it.originX = it.cWidth / 2
         it.originY = it.cHeight / 2
@@ -144,9 +144,9 @@ class AsteroidModel(val assets: Assets): Entity() {
         tex = flareTex,
         texture = assets.getAsset(flareTex),
         cWidth = MainScreen.BG_WIDTH * 0.2f,
-        cHeight = MainScreen.BG_HEIGHT * 0.1f,
-        cX = MainScreen.BG_WIDTH * 0.62f,
-        cY = MainScreen.BG_HEIGHT * 0.348f
+        cHeight = MainScreen.layerHeight * 0.116f,
+        cX = MainScreen.BG_WIDTH * 0.7f - MainScreen.BG_WIDTH * 0.1f,
+        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.363f - MainScreen.layerHeight * 0.058f
     ).also {
         it.originX = it.cWidth / 2
         it.originY = it.cHeight / 2
@@ -173,9 +173,9 @@ class AsteroidModel(val assets: Assets): Entity() {
         tex = flareTex,
         texture = assets.getAsset(flareTex),
         cWidth = MainScreen.BG_WIDTH * 0.1f,
-        cHeight = MainScreen.BG_HEIGHT * 0.05f,
-        cX = MainScreen.BG_WIDTH * 0.576f,
-        cY = MainScreen.BG_HEIGHT * 0.25f
+        cHeight = MainScreen.layerHeight * 0.058f,
+        cX = MainScreen.BG_WIDTH * 0.626f - MainScreen.BG_WIDTH * 0.05f,
+        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.228f - MainScreen.layerHeight * 0.029f
     ).also {
         it.originX = it.cWidth / 2
         it.originY = it.cHeight / 2
