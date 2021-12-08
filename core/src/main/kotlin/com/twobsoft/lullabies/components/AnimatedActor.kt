@@ -1,5 +1,6 @@
 package com.twobsoft.lullabies.components
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
@@ -10,15 +11,15 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.twobsoft.lullabies.Assets
 
 
-class AnimatedActor(val texturePath: String,
-                    val frameCols: Int,
-                    val frameRows: Int,
-                    val stageNumber: Int,
-                    sizeX: Float,
-                    sizeY: Float,
-                    frameCount: Int? = null
-                    )
-    : Actor() {
+class AnimatedActor(
+    val texturePath: String,
+    val frameCols: Int,
+    val frameRows: Int,
+    val stageNumber: Int,
+    val texture: Texture,
+    sizeX: Float,
+    sizeY: Float,
+    frameCount: Int? = null) : Actor() {
 
     val hitBox = arrayListOf<Float>()
     var animation: Animation<TextureRegion>? = null
@@ -27,19 +28,16 @@ class AnimatedActor(val texturePath: String,
     var isNeedAnimate = false
     var isNeedRemove = false
 
-    init {
 
+    init {
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         height  = sizeY
         width   = sizeX
 
-        val spriteSheet = Assets.getAsset(texturePath).also {
-            it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
-
         val tmp = TextureRegion.split(
-            spriteSheet,
-            spriteSheet.width / frameCols,
-            spriteSheet.height / frameRows
+            texture,
+            texture.width / frameCols,
+            texture.height / frameRows
         )
 
         val animationFrames = Array<TextureRegion>()

@@ -5,12 +5,13 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.MainScreen
 
 
-class EarthModel: Entity() {
+class EarthModel(val assets: Assets): Entity() {
     companion object {
         const val cloud1Tex     = "planets/earth/cloud1.png"
         const val cloud2Tex     = "planets/earth/cloud2.png"
@@ -23,12 +24,17 @@ class EarthModel: Entity() {
         const val smokeTex      = "planets/earth/smoke.png"
         const val treerockTex   = "planets/earth/treerock.png"
         const val leafTex       = "planets/earth/leaf.png"
+        val all = arrayOf(
+            cloud1Tex, cloud2Tex, cloud3Tex, skyTex, rockTex, riverTex,
+            forestTex, coastTex, smokeTex, treerockTex, leafTex
+        )
     }
 
     override val stageNumber = 4
 
     val cloud1 = LayerActor(
         tex = cloud1Tex,
+        texture = assets.getAsset(cloud1Tex)
     ).also {
         it.xOffset = (MainScreen.BG_WIDTH * 0.2f).toInt()
         it.isNeedReposition = true
@@ -43,7 +49,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val cloud2 = LayerActor(tex = cloud2Tex).also {
+    val cloud2 = LayerActor(tex = cloud2Tex, texture = assets.getAsset(cloud2Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -55,7 +61,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val cloud3 = LayerActor(tex = cloud3Tex).also {
+    val cloud3 = LayerActor(tex = cloud3Tex, texture = assets.getAsset(cloud3Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -67,9 +73,9 @@ class EarthModel: Entity() {
         )
     }
 
-    val sky = LayerActor(tex = skyTex)
+    val sky = LayerActor(tex = skyTex, texture = assets.getAsset(skyTex))
 
-    val rock = LayerActor(tex = rockTex).also {
+    val rock = LayerActor(tex = rockTex, texture = assets.getAsset(rockTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -81,7 +87,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val river = LayerActor(tex = riverTex).also {
+    val river = LayerActor(tex = riverTex, texture = assets.getAsset(riverTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -93,7 +99,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val forest = LayerActor(tex = forestTex).also {
+    val forest = LayerActor(tex = forestTex, texture = assets.getAsset(forestTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -107,6 +113,7 @@ class EarthModel: Entity() {
 
     val smoke = LayerActor(
         tex = smokeTex,
+        texture = assets.getAsset(smokeTex),
         cHeight = MainScreen.BG_HEIGHT * 0.3f,
         cY = MainScreen.BG_HEIGHT * 0.32f
     ).also {
@@ -123,7 +130,7 @@ class EarthModel: Entity() {
     }
 
 
-    val coast = LayerActor(tex = coastTex).also {
+    val coast = LayerActor(tex = coastTex, texture = assets.getAsset(coastTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -135,7 +142,7 @@ class EarthModel: Entity() {
         )
     }
 
-    val treerock = LayerActor(tex = treerockTex).also {
+    val treerock = LayerActor(tex = treerockTex, texture = assets.getAsset(treerockTex)).also {
         it.originX = MainScreen.BG_WIDTH / 2
         it.originY = MainScreen.BG_HEIGHT
         it.actions.add(
@@ -158,7 +165,8 @@ class EarthModel: Entity() {
     }
 
     val leaf = LayerActor(
-        tex = leafTex
+        tex = leafTex,
+        texture = assets.getAsset(leafTex)
     )
 
     override val all = arrayOf<Actor>(sky, cloud2, rock, cloud3, cloud1, river, forest, smoke, coast, treerock)

@@ -4,10 +4,11 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.components.LayerActor
 
-class SaturnModel: Entity() {
+class SaturnModel(val assets: Assets): Entity() {
 
     companion object {
         const val backgroundTex     = "planets/saturn/background.png"
@@ -15,11 +16,14 @@ class SaturnModel: Entity() {
         const val ringTex           = "planets/saturn/ring.png"
         const val plan2Tex          = "planets/saturn/2plan.png"
         const val plan1Tex          = "planets/saturn/1plan.png"
+        val all = arrayOf(
+            backgroundTex, sunTex, ringTex, plan2Tex, plan1Tex
+        )
     }
 
     override val stageNumber = 8
 
-    val background = LayerActor(tex = backgroundTex).also {
+    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -31,7 +35,7 @@ class SaturnModel: Entity() {
         )
     }
 
-    val sun = LayerActor(tex = sunTex).also {
+    val sun = LayerActor(tex = sunTex, texture = assets.getAsset(sunTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -43,7 +47,7 @@ class SaturnModel: Entity() {
         )
     }
 
-    val ring = LayerActor(tex = ringTex).also {
+    val ring = LayerActor(tex = ringTex, texture = assets.getAsset(ringTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -62,7 +66,7 @@ class SaturnModel: Entity() {
         )
     }
 
-    val plan2 = LayerActor(tex = plan2Tex).also {
+    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -74,7 +78,7 @@ class SaturnModel: Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

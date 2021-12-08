@@ -3,11 +3,12 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.MainScreen
 
-class MercuryModel: Entity() {
+class MercuryModel(val assets: Assets): Entity() {
 
     companion object {
         const val backgroundTex   = "planets/mercury/background.png"
@@ -15,11 +16,12 @@ class MercuryModel: Entity() {
         const val planet2Tex      = "planets/mercury/planet2.png"
         const val plan2Tex        = "planets/mercury/2plan.png"
         const val plan1Tex        = "planets/mercury/1plan.png"
+        val all = arrayOf(backgroundTex, planet1Tex, planet2Tex, plan1Tex, plan2Tex, plan1Tex)
     }
 
     override val stageNumber = 2
 
-    val background = LayerActor(tex = backgroundTex).also {
+    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
             it.originX = 0f
             it.actions.add(
                 Actions.repeat(
@@ -38,7 +40,7 @@ class MercuryModel: Entity() {
             )
     }
 
-    val planet1 = LayerActor(tex = planet1Tex).also {
+    val planet1 = LayerActor(tex = planet1Tex, texture = assets.getAsset(planet1Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -50,7 +52,7 @@ class MercuryModel: Entity() {
         )
     }
 
-    val planet2 = LayerActor(tex = planet2Tex).also {
+    val planet2 = LayerActor(tex = planet2Tex, texture = assets.getAsset(planet2Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -62,7 +64,7 @@ class MercuryModel: Entity() {
         )
     }
 
-    val plan2 = LayerActor(tex = plan2Tex).also {
+    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -74,7 +76,7 @@ class MercuryModel: Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

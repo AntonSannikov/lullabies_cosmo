@@ -25,13 +25,16 @@ class LayerGroup: Group() {
 }
 
 
-class LayerActor(val tex: String, val isMenu: Boolean = false,
-                 val cHeight: Float = 0f,
-                 val cWidth: Float = 0f,
-                 val cX: Float = 0f,
-                 val cY: Float = 0f,
-                 val isOrbit: Boolean = false,
-                 val isRepeated: Boolean = false
+class LayerActor(
+    val tex: String,
+    val isMenu: Boolean = false,
+    val texture: Texture,
+    val cHeight: Float = 0f,
+    val cWidth: Float = 0f,
+    val cX: Float = 0f,
+    val cY: Float = 0f,
+    val isOrbit: Boolean = false,
+    val isRepeated: Boolean = false
 )
     : Actor() {
 
@@ -62,14 +65,12 @@ class LayerActor(val tex: String, val isMenu: Boolean = false,
 
 
     init {
-        val imgTexture = Assets.getAsset(tex).also {
-            it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            if (isRepeated) it.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
-        }
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        if (isRepeated) texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         if (isOrbit) isOrbiting = true
 
-        srcWidth = imgTexture.width
-        srcHeight = imgTexture.height
+        srcWidth = texture.width
+        srcHeight = texture.height
 
         width = MainScreen.BG_WIDTH
 
@@ -93,7 +94,7 @@ class LayerActor(val tex: String, val isMenu: Boolean = false,
 
         if (!isMenu) {
             if (MainScreen.BG_WIDTH <= 1600) {
-                y = if (cY == 0f) 210f else cY
+                y = if (cY == 0f) MainScreen.BG_HEIGHT * 0.08f else cY
             }
             // tablet
             else {
@@ -105,12 +106,13 @@ class LayerActor(val tex: String, val isMenu: Boolean = false,
         if (cX != 0f) { x = cX }
         if (cY != 0f) { y = cY }
 
-        layers.add(imgTexture)
+        layers.add(texture)
     }
 
     fun offsetToPosition() {
         x = -xOffset.toFloat()
         xOffset = 0
+        actions.forEach { addAction(it) }
     }
 
     fun stopAnimation() {
@@ -180,7 +182,7 @@ class LayerActor(val tex: String, val isMenu: Boolean = false,
             )
         }
 
-//        if (tex == "planets/alienship/hologram.png") {
+//        if (tex == "planets/pluto/flare.png") {
 //            MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
 //            MainScreen.shapeRenderer.color = Color.RED
 //            MainScreen.shapeRenderer.rect(x,y,width,height)

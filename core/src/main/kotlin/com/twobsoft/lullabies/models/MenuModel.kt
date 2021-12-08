@@ -1,12 +1,12 @@
 package com.twobsoft.lullabies.models
 
 
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
 import com.twobsoft.lullabies.components.AnimatedActor
 import com.twobsoft.lullabies.components.LayerActor
 
-class MenuModel: Entity() {
+class MenuModel(val assets: Assets): Entity() {
 
     companion object {
         const val backgroundTex   = "menu/background.png"
@@ -26,15 +26,19 @@ class MenuModel: Entity() {
         const val cometSS         = "menu/animations/comet.png"
         const val spaceshipSS     = "menu/animations/spaceship.png"
         const val alienshipSS     = "menu/animations/ufo.png"
-
+        val all = arrayOf(
+            backgroundTex, radarTex, sunSS, mercurySS, venusSS, earthSS, moonSS,
+            marsSS, jupiterSS, saturnSS, uranusSS, neptuneSS, plutoSS, asteroidSS, cometSS,
+            spaceshipSS, alienshipSS
+        )
     }
 
     override val stageNumber = 0
 
-    val background  = LayerActor(tex = backgroundTex, isMenu = true)
-    val radar       = LayerActor(tex = radarTex)
+    val background  = LayerActor(tex = backgroundTex, isMenu = true, assets.getAsset(backgroundTex),)
+    val radar       = LayerActor(tex = radarTex, texture = assets.getAsset(radarTex))
 
-    val sun = AnimatedActor( sunSS, 5, 4, 1,
+    val sun = AnimatedActor( sunSS, 5, 4, 1, assets.getAsset(sunSS),
         MainScreen.BG_HEIGHT * 0.31f,MainScreen.BG_HEIGHT * 0.31f).also {
         it.x = MainScreen.BG_WIDTH * 0.188f
         // 1
@@ -59,6 +63,7 @@ class MenuModel: Entity() {
     }
 
     val mercury = AnimatedActor( mercurySS, 5, 4, 2,
+        texture = assets.getAsset(mercurySS),
         MainScreen.BG_HEIGHT * 0.09f ,MainScreen.BG_HEIGHT * 0.09f).also {
         it.x = MainScreen.BG_WIDTH * 0.74f
         it.y = MainScreen.BG_HEIGHT * 0.23f
@@ -77,6 +82,7 @@ class MenuModel: Entity() {
     }
 
     val venus = AnimatedActor( venusSS, 5, 4, 3,
+        texture = assets.getAsset(venusSS),
         MainScreen.BG_HEIGHT * 0.114f ,MainScreen.BG_HEIGHT * 0.114f).also {
         it.x = MainScreen.BG_WIDTH * 0.02f
         it.y = MainScreen.BG_HEIGHT * 0.29f
@@ -98,6 +104,7 @@ class MenuModel: Entity() {
     }
 
     val earth = AnimatedActor( earthSS, 5, 4, 4,
+        texture = assets.getAsset(earthSS),
         MainScreen.BG_HEIGHT * 0.16f, MainScreen.BG_HEIGHT * 0.16f).also {
         it.rotation = -8f
         it.x = MainScreen.BG_WIDTH * 0.53f
@@ -120,6 +127,7 @@ class MenuModel: Entity() {
     }
 
     val moon = AnimatedActor( moonSS, 5, 4, 5,
+        texture = assets.getAsset(moonSS),
         MainScreen.BG_HEIGHT * 0.12f ,MainScreen.BG_HEIGHT * 0.12f).also {
         it.x = MainScreen.BG_WIDTH * 0.517f
         it.y = MainScreen.BG_HEIGHT * 0.5f
@@ -141,6 +149,7 @@ class MenuModel: Entity() {
     }
 
     val mars = AnimatedActor( marsSS, 5, 4, 6,
+        texture = assets.getAsset(marsSS),
         MainScreen.BG_HEIGHT * 0.117f ,MainScreen.BG_HEIGHT * 0.117f).also {
         it.x = MainScreen.BG_WIDTH * 0.77f
         it.y = MainScreen.BG_HEIGHT * 0.63f
@@ -159,6 +168,7 @@ class MenuModel: Entity() {
     }
 
     val jupiter = AnimatedActor( jupiterSS, 5, 4, 7,
+        texture = assets.getAsset(jupiterSS),
         MainScreen.BG_HEIGHT * 0.17f ,MainScreen.BG_HEIGHT * 0.17f).also {
         it.x = MainScreen.BG_WIDTH * 0.11f
         it.y = MainScreen.BG_HEIGHT * 0.31f
@@ -189,6 +199,7 @@ class MenuModel: Entity() {
     }
 
     val saturn = AnimatedActor( saturnSS, 4, 5, 8,
+        texture = assets.getAsset(saturnSS),
         MainScreen.BG_HEIGHT * 0.218f ,MainScreen.BG_HEIGHT * 0.145f).also {
         it.x = MainScreen.BG_WIDTH * 0.03f
         it.y = MainScreen.BG_HEIGHT * 0.75f
@@ -210,6 +221,7 @@ class MenuModel: Entity() {
     }
 
     val uranus = AnimatedActor( uranusSS, 4, 5, 9,
+        texture = assets.getAsset(uranusSS),
         MainScreen.BG_HEIGHT * 0.191f ,MainScreen.BG_HEIGHT * 0.145f).also {
         it.x = MainScreen.BG_WIDTH * 0.65f
         it.y = MainScreen.BG_HEIGHT * 0.76f
@@ -231,6 +243,7 @@ class MenuModel: Entity() {
     }
 
     val neptune = AnimatedActor( neptuneSS, 5, 4, 10,
+        texture = assets.getAsset(neptuneSS),
         MainScreen.BG_HEIGHT * 0.11f ,MainScreen.BG_HEIGHT * 0.1f).also {
         it.x = MainScreen.BG_WIDTH * 0.03f
         it.y = MainScreen.BG_HEIGHT * 0.62f
@@ -249,6 +262,7 @@ class MenuModel: Entity() {
     }
 
     val pluto = AnimatedActor( plutoSS, 5, 4, 11,
+        texture = assets.getAsset(plutoSS),
         MainScreen.BG_HEIGHT * 0.12f ,MainScreen.BG_HEIGHT * 0.1f).also {
         it.x = MainScreen.BG_WIDTH * 0.02f
         it.y = MainScreen.BG_HEIGHT * 0.13f
@@ -267,6 +281,7 @@ class MenuModel: Entity() {
     }
 
     val asteroid = AnimatedActor( asteroidSS, 5, 4, 12,
+        texture = assets.getAsset(asteroidSS),
         MainScreen.BG_HEIGHT * 0.16f ,MainScreen.BG_HEIGHT * 0.16f).also {
         it.x = MainScreen.BG_WIDTH * 0.33f
         it.y = MainScreen.BG_HEIGHT * 0.84f
@@ -288,6 +303,7 @@ class MenuModel: Entity() {
     }
 
     val comet = AnimatedActor( cometSS, 5, 4, 13,
+        texture = assets.getAsset(cometSS),
         MainScreen.BG_HEIGHT * 0.31f,MainScreen.BG_HEIGHT * 0.32f).also {
         it.rotation = -10f
         it.x = MainScreen.BG_WIDTH * 0.01f
@@ -310,6 +326,7 @@ class MenuModel: Entity() {
     }
 
     val spaceship = AnimatedActor( spaceshipSS, 4, 6, 14,
+        texture = assets.getAsset(spaceshipSS),
         MainScreen.BG_HEIGHT * 0.23f ,MainScreen.BG_HEIGHT * 0.15f,
         frameCount = 19).also {
         it.rotation = -9f
@@ -333,6 +350,7 @@ class MenuModel: Entity() {
     }
 
     val alienship = AnimatedActor( alienshipSS, 5, 4, 15,
+        texture = assets.getAsset(alienshipSS),
         MainScreen.BG_HEIGHT * 0.134f ,MainScreen.BG_HEIGHT * 0.134f).also {
         it.x = MainScreen.BG_WIDTH * 0.74f
         it.y = MainScreen.BG_HEIGHT * 0.48f
@@ -354,7 +372,7 @@ class MenuModel: Entity() {
     }
 
 
-    override val all = arrayOf<Actor>(
+    override val all = arrayOf(
         background,
         radar,
         sun,

@@ -1,5 +1,6 @@
-package com.twobsoft.lullabies.components
+package com.twobsoft.lullabies.hud
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -12,7 +13,10 @@ import com.twobsoft.lullabies.MainScreen
 
 
 
-class HudActor(val tex: String, val text: String = ""): Actor() {
+class HudActor(
+    val tex: String,
+    val text: String = "",
+    val actorTexture: Texture): Actor() {
 
     var texture: Texture? = null
     var srcWidth: Int = 0
@@ -31,9 +35,6 @@ class HudActor(val tex: String, val text: String = ""): Actor() {
 
 
     init {
-        val imgTexture = Assets.getAsset(tex).also {
-            it.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        }
         if (text != "") {
             isTextDrawing = true
             font.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
@@ -43,8 +44,8 @@ class HudActor(val tex: String, val text: String = ""): Actor() {
             textWidth = glyphLayout.width
         }
 
-        srcWidth = imgTexture.width
-        scrHeight = imgTexture.height
+        srcWidth = actorTexture.width
+        scrHeight = actorTexture.height
 
         width = MainScreen.BG_WIDTH
         height = MainScreen.BG_HEIGHT
@@ -52,7 +53,7 @@ class HudActor(val tex: String, val text: String = ""): Actor() {
         originX = MainScreen.BG_WIDTH / 2
         originY = MainScreen.BG_HEIGHT / 2
 
-        texture = imgTexture
+        texture = actorTexture
 
     }
 
@@ -63,9 +64,9 @@ class HudActor(val tex: String, val text: String = ""): Actor() {
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
 
-        if (texture == null) {
-            return
-        }
+//        if (texture == null) {
+//            return
+//        }
 
         batch!!.setColor(color.r, color.g, color.b, color.a * parentAlpha)
 
@@ -101,10 +102,10 @@ class HudActor(val tex: String, val text: String = ""): Actor() {
         }
 
 
-        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-        MainScreen.shapeRenderer.color = Color.RED
-        if (hitBox.size > 2) {
-            MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
-        }
+//        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+//        MainScreen.shapeRenderer.color = Color.RED
+//        if (hitBox.size > 2) {
+//            MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
+//        }
     }
 }

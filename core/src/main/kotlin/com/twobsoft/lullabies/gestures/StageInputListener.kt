@@ -4,19 +4,16 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.utils.Array
 import com.twobsoft.lullabies.*
 import com.twobsoft.lullabies.components.AnimatedActor
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.models.*
-import com.twobsoft.lullabies.components.HudActor
+import com.twobsoft.lullabies.hud.HudActor
 import com.twobsoft.lullabies.components.LayerGroup
 import com.twobsoft.lullabies.hud.HudGroup
 import com.twobsoft.lullabies.utils.Utils
-import ktx.scene2d.actors
+import kotlin.random.Random
 
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
@@ -156,9 +153,12 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         stageModel.all.forEach {
             if (it is LayerActor || it is LayerGroup) {
                 screen.stage.addActor(it)
-                it.actions.forEach { action ->
-                    it.addAction(action)
+                if ((it is LayerActor && !it.isNeedReposition) || it is LayerGroup) {
+                    it.actions.forEach { action ->
+                        it.addAction(action)
+                    }
                 }
+
                 if (it is LayerActor && it.isNeedReposition) {
                     it.offsetToPosition()
                 }
@@ -187,7 +187,11 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             }
 
             screen.stage.addActor(it)
-            it.actions.forEach {action-> it.addAction(action) }
+            if ((it is LayerActor && !it.isNeedReposition) || it is LayerGroup) {
+                it.actions.forEach { action -> it.addAction(action) }
+            } else if (it is LayerActor && it.isNeedReposition) {
+                it.xOffset = (-1..1).random() * (0..MainScreen.BG_WIDTH.toInt()).random()
+            }
         }
     }
 
@@ -215,7 +219,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                     actor.actions.forEach { actor.addAction(it) }
                     i++
                 }
-
             }
             else { i++ }
         }
@@ -276,22 +279,22 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         var newModel: Entity? =null
 
         when(stageNumber) {
-            0 -> newModel     = MenuModel()
-            1 -> newModel     = SunModel()
-            2 -> newModel     = MercuryModel()
-            3 -> newModel     = VenusModel()
-            4 -> newModel     = EarthModel()
-            5 -> newModel     = MoonModel()
-            6 -> newModel     = MarsModel()
-            7 -> newModel     = JupiterModel()
-            8 -> newModel     = SaturnModel()
-            9 -> newModel     = UranusModel()
-            10 -> newModel    = NeptuneModel()
-            11 -> newModel    = PlutoModel()
-            12 -> newModel    = AsteroidModel()
-            13 -> newModel    = CometModel()
-            14 -> newModel    = SpaceshipModel()
-            15 -> newModel    = AlienshipModel()
+            0 -> newModel     = MenuModel(screen.game.assets)
+            1 -> newModel     = SunModel(screen.game.assets)
+            2 -> newModel     = MercuryModel(screen.game.assets)
+            3 -> newModel     = VenusModel(screen.game.assets)
+            4 -> newModel     = EarthModel(screen.game.assets)
+            5 -> newModel     = MoonModel(screen.game.assets)
+            6 -> newModel     = MarsModel(screen.game.assets)
+            7 -> newModel     = JupiterModel(screen.game.assets)
+            8 -> newModel     = SaturnModel(screen.game.assets)
+            9 -> newModel     = UranusModel(screen.game.assets)
+            10 -> newModel    = NeptuneModel(screen.game.assets)
+            11 -> newModel    = PlutoModel(screen.game.assets)
+            12 -> newModel    = AsteroidModel(screen.game.assets)
+            13 -> newModel    = CometModel(screen.game.assets)
+            14 -> newModel    = SpaceshipModel(screen.game.assets)
+            15 -> newModel    = AlienshipModel(screen.game.assets)
         }
 
         return  newModel!!

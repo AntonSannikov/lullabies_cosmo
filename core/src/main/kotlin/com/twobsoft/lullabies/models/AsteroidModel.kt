@@ -5,11 +5,12 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.MainScreen
 import com.twobsoft.lullabies.components.LayerActor
 
-class AsteroidModel: Entity() {
+class AsteroidModel(val assets: Assets): Entity() {
 
     companion object {
         const val backgroundTex     = "planets/asteroid/background.png"
@@ -19,13 +20,14 @@ class AsteroidModel: Entity() {
         const val plan2Tex          = "planets/asteroid/2plan.png"
         const val plan1Tex          = "planets/asteroid/1plan.png"
         const val flareTex          = "planets/asteroid/svet.png"
+        val all = arrayOf(backgroundTex, plan5Tex, plan4Tex, plan3Tex, plan2Tex, plan1Tex, flareTex)
     }
 
     override val stageNumber = 12
 
-    val background = LayerActor(tex = backgroundTex)
+    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
 
-    val plan5 = LayerActor(tex = plan5Tex).also {
+    val plan5 = LayerActor(tex = plan5Tex, texture = assets.getAsset(plan5Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -37,7 +39,7 @@ class AsteroidModel: Entity() {
         )
     }
 
-    val plan4 = LayerActor(tex = plan4Tex).also {
+    val plan4 = LayerActor(tex = plan4Tex, texture = assets.getAsset(plan4Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -55,7 +57,7 @@ class AsteroidModel: Entity() {
         )
     }
 
-    val plan3 = LayerActor(tex = plan3Tex).also {
+    val plan3 = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -69,6 +71,7 @@ class AsteroidModel: Entity() {
 
     val plan2 = LayerActor(
         tex = plan2Tex,
+        texture = assets.getAsset(plan2Tex),
         isOrbit = true
     ).also {
         it.orbitRadius = 150f
@@ -93,6 +96,7 @@ class AsteroidModel: Entity() {
 
     val plan1 = LayerActor(
         tex = plan1Tex,
+        texture = assets.getAsset(plan1Tex),
         isOrbit = true
     ).also {
         it.orbitRadius = 250f
@@ -109,6 +113,7 @@ class AsteroidModel: Entity() {
 
     val flare1 = LayerActor(
         tex = flareTex,
+        texture = assets.getAsset(flareTex),
         cWidth = MainScreen.BG_WIDTH * 0.3f,
         cHeight = MainScreen.BG_HEIGHT * 0.15f,
         cX = MainScreen.BG_WIDTH * 0.2f,
@@ -137,6 +142,7 @@ class AsteroidModel: Entity() {
 
     val flare2 = LayerActor(
         tex = flareTex,
+        texture = assets.getAsset(flareTex),
         cWidth = MainScreen.BG_WIDTH * 0.2f,
         cHeight = MainScreen.BG_HEIGHT * 0.1f,
         cX = MainScreen.BG_WIDTH * 0.62f,
@@ -165,6 +171,7 @@ class AsteroidModel: Entity() {
 
     val flare3 = LayerActor(
         tex = flareTex,
+        texture = assets.getAsset(flareTex),
         cWidth = MainScreen.BG_WIDTH * 0.1f,
         cHeight = MainScreen.BG_HEIGHT * 0.05f,
         cX = MainScreen.BG_WIDTH * 0.576f,

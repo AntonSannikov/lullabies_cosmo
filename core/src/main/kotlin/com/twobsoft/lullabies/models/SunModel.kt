@@ -4,12 +4,12 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.LullabiesGame
-import com.twobsoft.lullabies.MainScreen
 
 
-class SunModel: Entity() {
+class SunModel(val assets: Assets): Entity() {
 
     companion object {
         const val backgroundTex     = "planets/sun/background.png"
@@ -20,21 +20,26 @@ class SunModel: Entity() {
         const val plan2Tex          = "planets/sun/2plan.png"
         const val plan1Tex          = "planets/sun/1plan.png"
         const val sparksTex         = "planets/sun/iskry.png"
+        val all = arrayOf(
+            backgroundTex, starsTex, planetTex, lavaTex, protuberanceTex, plan2Tex, plan1Tex,
+            sparksTex
+        )
     }
 
     override val stageNumber = 1
 
-    val background = LayerActor(tex = backgroundTex)
+    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
 
     val stars = LayerActor(
         tex = starsTex,
-        isRepeated = true
+        isRepeated = true,
+        texture = assets.getAsset(starsTex)
     ).also {
         it.xDelta = 2
         it.yDelta = -1
     }
 
-    val planet = LayerActor(tex = planetTex).also {
+    val planet = LayerActor(tex = planetTex, texture = assets.getAsset(planetTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -46,7 +51,7 @@ class SunModel: Entity() {
         )
     }
 
-    val lava = LayerActor(tex = lavaTex).also {
+    val lava = LayerActor(tex = lavaTex, texture = assets.getAsset(lavaTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -58,7 +63,7 @@ class SunModel: Entity() {
         )
     }
 
-    val protuberance = LayerActor(tex = protuberanceTex).also {
+    val protuberance = LayerActor(tex = protuberanceTex, texture = assets.getAsset(protuberanceTex)).also {
         it.actions.add(
             Actions.parallel(
                 Actions.repeat(
@@ -88,7 +93,7 @@ class SunModel: Entity() {
         )
     }
 
-    val plan2 = LayerActor(tex = plan2Tex).also {
+    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -100,7 +105,7 @@ class SunModel: Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -112,7 +117,7 @@ class SunModel: Entity() {
         )
     }
 
-    val sparks = LayerActor(tex = sparksTex).also {
+    val sparks = LayerActor(tex = sparksTex, texture = assets.getAsset(sparksTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

@@ -4,10 +4,11 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.components.LayerActor
 
-class CometModel: Entity() {
+class CometModel(val assets: Assets): Entity() {
 
     companion object {
         const val backgroundTex     = "planets/comet/background.png"
@@ -15,13 +16,16 @@ class CometModel: Entity() {
         const val plan3Tex          = "planets/comet/3plan.png"
         const val plan2Tex          = "planets/comet/2plan.png"
         const val plan1Tex          = "planets/comet/1plan.png"
+        val all = arrayOf(
+            backgroundTex, plan4Tex, plan3Tex, plan2Tex, plan1Tex
+        )
     }
 
     override val stageNumber = 13
 
-    val background = LayerActor(tex = backgroundTex)
+    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
 
-    val plan4 = LayerActor(tex = plan4Tex).also {
+    val plan4 = LayerActor(tex = plan4Tex, texture = assets.getAsset(plan4Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -33,7 +37,7 @@ class CometModel: Entity() {
         )
     }
 
-    val plan3 = LayerActor(tex = plan3Tex).also {
+    val plan3 = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -53,6 +57,7 @@ class CometModel: Entity() {
 
     val plan2 = LayerActor(
         tex = plan2Tex,
+        texture = assets.getAsset(plan2Tex)
     ).also {
         it.actions.add(
             Actions.repeat(
@@ -73,7 +78,7 @@ class CometModel: Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

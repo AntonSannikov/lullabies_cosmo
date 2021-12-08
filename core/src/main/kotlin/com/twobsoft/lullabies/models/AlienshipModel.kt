@@ -6,11 +6,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.MainScreen
 import com.twobsoft.lullabies.components.LayerActor
 
-class AlienshipModel: Entity() {
+class AlienshipModel(val assets: Assets): Entity() {
 
     companion object {
         const val backgroundTex     = "planets/alienship/background.png"
@@ -20,11 +21,15 @@ class AlienshipModel: Entity() {
         const val plan1Tex          = "planets/alienship/1plan.png"
         const val hologramTex       = "planets/alienship/hologram.png"
         const val flareTex          = "planets/alienship/svechenie.png"
+        val all = arrayOf(
+            backgroundTex, plan4Tex, plan3Tex, plan2Tex, plan1Tex,
+            hologramTex, flareTex
+        )
     }
 
     override val stageNumber = 15
 
-    val background = LayerActor(tex = backgroundTex).also {
+    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -36,7 +41,7 @@ class AlienshipModel: Entity() {
         )
     }
 
-    val plan4 = LayerActor(tex = plan4Tex).also {
+    val plan4 = LayerActor(tex = plan4Tex, texture = assets.getAsset(plan4Tex)).also {
         it.orbitRadius = 10f
         it.actions.add(
             Actions.repeat(
@@ -57,12 +62,13 @@ class AlienshipModel: Entity() {
         )
     }
 
-    val plan3 = LayerActor(tex = plan3Tex)
-    val plan2 = LayerActor(tex = plan2Tex)
-    val plan1 = LayerActor(tex = plan1Tex)
+    val plan3 = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex))
+    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex))
+    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex))
 
     val hologram = LayerActor(
         tex = hologramTex,
+        texture = assets.getAsset(hologramTex),
         isOrbit = true,
         cWidth = MainScreen.BG_WIDTH * 0.14f,
         cHeight = MainScreen.BG_HEIGHT * 0.08f,
@@ -85,7 +91,7 @@ class AlienshipModel: Entity() {
         )
     }
 
-    val flare = LayerActor(tex = flareTex,).also {
+    val flare = LayerActor(tex = flareTex, texture = assets.getAsset(flareTex)).also {
         it.originX = MainScreen.BG_WIDTH * 0.598f
         it.originY = MainScreen.BG_HEIGHT * 0.457f
         it.actions.add(

@@ -19,8 +19,7 @@ import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_
 import com.twobsoft.lullabies.gestures.StageInputListener
 import com.twobsoft.lullabies.hud.HudModel
 import com.twobsoft.lullabies.models.*
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.twobsoft.lullabies.splash.SplashScreen
 
 
 class LullabiesGame : KtxGame<KtxScreen>() {
@@ -31,35 +30,17 @@ class LullabiesGame : KtxGame<KtxScreen>() {
         const val BARREL_SHADER_PULSE_MAX_POWER = 0.20f
     }
 
+    val assets = Assets()
+
     override fun create() {
         KtxAsync.initiate()
-        val assets = Assets
-        assets.loadHud()
-        assets.load(0)
-        assets.load(1)
-        assets.load(2)
-        assets.load(3)
-        assets.load(4)
-        assets.load(5)
-        assets.load(6)
-        assets.load(7)
-        assets.load(8)
-        assets.load(9)
-        assets.load(10)
-        assets.load(11)
-        assets.load(12)
-        assets.load(13)
-        assets.load(14)
-        assets.load(15)
-
-        assets.manager.finishLoading()
-        addScreen(MainScreen())
-        setScreen<MainScreen>()
+        addScreen(SplashScreen(this))
+        setScreen<SplashScreen>()
     }
 }
 
 
-class MainScreen : KtxScreen {
+class MainScreen(val game: LullabiesGame) : KtxScreen {
 
     companion object {
         val BG_WIDTH    = Gdx.graphics.width.toFloat()
@@ -78,6 +59,7 @@ class MainScreen : KtxScreen {
 
     // SHADERS AND RENDERING
     val fbo = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
+    val fbo2 = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
     var shaderFocusOffset = Vector2(0f, 0f)
 
     // BARREL SHADER
@@ -126,11 +108,11 @@ class MainScreen : KtxScreen {
         viewport = ExtendViewport(BG_WIDTH, BG_HEIGHT, camera)
         stage = Stage(viewport)
 
-        hudModel = HudModel()
+        hudModel = HudModel(game.assets)
         inputListener = StageInputListener(this)
 
-//        val currentModel = SunModel()
-        val currentModel = MenuModel()
+//        val currentModel = PlutoModel()
+        val currentModel = MenuModel(game.assets)
         inputListener.createSwipeStage(currentModel, 0)
         currentModel.all.forEach {
             stage.addActor(it)
@@ -166,29 +148,29 @@ class MainScreen : KtxScreen {
     //                                  RENDER
     override fun render(delta: Float) {
 
-        val gl = Gdx.graphics.gL20
+        val gl = if (Gdx.graphics.isGL30Available) Gdx.graphics.gL30 else Gdx.graphics.gL20
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        shapeRenderer.begin()
-        if (isBarrel) {
-            barrelShaderPower += powerDelta
-            if (!isBarrelShaderReseted) {
-                if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
-                    powerDelta = -powerDelta
-                } else if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER && powerDelta > 0) {
-                    powerDelta = -powerDelta
-                }
-            } else {
-                if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER) {
-                    powerDelta = 0f
-                }
-            }
-            barrelShader.bind()
-            stage.batch.shader = barrelShader
-            barrelShader.setUniformf("iTime", barrelShaderPower)
-//            barrelShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
-        }
+//        shapeRenderer.begin()
+//        if (isBarrel) {
+//            barrelShaderPower += powerDelta
+//            if (!isBarrelShaderReseted) {
+//                if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
+//                    powerDelta = -powerDelta
+//                } else if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER && powerDelta > 0) {
+//                    powerDelta = -powerDelta
+//                }
+//            } else {
+//                if (barrelShaderPower >= BARREL_SHADER_PULSE_START_POWER) {
+//                    powerDelta = 0f
+//                }
+//            }
+//            barrelShader.bind()
+//            stage.batch.shader = barrelShader
+//            barrelShader.setUniformf("iTime", barrelShaderPower)
+////            barrelShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
+//        }
 
         fbo.begin()
         stage.act()
@@ -196,49 +178,49 @@ class MainScreen : KtxScreen {
         fbo.end()
 
         val texture0 = fbo.colorBufferTexture
-
-        if (isInterStellar) {
-            time += delta
-            interStellarShader.bind()
-            Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE1)
-            texture0.bind(1);
-            interStellarShader.setUniformi("u_texture", 1)
-            interStellarShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
-
-            Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE0)
-            rgbNoiseTex.bind(0);
-            interStellarShader.setUniformi("u_texture_noise", 0)
-            interStellarShader.setUniformf("iTime", time)
-            stage.batch.shader = interStellarShader
-        }
-
+//
+//        if (isInterStellar) {
+//            time += delta
+//            interStellarShader.bind()
+//            Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE1)
+//            texture0.bind(1);
+//            interStellarShader.setUniformi("u_texture", 1)
+//            interStellarShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
+//
+//            Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE0)
+//            rgbNoiseTex.bind(0);
+//            interStellarShader.setUniformi("u_texture_noise", 0)
+//            interStellarShader.setUniformf("iTime", time)
+//            stage.batch.shader = interStellarShader
+//        }
+//
         var textureRegion = TextureRegion(texture0, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
         textureRegion.flip(false, true)
-
-        gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        stage.batch.flush()
-
-        fbo.begin()
-        stage.batch.begin()
-        stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
-        stage.batch.end()
-        fbo.end()
-
-        if (isShade) {
-            shadeTime += delta
-            shadeShader.bind()
-            shadeShader.setUniformf("iTime", shadeTime)
-            stage.batch.shader = shadeShader
-            if (shadeTime >= 1.9f) {
-                isShade = false
-                shadeTime = 0f
-                stage.batch.shader = null
-            }
-        }
-
-        textureRegion = TextureRegion(fbo.colorBufferTexture, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
-        textureRegion.flip(false, true)
-
+//
+//        gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+//        stage.batch.flush()
+//
+//        fbo.begin()
+//        stage.batch.begin()
+//        stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
+//        stage.batch.end()
+//        fbo.end()
+//
+//        if (isShade) {
+//            shadeTime += delta
+//            shadeShader.bind()
+//            shadeShader.setUniformf("iTime", shadeTime)
+//            stage.batch.shader = shadeShader
+//            if (shadeTime >= 1.9f) {
+//                isShade = false
+//                shadeTime = 0f
+//                stage.batch.shader = null
+//            }
+//        }
+//
+//        textureRegion = TextureRegion(fbo.colorBufferTexture, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
+//        textureRegion.flip(false, true)
+//
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
@@ -257,8 +239,8 @@ class MainScreen : KtxScreen {
     override fun dispose() {
         barrelShader.disposeSafely()
         stage.disposeSafely()
+        game.assets.dispose()
     }
-
 
 }
 

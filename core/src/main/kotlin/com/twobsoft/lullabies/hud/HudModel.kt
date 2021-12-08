@@ -6,15 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
-import com.twobsoft.lullabies.components.HudActor
 import com.twobsoft.lullabies.models.Entity
 
 
 class HudGroup: Group()
 
 
-class HudModel(): Entity() {
+class HudModel(val assets: Assets): Entity() {
 
     companion object {
         const val frameTex = "hud/frame_mod.png"
@@ -34,29 +34,37 @@ class HudModel(): Entity() {
         const val clockTex = "hud/clock.png"
         const val arrowRTex = "hud/arrowR.png"
 
+        val all = arrayOf(
+            frameTex, panelUpTex, optionsTex, lampLightTex, lampTex, shareButtonTex, shareAntennasTex,
+            deckTex, playlistTex, joystickTex, arrowLTex, playTex, clockTex, arrowRTex
+        )
+
     }
+
     override val stageNumber = -1
 
-    val frame = HudActor(tex = frameTex).also {
+    val frame = HudActor(tex = frameTex,
+        actorTexture = assets.getAsset(frameTex)).also {
         if (MainScreen.BG_WIDTH > 1600) {
             it.scaleBy(0.072f, 0.0524f)
-            it.y = 53f
+            it.y = MainScreen.BG_HEIGHT * 0.02f
         } else {
-            it.y = 66f
+            it.y = MainScreen.BG_HEIGHT * 0.025f
             it.scaleBy(0.403f, 0.016f)
         }
 
     }
 
     // upper panel
-    val panelUp = HudActor(tex = panelUpTex, text = "Test S124141asfasfasfasfasf").also {
+    val panelUp = HudActor(tex = panelUpTex, text = "5. Le nozze di Figaro - Arietta",
+        actorTexture = assets.getAsset(panelUpTex)).also {
 
         if (MainScreen.BG_WIDTH > 1600) {
             it.y = MainScreen.BG_HEIGHT * 0.442f
             it.scaleBy(-MainScreen.BG_WIDTH * 0.00018f, -MainScreen.BG_HEIGHT * 0.00036f)
         } else {
             it.y = MainScreen.BG_HEIGHT * 0.448f
-            it.scaleBy(-0.26f, -0.89f)
+            it.scaleBy(-0.26f, -0.92f)
         }
         it.textX = MainScreen.BG_WIDTH * 0.2f
         if (MainScreen.BG_WIDTH > 1600) {
@@ -67,7 +75,8 @@ class HudModel(): Entity() {
         it.textBound = MainScreen.BG_WIDTH * 0.83f
     }
 
-    val options = HudActor(tex = optionsTex).also {
+    val options = HudActor(tex = optionsTex,
+        actorTexture = assets.getAsset(optionsTex)).also {
         it.scaleBy(-0.85f, -0.88f)
         it.y = MainScreen.BG_HEIGHT * 0.437f
         it.x = -MainScreen.BG_WIDTH * 0.425f
@@ -85,7 +94,8 @@ class HudModel(): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.915f)
     }
 
-    val lampLight = HudActor(tex = lampLightTex).also {
+    val lampLight = HudActor(tex = lampLightTex,
+        actorTexture = assets.getAsset(lampLightTex)).also {
         it.scaleBy(-0.2f, -0.8f)
         it.y = MainScreen.BG_HEIGHT * 0.37f
         it.x = MainScreen.BG_WIDTH * 0.019f
@@ -99,7 +109,8 @@ class HudModel(): Entity() {
         )
     }
 
-    val lamp = HudActor(tex = lampTex).also {
+    val lamp = HudActor(tex = lampTex,
+        actorTexture = assets.getAsset(lampTex)).also {
         it.scaleBy(-0.88f, -0.9f)
         if (MainScreen.BG_WIDTH > 1600) {
             it.y = MainScreen.BG_HEIGHT * 0.395f
@@ -108,7 +119,8 @@ class HudModel(): Entity() {
         }
     }
 
-    val shareButton = HudActor(tex = shareButtonTex).also {
+    val shareButton = HudActor(tex = shareButtonTex,
+        actorTexture = assets.getAsset(shareButtonTex)).also {
         it.scaleBy(-0.85f, -0.9f)
         it.y = MainScreen.BG_HEIGHT * 0.448f
         it.x = MainScreen.BG_WIDTH * 0.422f
@@ -126,7 +138,8 @@ class HudModel(): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.909f)
     }
 
-    val shareAntennas = HudActor(tex = shareAntennasTex).also {
+    val shareAntennas = HudActor(tex = shareAntennasTex,
+        actorTexture = assets.getAsset(shareAntennasTex)).also {
         it.scaleBy(-0.85f, -0.9f)
         it.y = MainScreen.BG_HEIGHT * 0.367f
         it.x = MainScreen.BG_WIDTH * 0.422f
@@ -143,12 +156,14 @@ class HudModel(): Entity() {
     }
 
     // deck -------------------------------------------------------------
-    val deck = HudActor(tex = deckTex).also {
+    val deck = HudActor(tex = deckTex,
+        actorTexture = assets.getAsset(deckTex)).also {
         it.y = -MainScreen.BG_HEIGHT * 0.335f
         it.scaleBy( 0.03f, -0.81f)
     }
 
-    val playlist = HudActor(tex = playlistTex).also {
+    val playlist = HudActor(tex = playlistTex,
+        actorTexture = assets.getAsset(playlistTex)).also {
         it.scaleBy(-0.8f, -0.9f)
         it.x = -MainScreen.BG_WIDTH * 0.33f
         it.y = -MainScreen.BG_HEIGHT * 0.35f
@@ -166,7 +181,8 @@ class HudModel(): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.129f)
     }
 
-    val joystick = HudActor(tex = joystickTex).also {
+    val joystick = HudActor(tex = joystickTex,
+        actorTexture = assets.getAsset(joystickTex)).also {
         it.scaleBy(-0.86f, -0.88f)
         it.x = -MainScreen.BG_WIDTH * 0.21f
         it.y = -MainScreen.BG_HEIGHT * 0.3f
@@ -184,7 +200,8 @@ class HudModel(): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.17f)
     }
 
-    val play = HudActor(tex = playTex).also {
+    val play = HudActor(tex = playTex,
+        actorTexture = assets.getAsset(playTex)).also {
         it.scaleBy(-0.7f, -0.88f)
         it.x = MainScreen.BG_WIDTH * 0.02f
         it.y = -MainScreen.BG_HEIGHT * 0.34f
@@ -202,7 +219,8 @@ class HudModel(): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.134f)
     }
 
-    val arrowL = HudActor(tex = arrowLTex).also {
+    val arrowL = HudActor(tex = arrowLTex,
+        actorTexture = assets.getAsset(arrowLTex)).also {
         it.scaleBy(-0.78f, -0.92f)
         it.x = -MainScreen.BG_WIDTH * 0.18f
         it.y = -MainScreen.BG_HEIGHT * 0.38f
@@ -220,7 +238,8 @@ class HudModel(): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.1f)
     }
 
-    val clock = HudActor(tex = clockTex).also {
+    val clock = HudActor(tex = clockTex,
+        actorTexture = assets.getAsset(clockTex)).also {
         it.scaleBy(-0.76f, -0.84f)
         it.x = MainScreen.BG_WIDTH * 0.3f
         it.y = -MainScreen.BG_HEIGHT * 0.29f
@@ -238,7 +257,8 @@ class HudModel(): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.137f)
     }
 
-    val arrowR = HudActor(tex = arrowRTex).also {
+    val arrowR = HudActor(tex = arrowRTex,
+        actorTexture = assets.getAsset(arrowRTex)).also {
         it.scaleBy(-0.78f, -0.92f)
         it.x = MainScreen.BG_WIDTH * 0.2f
         it.y = -MainScreen.BG_HEIGHT * 0.38f

@@ -4,21 +4,23 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.components.LayerActor
 
-class NeptuneModel: Entity() {
+class NeptuneModel(val assets: Assets): Entity() {
 
     companion object {
         const val backgroundTex     = "planets/neptune/background.png"
         const val plan3Tex          = "planets/neptune/3plan.png"
         const val plan2Tex          = "planets/neptune/2plan.png"
         const val plan1Tex          = "planets/neptune/1plan.png"
+        val all = arrayOf(backgroundTex, plan3Tex, plan2Tex, plan1Tex)
     }
 
     override val stageNumber = 10
 
-    val background = LayerActor(tex = backgroundTex).also {
+    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -32,7 +34,7 @@ class NeptuneModel: Entity() {
         )
     }
 
-    val plan3 = LayerActor(tex = plan3Tex).also {
+    val plan3 = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -44,7 +46,7 @@ class NeptuneModel: Entity() {
         )
     }
 
-    val plan2 = LayerActor(tex = plan2Tex).also {
+    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -56,7 +58,7 @@ class NeptuneModel: Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex).also {
+    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
