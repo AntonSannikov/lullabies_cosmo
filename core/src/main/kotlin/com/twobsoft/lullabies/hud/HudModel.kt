@@ -202,7 +202,19 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(MainScreen.BG_WIDTH * 0.34f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.17f)
 
-        it.tapHandler = { appListener.backToMenu() }
+        it.actions.add(
+            Actions.sequence(
+                Actions.scaleBy(-0.01f, -0.01f, 0.2f, Interpolation.fade),
+                Actions.scaleBy(0.01f, 0.01f, 0.2f, Interpolation.fade)
+            ),
+//                Actions.sequence(
+//                    Actions.rotateBy(4f, 0.2f, Interpolation.fade),
+//                    Actions.rotateBy(-4f, 0.2f, Interpolation.fade)
+//                )
+
+        )
+
+        it.tapHandler = { appListener.startMenuTransition() }
     }
 
     val play = HudActor(tex = playTex,

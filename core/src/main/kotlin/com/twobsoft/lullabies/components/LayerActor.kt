@@ -38,6 +38,7 @@ class LayerActor(
 )
     : Actor() {
 
+    var notAct = false
     val actions = arrayListOf<Action>()
     val layers = arrayListOf<Texture>()
     var isNeedRemove = false
@@ -130,6 +131,9 @@ class LayerActor(
 
 
     override fun act(delta: Float) {
+        if (notAct) {
+            return
+        }
         super.act(delta)
         if (isOrbiting) {
             time += delta

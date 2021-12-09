@@ -96,6 +96,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         Gdx.files.internal("shaders/inverse_shade/vertex.glsl").readString(),
         Gdx.files.internal("shaders/inverse_shade/fragment.glsl").readString()
     )
+
     var isInverseShading = false
     var isFishEye = false
     var inverseShadingTime = 0f
@@ -106,14 +107,15 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     //
     val inputListener: StageInputListener
     val hudModel : HudModel
+    var isHudTapable = true
     var isSwiping = false
 
 
     init {
 
         //ShaderProgram.pedantic = false
-        shapeRenderer.setAutoShapeType(true)
-        Gdx.gl.glLineWidth(10f)
+//        shapeRenderer.setAutoShapeType(true)
+//        Gdx.gl.glLineWidth(10f)
 
         camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT)
         viewport = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
@@ -140,10 +142,10 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
 
     // ==============================      METHODS     =============================================
 
-    fun reverseBarrelShader() {
-        isBarrelShaderReseted = true
-        powerDelta = (BARREL_SHADER_PULSE_START_POWER - barrelShaderPower) / 20
-    }
+//    fun reverseBarrelShader() {
+//        isBarrelShaderReseted = true
+//        powerDelta = (BARREL_SHADER_PULSE_START_POWER - barrelShaderPower) / 20
+//    }
 
     fun resetBarrelShader() {
         barrelShaderPower = BARREL_SHADER_PULSE_START_POWER
@@ -164,9 +166,8 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        shapeRenderer.begin()
+//        shapeRenderer.begin()
         if (isBarrel) {
-            barrelShaderPower += powerDelta
             if (!isBarrelShaderReseted) {
                 if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
                     powerDelta = -powerDelta
@@ -178,12 +179,13 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
                     powerDelta = 0f
                 }
             }
+
             barrelShader.bind()
             stage.batch.shader = barrelShader
             barrelShader.setUniformf("iTime", barrelShaderPower)
+            barrelShaderPower += powerDelta
         }
 
-        stage.batch.projectionMatrix = camera.combined
         fbo.begin()
         stage.act()
         stage.draw()
@@ -207,8 +209,9 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         } else if (isFishEye) {
             barrelShaderPower += fishEyeDelta
             isInverseShading = true
-            if (barrelShaderPower > 0.6) {
+            if (barrelShaderPower > 0.55) {
                 isFishEye = false
+                stage.batch.shader = null
                 barrelShaderPower = BARREL_SHADER_PULSE_START_POWER
             } else {
                 barrelShader.bind()
@@ -232,9 +235,10 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         if (isShade) {
             shadeTime += delta
             shadeShader.bind()
+            shadeShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
             shadeShader.setUniformf("iTime", shadeTime)
             stage.batch.shader = shadeShader
-            if (shadeTime >= 1.9f) {
+            if (shadeTime >= 1.6f) {
                 isShade = false
                 shadeTime = 0f
                 stage.batch.shader = null
@@ -252,6 +256,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
             } else {
                 inverseShadingTime += delta
                 inverseShader.bind()
+                inverseShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
                 inverseShader.setUniformf("iTime", inverseShadingTime)
                 stage.batch.shader = inverseShader
             }
@@ -264,7 +269,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
-        shapeRenderer.end()
+//        shapeRenderer.end()
 
     }
     //                                  RENDER

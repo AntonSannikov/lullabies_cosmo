@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.twobsoft.lullabies.MainScreen
 
@@ -30,6 +31,8 @@ class HudActor(
     var textWidth = 0f
     var isTextDrawing = false
     var isTextPartAdded = false
+
+    var actions = arrayListOf<Action>()
 
 
     init {
