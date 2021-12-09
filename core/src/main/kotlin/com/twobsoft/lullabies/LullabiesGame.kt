@@ -22,7 +22,7 @@ import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.splash.SplashScreen
 
 
-class LullabiesGame : KtxGame<KtxScreen>() {
+class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>() {
 
     companion object {
         const val ANIMATION_TIME = 10f
@@ -32,8 +32,12 @@ class LullabiesGame : KtxGame<KtxScreen>() {
 
     val assets = Assets()
 
+
     override fun create() {
+        MediaPlayer.serviceApi = serviceApi
         KtxAsync.initiate()
+        assets.loadSplash()
+        assets.manager.finishLoading()
         addScreen(SplashScreen(this))
         setScreen<SplashScreen>()
     }
@@ -51,7 +55,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     }
 
     val STAGES_COUNT = 15
-    var currentStageNumber = 0
+    var currentStageNumber = 4
 
     val stage: Stage
     private val camera: OrthographicCamera
@@ -114,8 +118,8 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     init {
 
         //ShaderProgram.pedantic = false
-//        shapeRenderer.setAutoShapeType(true)
-//        Gdx.gl.glLineWidth(10f)
+        shapeRenderer.setAutoShapeType(true)
+        Gdx.gl.glLineWidth(10f)
 
         camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT)
         viewport = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
@@ -125,13 +129,13 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         inputListener = StageInputListener(this)
         hudModel = HudModel(game.assets, inputListener)
 
-//        val currentModel = AlienshipModel(game.assets)
-        val currentModel = MenuModel(game.assets)
+        val currentModel = EarthModel(game.assets)
+//        val currentModel = MenuModel(game.assets)
         inputListener.createSwipeStage(currentModel, 0)
         currentModel.all.forEach {
             stage.addActor(it)
         }
-//        inputListener.refreshHud()
+        inputListener.refreshHud()
 
         Gdx.input.inputProcessor = GestureDetector(
             MyGestureListener(inputListener)
@@ -166,7 +170,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-//        shapeRenderer.begin()
+        shapeRenderer.begin()
         if (isBarrel) {
             if (!isBarrelShaderReseted) {
                 if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
@@ -269,7 +273,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
-//        shapeRenderer.end()
+        shapeRenderer.end()
 
     }
     //                                  RENDER

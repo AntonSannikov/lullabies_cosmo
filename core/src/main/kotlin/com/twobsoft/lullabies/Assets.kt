@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.hud.HudModel
+import com.twobsoft.lullabies.splash.SplashScreenModel
 import ktx.assets.getAsset
 
 
@@ -12,6 +13,11 @@ import ktx.assets.getAsset
 class Assets {
 
     val manager: AssetManager = AssetManager()
+
+    // SPLASH
+    fun loadSplash() {
+        SplashScreenModel.all.forEach { manager.load(it, Texture::class.java) }
+    }
 
     // UI
     fun loadHud() {

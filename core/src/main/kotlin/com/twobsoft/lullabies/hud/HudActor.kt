@@ -5,16 +5,20 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.twobsoft.lullabies.MainScreen
 
 
 
 class HudActor(
     val tex: String,
-    val text: String = "",
-    val actorTexture: Texture): Actor() {
+    var text: String = "",
+    val actorTexture: Texture,
+
+    ): Actor() {
 
     var texture: Texture? = null
     var srcWidth: Int = 0
@@ -31,8 +35,7 @@ class HudActor(
     var textWidth = 0f
     var isTextDrawing = false
     var isTextPartAdded = false
-
-    var actions = arrayListOf<Action>()
+    var interActions = arrayListOf<HashMap<String, Float>>()
 
 
     init {
@@ -58,9 +61,42 @@ class HudActor(
 
     }
 
+    fun changeText(newText: String) {
+        text = newText
+//        font.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+//        font.data.scale(MainScreen.BG_HEIGHT * 0.00153f)
+//        font.color.set(144 / 255f, 210 / 255f, 1f, 1f)
+        textPartPointer = 0
+        textPointer = 0
+        isTextPartAdded = false
+        val glyphLayout = GlyphLayout(font, text)
+        textWidth = glyphLayout.width
+
+    }
+
     fun addTextPart() {
-        textPartPointer = (- textWidth * 1.3).toInt()
+//        textPartPointer = (textBound + textWidth * 1.3).toInt()
+        if (textWidth >= MainScreen.BG_WIDTH * 0.8) {
+            textPartPointer = (MainScreen.BG_WIDTH * 0.9f + textWidth / 2).toInt()
+        } else textPartPointer = (MainScreen.BG_WIDTH * 0.9f).toInt()
+
         isTextPartAdded = true
+    }
+
+
+    fun getActionsFromMap(): Array<Action> {
+        val result = arrayListOf<Action>()
+        interActions.forEach {
+            if (it.containsKey("scaleBy")) {
+                val action = Actions.sequence(
+                    Actions.scaleBy(it["scaleBy"]!!, it["scaleBy"]!!, it["duration"]!!, Interpolation.fade),
+                    Actions.scaleBy(-it["scaleBy"]!!, -it["scaleBy"]!!, it["duration"]!!, Interpolation.fade )
+                )
+                result.add(action)
+            }
+        }
+        return  result.toTypedArray()
+
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
@@ -79,23 +115,25 @@ class HudActor(
         )
 
         if (isTextDrawing) {
-            if (textX + textPointer >= textBound) {
-                textPointer = textPartPointer
-                isTextPartAdded = false
+            //if (textX + textPointer >= textBound) {
+                if (textX + textPointer + textWidth <= textBound) {
+                    textPointer = textPartPointer
+                    isTextPartAdded = false
             }
 
-            if (textX + textPointer + textWidth >= textBound && !isTextPartAdded) {
+//            if (textX + textPointer + textWidth >= textBound && !isTextPartAdded) {
+            if (textX + textPointer <= textBound && !isTextPartAdded) {
                 addTextPart()
             }
 
             font.draw(batch, text, textX + textPointer, textY)
-            textPointer++
+            textPointer--
 
         }
 
         if (isTextPartAdded) {
             font.draw(batch, text, textX + textPartPointer, textY)
-            textPartPointer++
+            textPartPointer--
         }
 
 

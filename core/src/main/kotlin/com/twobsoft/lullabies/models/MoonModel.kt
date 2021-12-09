@@ -83,23 +83,24 @@ class MoonModel(val assets: Assets): Entity() {
     val star3 = LayerActor(tex = star3Tex, texture = assets.getAsset(star3Tex))
 
 
-    val gory = LayerActor(tex = goryTex, texture = assets.getAsset(goryTex)).also {
-        it.actions.add(
-            Actions.repeat(
-                RepeatAction.FOREVER,
-                Actions.parallel(
-                    Actions.sequence(
-                        Actions.scaleBy(0.06f, 0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.scaleBy(-0.06f, -0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    ),
-                    Actions.sequence(
-                        Actions.moveBy(-MainScreen.BG_HEIGHT * 0.007f, -MainScreen.BG_HEIGHT * 0.01f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.moveBy(MainScreen.BG_HEIGHT * 0.007f, MainScreen.BG_HEIGHT * 0.01f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    )
-                )
-            )
-        )
-    }
+    val gory = LayerActor(tex = goryTex, texture = assets.getAsset(goryTex))
+//        .also {
+//        it.actions.add(
+//            Actions.repeat(
+//                RepeatAction.FOREVER,
+//                Actions.parallel(
+//                    Actions.sequence(
+//                        Actions.scaleBy(0.06f, 0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+//                        Actions.scaleBy(-0.06f, -0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+//                    ),
+//                    Actions.sequence(
+//                        Actions.moveBy(-MainScreen.BG_HEIGHT * 0.007f, -MainScreen.BG_HEIGHT * 0.01f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+//                        Actions.moveBy(MainScreen.BG_HEIGHT * 0.007f, MainScreen.BG_HEIGHT * 0.01f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+//                    )
+//                )
+//            )
+//        )
+//    }
 
     val luna = LayerActor(tex = lunaTex, texture = assets.getAsset(lunaTex))
 
@@ -113,6 +114,7 @@ class MoonModel(val assets: Assets): Entity() {
     )
 
     init {
+        moonGroup.addActor(gory)
         moonGroup.addActor(luna)
         moonGroup.addActor(flag)
         moonGroup.actions.add(
@@ -135,5 +137,5 @@ class MoonModel(val assets: Assets): Entity() {
 
 
 
-    override val all = arrayOf<Actor>(background, star1, star2, star3, planets, zemlya, gory, moonGroup)
+    override val all = arrayOf(background, star1, star2, star3, planets, zemlya, moonGroup)
 }

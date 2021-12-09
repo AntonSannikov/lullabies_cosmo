@@ -96,7 +96,10 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                             Vector2(x, MainScreen.BG_HEIGHT - y))
                     )
                     {
-                        hudActor.actions.forEach { hudActor.addAction(it) }
+                        hudActor.getActionsFromMap().forEach {interaction->
+                            hudActor.addAction(interaction)
+                        }
+
                         hudTapHandler = hudActor.tapHandler
                         break
                     }
@@ -113,34 +116,34 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     }
 
     override fun onUp() {}
-
     override fun onDown() {}
-
     override fun onPan(x: Float, y: Float, deltaX: Float, deltaY: Float) {}
 
 
     // =============================================================================================
     //                                          HUD
     fun refreshHud() {
-        val hudGroups = arrayListOf<HudGroup>()
         var length = screen.stage.actors.size - 1
         var i = 0
         while (i < length) {
             val actor = screen.stage.actors[i]
             if (actor is HudGroup) {
-                hudGroups.add(actor)
                 actor.remove()
                 length --
             } else { i++ }
         }
 
-        if (hudGroups.isEmpty()) {
-            for (hudActor in screen.hudModel.all) {
-                screen.stage.addActor(hudActor)
+        for (hudActor in screen.hudModel.all) {
+            if (hudActor is HudGroup) {
+                hudActor.children.forEach { it as HudActor
+                    if (it.text != "") {
+                        it.changeText(MediaPlayer.playlist[screen.currentStageNumber-1]!!)
+                    }
+                }
             }
-        } else {
-            hudGroups.forEach { screen.stage.addActor(it) }
+            screen.stage.addActor(hudActor)
         }
+
     }
 
     fun addRollingHud() {
@@ -208,7 +211,8 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                             Actions.delay(0.3f),
                             Actions.run {
                                 if (!isHudRollbacks) {
-                                    screen.isFishEye = true
+                                    //screen.isFishEye = true
+                                    screen.isInverseShading = true
                                     isHudRollbacks = true
                                     rollbackHud()
                                 }
@@ -324,6 +328,8 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     private fun changeStage(increment: Int) {
         screen.currentStageNumber += increment
         screen.isSwiping = true
+
+        MediaPlayer.play(screen.currentStageNumber, true)
 
         for (actor in screen.stage.actors) {
             if (actor is LayerActor) { actor.isNeedRemove = true }

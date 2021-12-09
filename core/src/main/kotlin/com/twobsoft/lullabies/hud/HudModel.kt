@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
+import com.twobsoft.lullabies.MediaPlayer
 import com.twobsoft.lullabies.gestures.StageInputListener
 import com.twobsoft.lullabies.models.Entity
 
@@ -57,8 +58,11 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
     }
 
     // upper panel
-    val panelUp = HudActor(tex = panelUpTex, text = "5. Le nozze di Figaro - Arietta",
-        actorTexture = assets.getAsset(panelUpTex)).also {
+    val panelUp = HudActor(
+        tex = panelUpTex,
+        text = MediaPlayer.playlist[appListener.screen.currentStageNumber-1]!!,
+        actorTexture = assets.getAsset(panelUpTex)
+    ).also {
 
         if (MainScreen.BG_WIDTH > 1600) {
             it.y = MainScreen.BG_HEIGHT * 0.442f
@@ -67,13 +71,13 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             it.y = MainScreen.BG_HEIGHT * 0.448f
             it.scaleBy(-0.26f, -0.92f)
         }
-        it.textX = MainScreen.BG_WIDTH * 0.2f
+        it.textX = MainScreen.BG_WIDTH * 0.25f
         if (MainScreen.BG_WIDTH > 1600) {
             it.textY = MainScreen.BG_HEIGHT * 0.973f
         } else {
             it.textY = MainScreen.BG_HEIGHT * 0.971f
         }
-        it.textBound = MainScreen.BG_WIDTH * 0.83f
+        it.textBound = MainScreen.BG_WIDTH * 0.17f
     }
 
     val options = HudActor(tex = optionsTex,
@@ -184,7 +188,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
 
     val joystick = HudActor(
         tex = joystickTex,
-        actorTexture = assets.getAsset(joystickTex)
+        actorTexture = assets.getAsset(joystickTex),
     ).also {
         it.scaleBy(-0.86f, -0.88f)
         it.x = -MainScreen.BG_WIDTH * 0.21f
@@ -202,17 +206,11 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(MainScreen.BG_WIDTH * 0.34f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.17f)
 
-        it.actions.add(
-            Actions.sequence(
-                Actions.scaleBy(-0.01f, -0.01f, 0.2f, Interpolation.fade),
-                Actions.scaleBy(0.01f, 0.01f, 0.2f, Interpolation.fade)
-            ),
-//                Actions.sequence(
-//                    Actions.rotateBy(4f, 0.2f, Interpolation.fade),
-//                    Actions.rotateBy(-4f, 0.2f, Interpolation.fade)
-//                )
+        val map = hashMapOf<String, Float>()
+        map["scaleBy"] = -0.01f
+        map["duration"] = 0.2f
+        it.interActions.add(map)
 
-        )
 
         it.tapHandler = { appListener.startMenuTransition() }
     }
@@ -234,6 +232,8 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         // 4
         it.hitBox.add(MainScreen.BG_WIDTH * 0.608f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.134f)
+
+        it.tapHandler = { MediaPlayer.play(appListener.screen.currentStageNumber) }
     }
 
     val arrowL = HudActor(tex = arrowLTex,
@@ -253,6 +253,8 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         // 4
         it.hitBox.add(MainScreen.BG_WIDTH * 0.408f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.1f)
+
+        it.tapHandler = { appListener.onRight() }
     }
 
     val clock = HudActor(tex = clockTex,
@@ -294,6 +296,8 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         // 5
         it.hitBox.add(MainScreen.BG_WIDTH * 0.755f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.106f)
+
+        it.tapHandler = { appListener.onLeft() }
     }
 
     val deckGroup = HudGroup().also {

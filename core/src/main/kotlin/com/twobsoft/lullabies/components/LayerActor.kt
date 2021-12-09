@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
+import com.twobsoft.lullabies.splash.SplashScreen
 import java.lang.Math.cos
 import java.lang.Math.toRadians
 import kotlin.math.PI
@@ -63,6 +64,12 @@ class LayerActor(
     var yDelta = 0
     var repeatTime = 0f
 
+    // splash orbit
+    var isSplashOrbit = false
+    var splashAngleDelta = -2f
+    var splashOrbitX = 0.6f
+    var splashOrbitY = 0.15f
+    var angleOffset = 107f
 
 
     init {
@@ -76,7 +83,8 @@ class LayerActor(
         width = MainScreen.BG_WIDTH
 
         if (cHeight == 0f) {
-            height = if (tex != "menu/background.png") width * 100 / 64 else MainScreen.BG_HEIGHT
+            height = if (tex != "menu/background.png" && tex != "splash/background.jpg") width * 100 / 64
+            else MainScreen.BG_HEIGHT
         } else {
             height = cHeight
         }
@@ -173,6 +181,23 @@ class LayerActor(
             yOffset += yDelta
         }
 
+        if (isSplashOrbit) {
+            angle += splashAngleDelta
+            if (angle > 360 || angle < -360) angle = 0f
+
+
+            x = splashOrbitX * MainScreen.BG_WIDTH*kotlin.math.cos(PI / 180f * angle).toFloat()
+            y = splashOrbitY * MainScreen.BG_HEIGHT*sin(PI / 180f * angle).toFloat()
+
+            x+=MainScreen.BG_WIDTH / 2 - width/2
+            y+=MainScreen.BG_HEIGHT / 2 - height/2
+
+            originX = width / 2
+            originY = height / 2
+            rotation = angle + angleOffset
+            if (rotation > 360 || rotation < -360) rotation = 0f
+        }
+
         for (layer in layers) {
             batch.draw(layer,
                 x, y,
@@ -186,11 +211,20 @@ class LayerActor(
             )
         }
 
-//        if (tex == "planets/pluto/flare.png") {
+
+//        if (tex == "splash/comet_bot.png") {
 //            MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
 //            MainScreen.shapeRenderer.color = Color.RED
 //            MainScreen.shapeRenderer.rect(x,y,width,height)
 //        }
+
+//        if (tex == "splash/comet_bot.png") {
+//            SplashScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+//            SplashScreen.shapeRenderer.color = Color.RED
+//            SplashScreen.shapeRenderer.rect(x,y,width,height)
+//        }
+
+
     }
 
 }

@@ -43,7 +43,7 @@ class EarthModel(val assets: Assets): Entity() {
                 RepeatAction.FOREVER,
                 Actions.sequence(
                     Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 100f),
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2.2f, 0f),
+                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, 0f),
                 )
             )
         )
@@ -55,7 +55,7 @@ class EarthModel(val assets: Assets): Entity() {
                 RepeatAction.FOREVER,
                 Actions.sequence(
                     Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 160f),
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2f, 0f, ),
+                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, 0f),
                 )
             )
         )
@@ -67,7 +67,7 @@ class EarthModel(val assets: Assets): Entity() {
                 RepeatAction.FOREVER,
                 Actions.sequence(
                     Actions.moveBy(-MainScreen.BG_WIDTH, 0f, 200f),
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2f, 0f, ),
+                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, 0f),
                 )
             )
         )
