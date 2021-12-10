@@ -1,97 +1,225 @@
 package com.twobsoft.lullabies.android
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.MediaPlayer
+import android.os.Build
 import com.twobsoft.lullabies.R
 import com.twobsoft.lullabies.ServicesCoreInterface
 
 
-class ServicesApi(val context: Context): ServicesCoreInterface {
+class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
-    val playlist = arrayListOf<Int>()
+
     var currentSong = 0
     var isPlaying = false
 
+    var mediaPlayer: MediaPlayer?=null
 
-    init {
-        playlist.add(R.raw.file1)
-        playlist.add(R.raw.file2)
-        playlist.add(R.raw.file3)
-        playlist.add(R.raw.file4)
-        playlist.add(R.raw.file5)
-        playlist.add(R.raw.file6)
-        playlist.add(R.raw.file7)
-        playlist.add(R.raw.file8)
-        playlist.add(R.raw.file9)
-        playlist.add(R.raw.file10)
-        playlist.add(R.raw.file11)
-        playlist.add(R.raw.file12)
-        playlist.add(R.raw.file13)
-        playlist.add(R.raw.file14)
-        playlist.add(R.raw.file15)
-        playlist.add(R.raw.file16)
+    var notificationManager: NotificationManager?=null
+    var corePlayCallback: () -> Unit = {}
+    var corePauseCallback: () -> Unit = {}
+    var corePreviousCallback: () -> Unit = {}
+    var coreNextCallback: () -> Unit = {}
+
+
+
+    val mediaButtonReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.getStringExtra("actionName")
+            when (action) {
+                CreateNotification.ACTION_PREVIOUS -> onTrackPrevious()
+                CreateNotification.ACTION_PLAY -> {
+                    if (isPlaying) {
+                        onTrackPause()
+                    } else {
+                        onTrackPlay()
+                    }
+                }
+                CreateNotification.ACTION_NEXT -> onTrackNext()
+            }
+        }
     }
 
-    var mediaPlayer = MediaPlayer.create(context, playlist[0])
+    fun endOfTrackcallback() {
+        println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+    }
+
+    init {
+        mediaPlayer = MediaPlayer.create(context, BackgroundSoundService.playlist[0].data)
+
+        BackgroundSoundService.mediaPlayer = mediaPlayer
+        BackgroundSoundService.endOfTrackCallback = ::endOfTrackcallback
+        createChannel()
+        context.registerReceiver(mediaButtonReceiver, IntentFilter("TRACKS_TRACKS"))
+        context.startService(Intent(context, OnClearFromRecentService::class.java))
+    }
+
+
+    fun createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CreateNotification.CHANNEL_ID,
+                "twoBsoft",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            notificationManager = context.getSystemService(NotificationManager::class.java)
+            if (notificationManager != null) {
+                notificationManager!!.createNotificationChannel(channel)
+
+            }
+        }
+
+    }
+
+    override fun initPlayCallback(callback: () -> Unit) {
+        corePlayCallback = callback
+    }
+
+    override fun initPauseCallback(callback: () -> Unit) {
+        corePauseCallback = callback
+    }
+
+    override fun initPreviousCallback(callback: () -> Unit) {
+        corePreviousCallback = callback
+    }
+
+    override fun initNextCallback(callback: () -> Unit) {
+        coreNextCallback = callback
+    }
+
 
     override fun share() {
         println("SHARE")
     }
 
 
-
     override fun playMusic(stageNumber: Int, isSwitching: Boolean) {
+        currentSong = stageNumber-1
+        isPlaying = !isPlaying
+        CreateNotification.createNotification(
+            context,
+            BackgroundSoundService.playlist[currentSong],
+            R.drawable.ic_baseline_pause_24,
+            stageNumber-1,
+            BackgroundSoundService.playlist.size-1
+        )
+        val intent = Intent(context, BackgroundSoundService::class.java)
+        intent.putExtra("songIndex", currentSong)
+        intent.putExtra("action", "playNew")
+        context.stopService(intent)
+        context.startService(intent)
+
+    }
+
+
+
+
+    override fun onTrackPrevious() {
+        if (currentSong == 0) {
+            return
+        }
+        currentSong--
+        isPlaying = true
+
+        corePreviousCallback()
+
+        CreateNotification.createNotification(
+            context,
+            BackgroundSoundService.playlist[currentSong],
+            R.drawable.ic_baseline_pause_24,
+            currentSong,
+            BackgroundSoundService.playlist.size-1
+        )
 
         val intent = Intent(context, BackgroundSoundService::class.java)
+        intent.putExtra("songIndex", currentSong)
+        intent.putExtra("action", "playNew")
         context.startService(intent)
 
 
-//        if (!isPlaying) {
-//            if (!isSwitching) {
-//                if (currentSong == stageNumber - 1) {
-//                    isPlaying = true
-//                    mediaPlayer!!.start()
-//                    return
-//                }
-//                currentSong = stageNumber - 1
-//                createNewPlay()
-//            }
-//
-//        } else {
-//            if (!isSwitching) {
-//                isPlaying = false
-//                mediaPlayer!!.pause()
-////                mediaPlayer!!.seekTo(0)
-//            } else {
-//                currentSong = stageNumber - 1
-//                createNewPlay()
-//            }
-//        }
     }
 
-    fun createNewPlay() {
-        mediaPlayer!!.reset()
-        mediaPlayer = MediaPlayer.create(context, playlist[currentSong])
+
+    override fun onTrackPlay() {
+
         isPlaying = true
 
-        // startService(Intent(MainActivity.this, BackGroundMusic.class))
-//        mediaPlayer!!.start()
+        corePlayCallback()
+
+        CreateNotification.createNotification(
+            context,
+            BackgroundSoundService.playlist[currentSong],
+            R.drawable.ic_baseline_pause_24,
+            currentSong,
+            BackgroundSoundService.playlist.size-1
+        )
+
+
+        val intent = Intent(context, BackgroundSoundService::class.java)
+        intent.putExtra("songIndex", currentSong)
+        intent.putExtra("action", "resume")
+        context.startService(intent)
     }
 
-    override fun playNext() {
-//        if (currentSong <= playlist.size - 2) {
-//            currentSong++
-//            playMusic(currentSong + 1, true)
-//        }
+
+    override fun onTrackPause() {
+
+        isPlaying = false
+
+        corePauseCallback()
+
+        CreateNotification.createNotification(
+            context,
+            BackgroundSoundService.playlist[currentSong],
+            R.drawable.ic_baseline_play_arrow_24,
+            currentSong,
+            BackgroundSoundService.playlist.size-1
+        )
+
+
+
+        val intent = Intent(context, BackgroundSoundService::class.java)
+        intent.putExtra("songIndex", currentSong)
+        intent.putExtra("action", "pause")
+        context.startService(intent)
     }
 
 
-    override fun playPrevious() {
-//        if (currentSong >= 1) {
-//            playMusic(currentSong + 1, true)
-//        }
+    override fun onTrackNext() {
+        if (currentSong == BackgroundSoundService.playlist.size - 1) {
+            return
+        }
+        isPlaying = true
+        currentSong++
+
+        coreNextCallback()
+
+        CreateNotification.createNotification(
+            context,
+            BackgroundSoundService.playlist[currentSong],
+            R.drawable.ic_baseline_pause_24,
+            currentSong,
+            BackgroundSoundService.playlist.size-1
+        )
+        val intent = Intent(context, BackgroundSoundService::class.java)
+        intent.putExtra("songIndex", currentSong)
+        intent.putExtra("action", "playNew")
+        context.startService(intent)
     }
 
+
+    fun dispose(context: Context) {
+        val intent = Intent(context, BackgroundSoundService::class.java)
+        context.stopService(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager?.cancelAll()
+            context.unregisterReceiver(mediaButtonReceiver)
+        }
+    }
 
 }

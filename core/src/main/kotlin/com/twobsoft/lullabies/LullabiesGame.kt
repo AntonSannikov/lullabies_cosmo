@@ -35,6 +35,7 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>(
 
     override fun create() {
         MediaPlayer.serviceApi = serviceApi
+        MediaPlayer.initCallbacks()
         KtxAsync.initiate()
         assets.loadSplash()
         assets.manager.finishLoading()

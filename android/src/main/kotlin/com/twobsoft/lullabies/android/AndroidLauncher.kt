@@ -13,16 +13,25 @@ import com.twobsoft.lullabies.R
 class AndroidLauncher : AndroidApplication() {
 
 
+    var servicesApi: ServicesApi?=null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        servicesApi = ServicesApi( this)
 
         super.onCreate(savedInstanceState)
         initialize(
-            LullabiesGame(ServicesApi( this)), AndroidApplicationConfiguration().apply {
+            LullabiesGame(servicesApi!!), AndroidApplicationConfiguration().apply {
                 // Configure your application here.
             }
         )
+    }
 
+    override fun onDestroy() {
+        BackgroundSoundService.isNeedDestroy = true
+        servicesApi?.dispose(this)
+        super.onDestroy()
     }
 
 

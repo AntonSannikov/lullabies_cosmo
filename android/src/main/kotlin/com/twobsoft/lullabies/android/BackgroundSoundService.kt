@@ -12,27 +12,34 @@ import android.widget.Toast
 
 
 class BackgroundSoundService: Service() {
-    var mediaPlayer: MediaPlayer? = null
 
-    val playlist = arrayOf<Int>(
-        com.twobsoft.lullabies.R.raw.file1,
-        com.twobsoft.lullabies.R.raw.file2,
-        com.twobsoft.lullabies.R.raw.file3,
-        com.twobsoft.lullabies.R.raw.file4,
-        com.twobsoft.lullabies.R.raw.file5,
-        com.twobsoft.lullabies.R.raw.file6,
-        com.twobsoft.lullabies.R.raw.file7,
-        com.twobsoft.lullabies.R.raw.file8,
-        com.twobsoft.lullabies.R.raw.file9,
-        com.twobsoft.lullabies.R.raw.file10,
-        com.twobsoft.lullabies.R.raw.file11,
-        com.twobsoft.lullabies.R.raw.file12,
-        com.twobsoft.lullabies.R.raw.file13,
-        com.twobsoft.lullabies.R.raw.file14,
-        com.twobsoft.lullabies.R.raw.file15,
-        com.twobsoft.lullabies.R.raw.file16,
-    )
 
+    companion object {
+        var mediaPlayer: MediaPlayer?= null
+        var isNeedDestroy = false
+        var endOfTrackCallback: ()-> Unit = {}
+
+        var id = 0
+
+        val playlist = arrayOf(
+            Track("Twinkle Twinkle Little Star", "", com.twobsoft.lullabies.R.raw.file1, 1),
+            Track("Madamina, il catalogo è questo", "Don Giovanni", com.twobsoft.lullabies.R.raw.file2, 2),
+            Track("Symphony No.11 in D major", "", com.twobsoft.lullabies.R.raw.file3, 3),
+            Track("Andiam, Andiam", "Don Giovanni", com.twobsoft.lullabies.R.raw.file4, 4),
+            Track("Le nozze di Figaro", "Arietta", com.twobsoft.lullabies.R.raw.file5, 5),
+            Track("Violin Sonata No. 24", "", com.twobsoft.lullabies.R.raw.file6, 6),
+            Track("Piano Sonata", "Alla turca", com.twobsoft.lullabies.R.raw.file7, 7),
+            Track("Ho capito, Signor si", "Don Giovanni", com.twobsoft.lullabies.R.raw.file8, 8),
+            Track("Moonlight sonata (special for A.)", "Beethoven", com.twobsoft.lullabies.R.raw.file9, 9),
+            Track("Trois beaux enfants fins", "The magic flute", com.twobsoft.lullabies.R.raw.file10, 10),
+            Track("Twinkle Little Star (Christmas Version)", "", com.twobsoft.lullabies.R.raw.file11, 11),
+            Track("Variations in F major", "", com.twobsoft.lullabies.R.raw.file12, 12),
+            Track("Eine Kleine Nachtmusik", "", com.twobsoft.lullabies.R.raw.file13, 13),
+            Track("Kirie Eleison", "", com.twobsoft.lullabies.R.raw.file14, 14),
+            Track("Sinfonia Concertante", "", com.twobsoft.lullabies.R.raw.file15, 15),
+            Track("16. Serenade in D major", "Haffner", com.twobsoft.lullabies.R.raw.file16, 16),
+        )
+    }
 
 
 
@@ -42,24 +49,45 @@ class BackgroundSoundService: Service() {
 
     override fun onCreate() {
         super.onCreate()
-        mediaPlayer = MediaPlayer.create(this, playlist[0])
-        mediaPlayer!!.isLooping = true // Set looping
-        mediaPlayer!!.setVolume(100f, 100f)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        mediaPlayer!!.start()
+        id = startId
+
+        val songIndex = intent!!.getIntExtra("songIndex", 0)
+        val action = intent.getStringExtra("action")
+
+        mediaPlayer?.isLooping = true
+
+        when (action) {
+            "playNew" -> {
+                mediaPlayer?.reset()
+                mediaPlayer = MediaPlayer.create(
+                    this, playlist[songIndex].data
+                )
+                mediaPlayer?.start()
+                mediaPlayer!!.setOnCompletionListener { endOfTrackCallback() }
+            }
+            "resume" -> mediaPlayer?.start()
+            "pause" -> mediaPlayer?.pause()
+
+        }
+
         Toast.makeText(applicationContext,
-            "Playing Bohemian Rashpody in the Background",
+            "$songIndex",
             Toast.LENGTH_SHORT).show()
 
-        return startId
+        return START_STICKY
     }
 
 
-
     override fun onStart(intent: Intent?, startId: Int) {}
+
+
+
     override fun onDestroy() {
+        println("try to destroy $id")
+        if (!isNeedDestroy) return
         mediaPlayer?.stop()
         mediaPlayer?.release()
     }
