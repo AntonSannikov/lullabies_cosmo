@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.os.Build
+import androidx.core.app.NotificationManagerCompat
 import com.twobsoft.lullabies.R
 import com.twobsoft.lullabies.ServicesCoreInterface
 
@@ -216,10 +217,10 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
     fun dispose(context: Context) {
         val intent = Intent(context, BackgroundSoundService::class.java)
         context.stopService(intent)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager?.cancelAll()
-            context.unregisterReceiver(mediaButtonReceiver)
-        }
+        val notificationManagerCompat = NotificationManagerCompat.from(context)
+        notificationManagerCompat.cancelAll()
+        context.unregisterReceiver(mediaButtonReceiver)
+
     }
 
 }

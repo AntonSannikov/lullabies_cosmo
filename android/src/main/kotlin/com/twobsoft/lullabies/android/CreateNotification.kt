@@ -21,9 +21,6 @@ class CreateNotification {
 
         var notification: Notification?=null
 
-
-
-
         fun getMediaStyle(size: Int): androidx.media.app.NotificationCompat.MediaStyle {
 
             if (size == 1) {

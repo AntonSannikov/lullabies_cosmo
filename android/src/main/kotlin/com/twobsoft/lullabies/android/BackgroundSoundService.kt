@@ -8,7 +8,7 @@ import android.media.MediaPlayer
 
 import android.os.IBinder
 import android.widget.Toast
-
+import androidx.core.app.NotificationManagerCompat
 
 
 class BackgroundSoundService: Service() {

@@ -38,6 +38,8 @@ class MenuModel(val assets: Assets): Entity() {
     val background  = LayerActor(tex = backgroundTex, isMenu = true, assets.getAsset(backgroundTex),)
     val radar       = LayerActor(tex = radarTex, texture = assets.getAsset(radarTex))
 
+
+
     val sun = AnimatedActor( sunSS, 5, 4, 1, assets.getAsset(sunSS),
         MainScreen.BG_HEIGHT * 0.31f,MainScreen.BG_HEIGHT * 0.31f).also {
         it.x = MainScreen.BG_WIDTH / 2 - MainScreen.BG_HEIGHT * 0.155f

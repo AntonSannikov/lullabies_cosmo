@@ -7,6 +7,8 @@ import ktx.assets.disposeSafely
 import ktx.async.KtxAsync
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.utils.viewport.*
@@ -14,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
+import com.esotericsoftware.spine.*
 import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_MAX_POWER
 import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_POWER
 import com.twobsoft.lullabies.gestures.StageInputListener
@@ -141,9 +144,30 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         Gdx.input.inputProcessor = GestureDetector(
             MyGestureListener(inputListener)
         )
+
     }
 
 
+    val renderer = SkeletonRenderer().also {
+        it.setPremultipliedAlpha(true)
+    }
+
+    val atlas = TextureAtlas(Gdx.files.internal("menu/zemlya.atlas"))
+    val json =  SkeletonJson(atlas).also{ it.scale = 3f }
+    val skeletonData = json.readSkeletonData(Gdx.files.internal("menu/solar_system.json"));
+    val skeleton = Skeleton(skeletonData).also {
+        it.setPosition(500f, 500f)
+    }
+
+    val  stateData = AnimationStateData(skeletonData)
+
+
+    val state = AnimationState(stateData).also {
+        it.timeScale = 0.5f
+        it.setAnimation(0, "animation", true)
+    }
+
+    val polygonSpriteBatch = PolygonSpriteBatch()
 
     // ==============================      METHODS     =============================================
 
@@ -163,6 +187,9 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     }
 
 
+
+
+
     // =============================================================================================
     //                                  RENDER
     override fun render(delta: Float) {
@@ -170,6 +197,10 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         val gl = Gdx.graphics.gL20
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+        state.update(delta)
+        state.apply(skeleton)
+        skeleton.updateWorldTransform()
 
         shapeRenderer.begin()
         if (isBarrel) {
@@ -275,6 +306,10 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
         shapeRenderer.end()
+
+        polygonSpriteBatch.begin()
+        renderer.draw(polygonSpriteBatch, skeleton)
+        polygonSpriteBatch.end()
 
     }
     //                                  RENDER
