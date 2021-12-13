@@ -119,6 +119,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         while (i < length) {
             val actor = screen.stage.actors[i]
             if (actor is HudGroup) {
+                actor.actions.clear()
                 actor.remove()
                 length --
             } else { i++ }
@@ -143,14 +144,14 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         val targetScale = Vector2(-MainScreen.BG_WIDTH * 0.0003f, -MainScreen.BG_HEIGHT * 0.0003f)
         screen.isHudTapable = false
         screen.hudModel.all.forEach {
-            it.y = -MainScreen.BG_HEIGHT * 0.4f
+            it.y = -MainScreen.BG_HEIGHT * 0.3f
             it.x = -MainScreen.BG_WIDTH * 0.2f
             it.scaleBy(startingScale.x, startingScale.y)
             screen.stage.addActor(it)
             it.addAction(
                 Actions.parallel(
-                    Actions.scaleBy(targetScale.x, targetScale.y, 1f),
-                    Actions.moveBy(MainScreen.BG_WIDTH * 0.2f, MainScreen.BG_HEIGHT * 0.4f, 1f)
+                    Actions.scaleBy(targetScale.x, targetScale.y, 0.8f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 0.2f, MainScreen.BG_HEIGHT * 0.3f, 0.8f)
                 )
             )
         }
@@ -162,7 +163,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             if (it is HudGroup) {
                 it.addAction(
                     Actions.sequence(
-                        Actions.delay(0.6f),
+                        Actions.delay(0.3f),
                         Actions.run { removeHud() }
                     )
                 )
@@ -209,7 +210,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                                 }
                             }
                         ),
-                        Actions.scaleBy(-0.2f, -0.2f, 0.8f, Interpolation.slowFast)
+                        Actions.scaleBy(-0.2f, -0.2f, 1.2f, Interpolation.slowFast)
                     )
                 )
             }

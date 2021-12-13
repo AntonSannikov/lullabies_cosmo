@@ -49,7 +49,7 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>(
 }
 
 
-class MainScreen(val game: LullabiesGame) : KtxScreen {
+class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxScreen {
 
     companion object {
         val BG_WIDTH            = Gdx.graphics.width.toFloat()
@@ -110,7 +110,6 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
 
     var isInverseShading = false
     var inverseShadingTime = 0.5f
-    var inverseShadeTimeBound = 2.5f
 
 
     //
@@ -118,8 +117,6 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     val hudModel : HudModel
     var isHudTapable = true
     var isSwiping = false
-
-    var menuModel = MenuSpineModel(game.assets)
     var isMenu = false
 
     init {
@@ -164,6 +161,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     }
 
     fun resetInterstellarShader() {
+        inverseShadingTime = 0.5f
         time = 6f
     }
 
@@ -212,7 +210,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
 
         if (isInterStellar) {
             time += delta
-            inverseShadingTime += delta * 1.1f
+            inverseShadingTime += delta * 1.2f
             interStellarShader.bind()
             Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE1)
             texture0.bind(1);
@@ -271,20 +269,30 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
                 polygonSpriteBatch.end()
             }
         }
+        stage.batch.begin()
+        if (!isHudTapable) {
+            for (actor in stage.actors) {
+                if (actor is HudGroup) {
+                    actor.draw(stage.batch, 1f)
+                }
+            }
+        }
+        stage.batch.end()
+
         fbo2.end()
 
         if (isShade) {
             if (isInitialShading) {
                 shadeTime += initialShadeDelta
             } else {
-                shadeTime += delta
+                shadeTime += delta*2f
             }
 
             shadeShader.bind()
             shadeShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
             shadeShader.setUniformf("iTime", shadeTime)
             stage.batch.shader = shadeShader
-            if (shadeTime >= 1.6f) {
+            if (shadeTime >= 1.4f) {
                 if (isInitialShading) isInitialShading = false
                 isShade = false
                 shadeTime = 0f
@@ -292,17 +300,18 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
             }
 
         } else if (isInverseShading) {
-            if (inverseShadingTime >= inverseShadeTimeBound) {
+            if (inverseShadingTime >= 2f) {
+                inputListener.createMenu()
                 isInverseShading = false
                 isShade = true
-                shadeTime += delta
+                inverseShadingTime += delta*3f
                 shadeShader.bind()
-                shadeShader.setUniformf("iTime", shadeTime)
+                inverseShadingTime = 0.5f
+                shadeShader.setUniformf("iTime", inverseShadingTime)
                 stage.batch.shader = shadeShader
-                inverseShadingTime = 0f
-                inputListener.createMenu()
+
             } else {
-                inverseShadingTime += delta
+                inverseShadingTime += delta*3f
                 inverseShader.bind()
                 inverseShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
                 inverseShader.setUniformf("iTime", inverseShadingTime)
@@ -315,14 +324,6 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
 
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
-        if (!isHudTapable) {
-            for (actor in stage.actors) {
-                if (actor is HudGroup) {
-                    actor.draw(stage.batch, 1f)
-                }
-            }
-        }
-
         stage.batch.end()
 
         shapeRenderer.end()

@@ -1,11 +1,16 @@
 package com.twobsoft.lullabies
 
 
+import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.esotericsoftware.spine.SkeletonData
+import com.esotericsoftware.spine.utils.SkeletonDataLoader
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.hud.HudModel
 import com.twobsoft.lullabies.splash.SplashScreenModel
+import ktx.assets.async.loadSync
 import ktx.assets.getAsset
 
 
@@ -13,6 +18,7 @@ import ktx.assets.getAsset
 class Assets {
 
     val manager: AssetManager = AssetManager()
+    val skeletonLoader = SkeletonDataLoader(manager.fileHandleResolver)
 
     // SPLASH
     fun loadSplash() {
@@ -27,6 +33,7 @@ class Assets {
     // MENU
     fun loadMenu() {
         MenuSpineModel.all.forEach { manager.load(it, Texture::class.java)  }
+        MenuSpineModel.allSkeletons.forEach { skeletonLoader.loadSync(manager, AssetDescriptor(it, SkeletonData::class.java)) }
     }
 
 

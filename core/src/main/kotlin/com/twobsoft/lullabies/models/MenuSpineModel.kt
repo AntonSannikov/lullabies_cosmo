@@ -19,6 +19,13 @@ class MenuSpineModel(val assets: Assets) {
 
         val all = arrayOf(backgroundTex, radarTex)
 
+        const val sunAtlas      = "menu/sun/sun.atlas"
+        const val sunJson       = "menu/sun/json.json"
+
+
+        val allSkeletons = arrayOf(sunAtlas, sunJson)
+
+
     }
 
     val background = LayerActor(tex = backgroundTex, isMenu = true, assets.getAsset(backgroundTex))
@@ -26,8 +33,8 @@ class MenuSpineModel(val assets: Assets) {
 
 
     val sun = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/sun/sun.atlas")),
-        Gdx.files.internal("menu/sun/json.json"),
+        TextureAtlas(assets.skeletonLoader.resolve("menu/sun/sun.atlas")),
+        assets.skeletonLoader.resolve("menu/sun/json.json"),
         1f
     ).also {
         it.stageNumber = 1

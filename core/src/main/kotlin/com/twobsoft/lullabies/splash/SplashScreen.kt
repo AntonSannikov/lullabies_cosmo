@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.twobsoft.lullabies.LullabiesGame
 import com.twobsoft.lullabies.MainScreen
 import com.twobsoft.lullabies.components.LayerActor
+import com.twobsoft.lullabies.models.MenuSpineModel
 import ktx.app.KtxScreen
 
 class SplashScreen(val game: LullabiesGame): KtxScreen {
@@ -21,7 +22,6 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
     companion object {
         val shapeRenderer = ShapeRenderer()
     }
-
 
     // SHADE SHADER
     val shadeShader = ShaderProgram(
@@ -41,6 +41,8 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
     var isAssetsLoaded = false
     var isTransitionDone = false
 
+    val menuModel: MenuSpineModel
+
     init {
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
@@ -51,9 +53,11 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
             stage.addActor(it)
             it.actions.forEach { action -> it.addAction(action) }
         }
+        game.assets.load(0)
+        game.assets.manager.finishLoading()
+        menuModel = MenuSpineModel(game.assets)
 
         game.assets.loadHud()
-        game.assets.load(0)
         game.assets.load(1)
         game.assets.load(2)
         game.assets.load(3)
@@ -94,7 +98,7 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
                     isShade = true
                 }
             } else if (isShade) {
-                val mainScreen = MainScreen(game)
+                val mainScreen = MainScreen(game, menuModel)
                 mainScreen.isShade = true
                 mainScreen.isInitialShading = true
                 isTransitionDone = true
