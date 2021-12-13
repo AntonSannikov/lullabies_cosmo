@@ -26,7 +26,7 @@ class Assets {
 
     // MENU
     fun loadMenu() {
-        MenuModel.all.forEach { manager.load(it, Texture::class.java)  }
+        MenuSpineModel.all.forEach { manager.load(it, Texture::class.java)  }
     }
 
 

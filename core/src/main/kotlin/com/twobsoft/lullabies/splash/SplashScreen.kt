@@ -58,17 +58,17 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
         game.assets.load(2)
         game.assets.load(3)
         game.assets.load(4)
-//        game.assets.load(5)
-//        game.assets.load(6)
-//        game.assets.load(7)
-//        game.assets.load(8)
-//        game.assets.load(9)
-//        game.assets.load(10)
-//        game.assets.load(11)
-//        game.assets.load(12)
-//        game.assets.load(13)
-//        game.assets.load(14)
-//        game.assets.load(15)
+        game.assets.load(5)
+        game.assets.load(6)
+        game.assets.load(7)
+        game.assets.load(8)
+        game.assets.load(9)
+        game.assets.load(10)
+        game.assets.load(11)
+        game.assets.load(12)
+        game.assets.load(13)
+        game.assets.load(14)
+        game.assets.load(15)
     }
 
     override fun render(delta: Float) {
@@ -88,7 +88,7 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
                 inverseShader.setUniformf("iResolution", MainScreen.BG_WIDTH, MainScreen.BG_HEIGHT)
                 inverseShader.setUniformf("iTime", shadeTime)
                 stage.batch.shader = inverseShader
-                if (shadeTime >= 1.6f) {
+                if (shadeTime >= 2f) {
                     shadeTime = 0f
                     isInverseShading = false
                     isShade = true
@@ -96,9 +96,12 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
             } else if (isShade) {
                 val mainScreen = MainScreen(game)
                 mainScreen.isShade = true
+                mainScreen.isInitialShading = true
+                isTransitionDone = true
                 game.addScreen(mainScreen)
                 this.dispose()
                 game.setScreen<MainScreen>()
+                mainScreen.isMenu = true
             }
 
             if (!isTransitionDone) {

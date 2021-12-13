@@ -8,7 +8,6 @@ import ktx.async.KtxAsync
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.utils.viewport.*
@@ -19,7 +18,9 @@ import com.badlogic.gdx.math.Vector2
 import com.esotericsoftware.spine.*
 import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_MAX_POWER
 import com.twobsoft.lullabies.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_POWER
+import com.twobsoft.lullabies.components.SpineComponent
 import com.twobsoft.lullabies.gestures.StageInputListener
+import com.twobsoft.lullabies.hud.HudGroup
 import com.twobsoft.lullabies.hud.HudModel
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.splash.SplashScreen
@@ -88,6 +89,8 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     )
     var shadeTime = 0f
     var isShade = false
+    var isInitialShading = false
+    var initialShadeDelta = 0.04f
 
 
     // INTERSTELLAR SHADER
@@ -106,9 +109,7 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     )
 
     var isInverseShading = false
-    var isFishEye = false
-    var inverseShadingTime = 0f
-    val fishEyeDelta = 0.002f
+    var inverseShadingTime = 0.5f
     var inverseShadeTimeBound = 2.5f
 
 
@@ -118,9 +119,10 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
     var isHudTapable = true
     var isSwiping = false
 
+    var menuModel = MenuSpineModel(game.assets)
+    var isMenu = false
 
     init {
-
         //ShaderProgram.pedantic = false
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
@@ -129,22 +131,15 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         viewport = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
         stage = Stage(viewport)
 
-
         inputListener = StageInputListener(this)
         hudModel = HudModel(game.assets, inputListener)
 
-        val currentModel = EarthModel(game.assets)
-//        val currentModel = MenuModel(game.assets)
-        inputListener.createSwipeStage(currentModel, 0)
-        currentModel.all.forEach {
-            stage.addActor(it)
-        }
-        inputListener.refreshHud()
+        stage.addActor(menuModel.background)
+        stage.addActor(menuModel.radar)
 
         Gdx.input.inputProcessor = GestureDetector(
             MyGestureListener(inputListener)
         )
-
     }
 
 
@@ -152,20 +147,6 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         it.setPremultipliedAlpha(true)
     }
 
-    val atlas = TextureAtlas(Gdx.files.internal("menu/zemlya.atlas"))
-    val json =  SkeletonJson(atlas).also{ it.scale = 3f }
-    val skeletonData = json.readSkeletonData(Gdx.files.internal("menu/solar_system.json"));
-    val skeleton = Skeleton(skeletonData).also {
-        it.setPosition(500f, 500f)
-    }
-
-    val  stateData = AnimationStateData(skeletonData)
-
-
-    val state = AnimationState(stateData).also {
-        it.timeScale = 0.5f
-        it.setAnimation(0, "animation", true)
-    }
 
     val polygonSpriteBatch = PolygonSpriteBatch()
 
@@ -188,8 +169,6 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
 
 
 
-
-
     // =============================================================================================
     //                                  RENDER
     override fun render(delta: Float) {
@@ -198,11 +177,8 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        state.update(delta)
-        state.apply(skeleton)
-        skeleton.updateWorldTransform()
-
         shapeRenderer.begin()
+
         if (isBarrel) {
             if (!isBarrelShaderReseted) {
                 if (barrelShaderPower <= barrelShaderMaxPower && powerDelta < 0) {
@@ -222,6 +198,11 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
             barrelShaderPower += powerDelta
         }
 
+        if (!isShade && !isInverseShading && !isInterStellar && !isBarrel) {
+            polygonSpriteBatch.shader = null
+            stage.batch.shader = null
+        }
+
         fbo.begin()
         stage.act()
         stage.draw()
@@ -231,29 +212,20 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
 
         if (isInterStellar) {
             time += delta
+            inverseShadingTime += delta * 1.1f
             interStellarShader.bind()
             Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE1)
             texture0.bind(1);
             interStellarShader.setUniformi("u_texture", 1)
             interStellarShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
-
+            interStellarShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
+            interStellarShader.setUniformf("shadeTime", inverseShadingTime)
             Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE0)
             rgbNoiseTex.bind(0);
             interStellarShader.setUniformi("u_texture_noise", 0)
             interStellarShader.setUniformf("iTime", time)
             stage.batch.shader = interStellarShader
-        } else if (isFishEye) {
-            barrelShaderPower += fishEyeDelta
-            isInverseShading = true
-            if (barrelShaderPower > 0.55) {
-                isFishEye = false
-                stage.batch.shader = null
-                barrelShaderPower = BARREL_SHADER_PULSE_START_POWER
-            } else {
-                barrelShader.bind()
-                stage.batch.shader = barrelShader
-                barrelShader.setUniformf("iTime", barrelShaderPower)
-            }
+//            polygonSpriteBatch.shader = interStellarShader
         }
 
         var textureRegion = TextureRegion(texture0, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
@@ -261,24 +233,64 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
 
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stage.batch.flush()
-
         fbo2.begin()
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
+
+        if (isMenu) {
+            var topActor: SpineComponent?= null
+            menuModel.all.forEach {
+                if (it.isTransitionAnimation) {
+                    topActor = it
+                }
+            }
+
+            for (spine in menuModel.all) {
+                spine.state.update(delta)
+                spine.state.apply(spine.skeleton)
+                if (spine.rotation != 0f) {
+                    spine.skeleton.rootBone.rotation = spine.rotation
+                }
+                spine.skeleton.updateWorldTransform()
+
+                if (spine.isTransitionAnimation) {
+                    continue
+                }
+                polygonSpriteBatch.begin()
+                renderer.draw(polygonSpriteBatch, spine.skeleton)
+                polygonSpriteBatch.end()
+            }
+
+            if (topActor != null) {
+                val newPosition = topActor!!.getNewPosition()
+                topActor!!.updateScaling(0.01f)
+                topActor!!.setPos(newPosition.x, newPosition.y)
+                polygonSpriteBatch.begin()
+                renderer.draw(polygonSpriteBatch, topActor!!.skeleton)
+                polygonSpriteBatch.end()
+            }
+        }
         fbo2.end()
 
         if (isShade) {
-            shadeTime += delta
+            if (isInitialShading) {
+                shadeTime += initialShadeDelta
+            } else {
+                shadeTime += delta
+            }
+
             shadeShader.bind()
             shadeShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
             shadeShader.setUniformf("iTime", shadeTime)
             stage.batch.shader = shadeShader
             if (shadeTime >= 1.6f) {
+                if (isInitialShading) isInitialShading = false
                 isShade = false
                 shadeTime = 0f
                 stage.batch.shader = null
             }
+
         } else if (isInverseShading) {
             if (inverseShadingTime >= inverseShadeTimeBound) {
                 isInverseShading = false
@@ -296,7 +308,6 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
                 inverseShader.setUniformf("iTime", inverseShadingTime)
                 stage.batch.shader = inverseShader
             }
-
         }
 
         textureRegion = TextureRegion(fbo2.colorBufferTexture, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
@@ -304,12 +315,17 @@ class MainScreen(val game: LullabiesGame) : KtxScreen {
 
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
-        stage.batch.end()
-        shapeRenderer.end()
+        if (!isHudTapable) {
+            for (actor in stage.actors) {
+                if (actor is HudGroup) {
+                    actor.draw(stage.batch, 1f)
+                }
+            }
+        }
 
-        polygonSpriteBatch.begin()
-        renderer.draw(polygonSpriteBatch, skeleton)
-        polygonSpriteBatch.end()
+        stage.batch.end()
+
+        shapeRenderer.end()
 
     }
     //                                  RENDER

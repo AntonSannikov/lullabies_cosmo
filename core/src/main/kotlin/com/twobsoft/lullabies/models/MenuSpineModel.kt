@@ -1,49 +1,38 @@
 package com.twobsoft.lullabies.models
 
-
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.FloatArray
 import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
-import com.twobsoft.lullabies.components.AnimatedActor
 import com.twobsoft.lullabies.components.LayerActor
+import com.twobsoft.lullabies.components.SpineComponent
 
-class MenuModel(val assets: Assets): Entity() {
+class MenuSpineModel(val assets: Assets) {
+
+    val timeScale = 0.2f
 
     companion object {
-        const val backgroundTex   = "menu/background.png"
-        const val radarTex        = "menu/radar.png"
-        const val sunSS           = "menu/animations/sun.png"
-        const val mercurySS       = "menu/animations/mercury.png"
-        const val venusSS         = "menu/animations/venus.png"
-        const val earthSS         = "menu/animations/earth.png"
-        const val moonSS          = "menu/animations/moon.png"
-        const val marsSS          = "menu/animations/mars.png"
-        const val jupiterSS       = "menu/animations/jupiter.png"
-        const val saturnSS        = "menu/animations/saturn.png"
-        const val uranusSS        = "menu/animations/uranus.png"
-        const val neptuneSS       = "menu/animations/neptune.png"
-        const val plutoSS         = "menu/animations/pluto.png"
-        const val asteroidSS      = "menu/animations/asteroid.png"
-        const val cometSS         = "menu/animations/comet.png"
-        const val spaceshipSS     = "menu/animations/spaceship.png"
-        const val alienshipSS     = "menu/animations/ufo.png"
-        val all = arrayOf(
-            backgroundTex, radarTex, sunSS, mercurySS, venusSS, earthSS, moonSS,
-            marsSS, jupiterSS, saturnSS, uranusSS, neptuneSS, plutoSS, asteroidSS, cometSS,
-            spaceshipSS, alienshipSS
-        )
+        const val backgroundTex = "menu/background.png"
+        const val radarTex      = "menu/radar.png"
+
+        val all = arrayOf(backgroundTex, radarTex)
+
     }
 
-    override val stageNumber = 0
-
-    val background  = LayerActor(tex = backgroundTex, isMenu = true, assets.getAsset(backgroundTex),)
-    val radar       = LayerActor(tex = radarTex, texture = assets.getAsset(radarTex))
+    val background = LayerActor(tex = backgroundTex, isMenu = true, assets.getAsset(backgroundTex))
+    val radar = LayerActor(tex = radarTex, texture = assets.getAsset(radarTex))
 
 
-
-    val sun = AnimatedActor( sunSS, 5, 4, 1, assets.getAsset(sunSS),
-        MainScreen.BG_HEIGHT * 0.31f,MainScreen.BG_HEIGHT * 0.31f).also {
-        it.x = MainScreen.BG_WIDTH / 2 - MainScreen.BG_HEIGHT * 0.155f
-        // 1
+    val sun = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/sun/sun.atlas")),
+        Gdx.files.internal("menu/sun/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 1
+        it.setPos(MainScreen.BG_WIDTH / 2, -MainScreen.BG_HEIGHT * 0.038f)
+        it.setTimeScale(timeScale)
         it.hitBox.add(MainScreen.BG_WIDTH * 0.5f)
         it.hitBox.add(0f)
         // 2
@@ -61,33 +50,38 @@ class MenuModel(val assets: Assets): Entity() {
         // 6
         it.hitBox.add(MainScreen.BG_WIDTH * 0.61f)
         it.hitBox.add(0f)
-
     }
 
-    val mercury = AnimatedActor( mercurySS, 5, 4, 2,
-        texture = assets.getAsset(mercurySS),
-        MainScreen.BG_HEIGHT * 0.09f ,MainScreen.BG_HEIGHT * 0.09f).also {
-        it.x = MainScreen.BG_WIDTH * 0.74f
-        it.y = MainScreen.BG_HEIGHT * 0.23f
+    val mercury = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/mercury/mercury.atlas")),
+        Gdx.files.internal("menu/mercury/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 2
+        it.setPos(MainScreen.BG_WIDTH * 0.85f, MainScreen.BG_HEIGHT * 0.23f)
+        it.setTimeScale(timeScale)
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.84f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.877f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.22f)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.71f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.752f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.27f)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.81f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.828f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.33f)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.91f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.935f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.28f)
     }
 
-    val venus = AnimatedActor( venusSS, 5, 4, 3,
-        texture = assets.getAsset(venusSS),
-        MainScreen.BG_HEIGHT * 0.114f ,MainScreen.BG_HEIGHT * 0.114f).also {
-        it.x = MainScreen.BG_WIDTH * 0.02f
-        it.y = MainScreen.BG_HEIGHT * 0.29f
+    val venus = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/venus/venus.atlas")),
+        Gdx.files.internal("menu/venus/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 3
+        it.setPos(MainScreen.BG_WIDTH * 0.126f, MainScreen.BG_HEIGHT * 0.29f)
+        it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.13f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.28f)
@@ -105,12 +99,15 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.34f)
     }
 
-    val earth = AnimatedActor( earthSS, 5, 4, 4,
-        texture = assets.getAsset(earthSS),
-        MainScreen.BG_HEIGHT * 0.16f, MainScreen.BG_HEIGHT * 0.16f).also {
-        it.rotation = -8f
-        it.x = MainScreen.BG_WIDTH * 0.53f
-        it.y = MainScreen.BG_HEIGHT * 0.37f
+    val earth = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/earth/earth.atlas")),
+        Gdx.files.internal("menu/earth/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 4
+        it.setPos(MainScreen.BG_WIDTH * 0.652f, MainScreen.BG_HEIGHT * 0.37f)
+        it.setTimeScale(timeScale)
+
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.51f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.42f)
@@ -128,16 +125,19 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.36f)
     }
 
-    val moon = AnimatedActor( moonSS, 5, 4, 5,
-        texture = assets.getAsset(moonSS),
-        MainScreen.BG_HEIGHT * 0.12f ,MainScreen.BG_HEIGHT * 0.12f).also {
-        it.x = MainScreen.BG_WIDTH * 0.517f
-        it.y = MainScreen.BG_HEIGHT * 0.5f
+    val moon = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/moon/moon.atlas")),
+        Gdx.files.internal("menu/moon/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 5
+        it.setPos(MainScreen.BG_WIDTH * 0.6f, MainScreen.BG_HEIGHT * 0.5f)
+        it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.563f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.55f)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.55f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.545f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.6f)
         // 3
         it.hitBox.add(MainScreen.BG_WIDTH * 0.65f)
@@ -150,11 +150,14 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.538f)
     }
 
-    val mars = AnimatedActor( marsSS, 5, 4, 6,
-        texture = assets.getAsset(marsSS),
-        MainScreen.BG_HEIGHT * 0.117f ,MainScreen.BG_HEIGHT * 0.117f).also {
-        it.x = MainScreen.BG_WIDTH * 0.77f
-        it.y = MainScreen.BG_HEIGHT * 0.63f
+    val mars = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/mars/mars.atlas")),
+        Gdx.files.internal("menu/mars/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 6
+        it.setPos(MainScreen.BG_WIDTH * 0.877f, MainScreen.BG_HEIGHT * 0.63f)
+        it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.89f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.622f)
@@ -169,11 +172,14 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.69f)
     }
 
-    val jupiter = AnimatedActor( jupiterSS, 5, 4, 7,
-        texture = assets.getAsset(jupiterSS),
-        MainScreen.BG_HEIGHT * 0.17f ,MainScreen.BG_HEIGHT * 0.17f).also {
-        it.x = MainScreen.BG_WIDTH * 0.11f
-        it.y = MainScreen.BG_HEIGHT * 0.31f
+    val jupiter = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/saturn/saturn.atlas")),
+        Gdx.files.internal("menu/saturn/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 7
+        it.setPos(MainScreen.BG_WIDTH * 0.282f, MainScreen.BG_HEIGHT * 0.31f)
+        it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.36f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.32f)
@@ -200,11 +206,14 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.4f)
     }
 
-    val saturn = AnimatedActor( saturnSS, 4, 5, 8,
-        texture = assets.getAsset(saturnSS),
-        MainScreen.BG_HEIGHT * 0.218f ,MainScreen.BG_HEIGHT * 0.145f).also {
-        it.x = MainScreen.BG_WIDTH * 0.03f
-        it.y = MainScreen.BG_HEIGHT * 0.75f
+    val saturn = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/jupiter/jupiter.atlas")),
+        Gdx.files.internal("menu/jupiter/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 8
+        it.setPos(MainScreen.BG_WIDTH * 0.235f, MainScreen.BG_HEIGHT * 0.75f)
+        it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.128f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.769f)
@@ -222,11 +231,14 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.744f)
     }
 
-    val uranus = AnimatedActor( uranusSS, 4, 5, 9,
-        texture = assets.getAsset(uranusSS),
-        MainScreen.BG_HEIGHT * 0.191f ,MainScreen.BG_HEIGHT * 0.145f).also {
-        it.x = MainScreen.BG_WIDTH * 0.65f
-        it.y = MainScreen.BG_HEIGHT * 0.76f
+    val uranus = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/uranus/uranus.atlas")),
+        Gdx.files.internal("menu/uranus/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 9
+        it.setPos(MainScreen.BG_WIDTH * 0.807f, MainScreen.BG_HEIGHT * 0.76f)
+        it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.64f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.778f)
@@ -244,11 +256,14 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.761f)
     }
 
-    val neptune = AnimatedActor( neptuneSS, 5, 4, 10,
-        texture = assets.getAsset(neptuneSS),
-        MainScreen.BG_HEIGHT * 0.11f ,MainScreen.BG_HEIGHT * 0.1f).also {
-        it.x = MainScreen.BG_WIDTH * 0.03f
-        it.y = MainScreen.BG_HEIGHT * 0.62f
+    val neptune = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/neptune/neptune.atlas")),
+        Gdx.files.internal("menu/neptune/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 10
+        it.setPos(MainScreen.BG_WIDTH * 0.128f, MainScreen.BG_HEIGHT * 0.62f)
+        it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.126f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.613f)
@@ -263,11 +278,15 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.665f)
     }
 
-    val pluto = AnimatedActor( plutoSS, 5, 4, 11,
-        texture = assets.getAsset(plutoSS),
-        MainScreen.BG_HEIGHT * 0.12f ,MainScreen.BG_HEIGHT * 0.1f).also {
-        it.x = MainScreen.BG_WIDTH * 0.02f
-        it.y = MainScreen.BG_HEIGHT * 0.13f
+    val pluto = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/pluto/pluto.atlas")),
+        Gdx.files.internal("menu/pluto/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 11
+        it.setPos(MainScreen.BG_WIDTH * 0.126f, MainScreen.BG_HEIGHT * 0.16f)
+        it.setTimeScale(timeScale)
+
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.148f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.115f)
@@ -282,11 +301,15 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.184f)
     }
 
-    val asteroid = AnimatedActor( asteroidSS, 5, 4, 12,
-        texture = assets.getAsset(asteroidSS),
-        MainScreen.BG_HEIGHT * 0.16f ,MainScreen.BG_HEIGHT * 0.16f).also {
-        it.x = MainScreen.BG_WIDTH * 0.33f
-        it.y = MainScreen.BG_HEIGHT * 0.84f
+    val asteroid = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/asteroid/asteroid.atlas")),
+        Gdx.files.internal("menu/asteroid/json.json"),
+        1f
+    ).also {
+        it.stageNumber = 12
+        it.setPos(MainScreen.BG_WIDTH * 0.475f, MainScreen.BG_HEIGHT * 0.82f)
+        it.setTimeScale(timeScale)
+
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.356f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.88f)
@@ -304,12 +327,15 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.869f)
     }
 
-    val comet = AnimatedActor( cometSS, 5, 4, 13,
-        texture = assets.getAsset(cometSS),
-        MainScreen.BG_HEIGHT * 0.31f,MainScreen.BG_HEIGHT * 0.32f).also {
-        it.rotation = -10f
-        it.x = MainScreen.BG_WIDTH * 0.01f
-        it.y = MainScreen.BG_HEIGHT * 0.42f
+    val comet = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/comet/comet.atlas")),
+        Gdx.files.internal("menu/comet/json.json"),
+        0.9f
+    ).also {
+        it.stageNumber = 13
+        it.setPos(MainScreen.BG_WIDTH * 0.31f, MainScreen.BG_HEIGHT * 0.46f)
+        it.setTimeScale(timeScale)
+
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.08f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.47f)
@@ -327,13 +353,16 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.51f)
     }
 
-    val spaceship = AnimatedActor( spaceshipSS, 4, 6, 14,
-        texture = assets.getAsset(spaceshipSS),
-        MainScreen.BG_HEIGHT * 0.23f ,MainScreen.BG_HEIGHT * 0.15f,
-        frameCount = 19).also {
-        it.rotation = -9f
-        it.x = MainScreen.BG_WIDTH * 0.3f
-        it.y = MainScreen.BG_HEIGHT * 0.63f
+    val spaceship = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/spaceship/spaceship.atlas")),
+        Gdx.files.internal("menu/spaceship/json.json"),
+        0.8f
+    ).also {
+        it.stageNumber = 14
+        it.setPos(MainScreen.BG_WIDTH * 0.45f, MainScreen.BG_HEIGHT * 0.65f)
+        it.setTimeScale(timeScale)
+        it.rotation = -6f
+
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.32f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.66f)
@@ -351,11 +380,15 @@ class MenuModel(val assets: Assets): Entity() {
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.663f)
     }
 
-    val alienship = AnimatedActor( alienshipSS, 5, 4, 15,
-        texture = assets.getAsset(alienshipSS),
-        MainScreen.BG_HEIGHT * 0.134f ,MainScreen.BG_HEIGHT * 0.134f).also {
-        it.x = MainScreen.BG_WIDTH * 0.74f
-        it.y = MainScreen.BG_HEIGHT * 0.48f
+    val alienship = SpineComponent(
+        TextureAtlas(Gdx.files.internal("menu/ufo/ufo.atlas")),
+        Gdx.files.internal("menu/ufo/json.json"),
+        0.8f
+    ).also {
+        it.stageNumber = 15
+        it.setPos(MainScreen.BG_WIDTH * 0.848f, MainScreen.BG_HEIGHT * 0.48f)
+        it.setTimeScale(timeScale)
+
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.72f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.54f)
@@ -374,23 +407,9 @@ class MenuModel(val assets: Assets): Entity() {
     }
 
 
-    override val all = arrayOf(
-        background,
-        radar,
-        sun,
-        mercury,
-        jupiter,
-        venus,
-        earth,
-        moon,
-        mars,
-        saturn,
-        uranus,
-        neptune,
-        pluto,
-        asteroid,
-        comet,
-        spaceship,
-        alienship
+    val all = arrayOf(
+        sun, mercury, jupiter, venus, earth, moon, mars, saturn,
+        uranus, neptune, pluto, asteroid, comet, spaceship, alienship
     )
+
 }

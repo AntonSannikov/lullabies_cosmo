@@ -5,16 +5,14 @@ import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.utils.Timer
 import com.twobsoft.lullabies.*
-import com.twobsoft.lullabies.components.AnimatedActor
 import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.hud.HudActor
 import com.twobsoft.lullabies.components.LayerGroup
 import com.twobsoft.lullabies.hud.HudGroup
 import com.twobsoft.lullabies.utils.Utils
-import java.lang.Exception
-import kotlin.random.Random
 
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
@@ -28,6 +26,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         changeStage(1)
     }
 
+
     override fun onRight() {
         if (screen.currentStageNumber == 1
             || screen.isSwiping
@@ -37,59 +36,50 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         changeStage(-1)
     }
 
+
     override fun onTap(x: Float, y: Float, count: Int, button: Int) {
 
         println("${x / MainScreen.BG_WIDTH}:${1 - y / MainScreen.BG_HEIGHT}")
         val xNorm = x / MainScreen.BG_WIDTH
         val yNorm = y / MainScreen.BG_HEIGHT
 
-        var hudTapHandler : (() -> Unit)? = null
-
-        for (it in screen.stage.actors) {
-            // ANIMATED ACTORS
-            if (it is AnimatedActor && it.hitBox.size > 2) {
-                if (isPointInPolygon(Utils.floatArrayToVec2Array(it.hitBox.toFloatArray()),
+        if (screen.isMenu) {
+            for (spineActor in screen.menuModel.all) {
+                if (spineActor.hitBox.size > 2 &&
+                    isPointInPolygon(Utils.floatArrayToVec2Array(spineActor.hitBox.toFloatArray()),
                         Vector2(x, MainScreen.BG_HEIGHT - y))
                 ) {
-                    it.remove()
-                    screen.stage.addActor(it)
-                    screen.shaderFocusOffset = Vector2(-(xNorm - 0.5f),yNorm-0.5f)
+                    spineActor.isTransitionAnimation = true
+                    addRollingHud()
+                    screen.shaderFocusOffset = Vector2(-(xNorm-0.5f),yNorm-0.5f)
                     screen.isBarrel = true
-                    it.isNeedAnimate = true
-                    it.addAction(
-                        Actions.parallel(
-                            Actions.sequence(
-                                Actions.delay(0.5f),
-                                Actions.run {
-                                    screen.isInterStellar = true
-                                    addRollingHud() },
-                                Actions.moveTo(
-                                    MainScreen.BG_WIDTH / 2 - it.width / 2,
-                                    MainScreen.BG_HEIGHT / 2 - it.height / 2,
-                                    2f
-                                )
-                            ),
-                            Actions.sequence(
-                                Actions.scaleBy(0.8f, 0.8f, 2f, Interpolation.slowFast),
-                                Actions.run {
-                                    screen.isBarrel = false
-                                    screen.resetBarrelShader()
-                                    screen.isInterStellar = false
-                                    screen.resetInterstellarShader()
-                                    screen.currentStageNumber = it.stageNumber
-                                    createStage(getStageModel(it.stageNumber))
-                                    screen.isShade = true
-                                },
-                            )
-                        )
-                    )
+                    screen.isInterStellar = true
+                    val timer = Timer()
+                    timer.scheduleTask(object : Timer.Task() {
+                        override fun run() {
+                            spineActor.isTransitionAnimation = false
+                            screen.isShade = true
+                            screen.isBarrel = false
+                            screen.isMenu = false
+                            screen.resetBarrelShader()
+                            screen.isInterStellar = false
+                            screen.resetInterstellarShader()
+                            screen.currentStageNumber = spineActor.stageNumber
+                            createStage(getStageModel(spineActor.stageNumber))
+                        }
+                    }, 0.8f)
                     break
                 }
             }
-            // HUD ACTORS
-            //
-            else if (it is HudGroup && screen.isHudTapable) {
-                for (child in it.children) {
+        }
+
+        var hudTapHandler : (() -> Unit)? = null
+
+        // HUD ACTORS
+        //
+        for (actor in screen.stage.actors) {
+            if (actor is HudGroup && screen.isHudTapable) {
+                for (child in actor.children) {
                     val hudActor = child as HudActor
                     if (hudActor.hitBox.size > 2 &&
                         isPointInPolygon(Utils.floatArrayToVec2Array(hudActor.hitBox.toFloatArray()),
@@ -105,12 +95,13 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                     }
                 }
             }
-            //
-            // HUD ACTORS
             if (hudTapHandler != null) {
                 break
             }
         }
+        //
+        // HUD ACTORS
+
 
         hudTapHandler?.invoke()
     }
@@ -143,8 +134,8 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             }
             screen.stage.addActor(hudActor)
         }
-
     }
+
 
     fun addRollingHud() {
 
@@ -158,19 +149,20 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             screen.stage.addActor(it)
             it.addAction(
                 Actions.parallel(
-                    Actions.scaleBy(targetScale.x, targetScale.y, 1.5f),
-                    Actions.moveBy(MainScreen.BG_WIDTH * 0.2f, MainScreen.BG_HEIGHT * 0.4f, 1.5f)
+                    Actions.scaleBy(targetScale.x, targetScale.y, 1f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 0.2f, MainScreen.BG_HEIGHT * 0.4f, 1f)
                 )
             )
         }
     }
+
 
     fun rollbackHud() {
         screen.stage.actors.forEach {
             if (it is HudGroup) {
                 it.addAction(
                     Actions.sequence(
-                        Actions.delay(2f),
+                        Actions.delay(0.6f),
                         Actions.run { removeHud() }
                     )
                 )
@@ -211,14 +203,13 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                             Actions.delay(0.3f),
                             Actions.run {
                                 if (!isHudRollbacks) {
-                                    //screen.isFishEye = true
                                     screen.isInverseShading = true
                                     isHudRollbacks = true
                                     rollbackHud()
                                 }
                             }
                         ),
-                        Actions.scaleBy(-0.3f, -0.3f, 2f, Interpolation.slowFast)
+                        Actions.scaleBy(-0.2f, -0.2f, 0.8f, Interpolation.slowFast)
                     )
                 )
             }
@@ -233,9 +224,11 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             screen.stage.actors[0].remove()
             length--
         }
+        screen.menuModel = MenuSpineModel(screen.game.assets)
+        screen.stage.addActor(screen.menuModel.background)
+        screen.stage.addActor(screen.menuModel.radar)
+        screen.isMenu = true
 
-        createSwipeStage(MenuModel(screen.game.assets), 0)
-        screen.isFishEye = false
         screen.isInverseShading = false
     }
 
@@ -243,11 +236,10 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     // =============================================================================================
 
 
-    fun createStage(stageModel: Entity,) {
+    fun createStage(stageModel: Entity) {
 
         screen.stage.actors.forEach {
             if (it is LayerActor) it.isNeedRemove = true
-            if (it is AnimatedActor) it.isNeedRemove = true
         }
 
         stageModel.all.forEach {
@@ -267,7 +259,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         screen.stage.actors.forEach {
             if (it is LayerGroup && it.isNeedRemove) it.addAction(Actions.removeActor())
             if (it is LayerActor && it.isNeedRemove) it.addAction(Actions.removeActor())
-            if (it is AnimatedActor && it.isNeedRemove) it.addAction(Actions.removeActor())
         }
 
         refreshStage()
@@ -344,7 +335,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             refreshHud()
         }
 
-//        screen.reverseBarrelShader()
         var isReseted = false
 
         screen.stage.actors.forEach {
@@ -357,7 +347,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                             if (!isReseted) {
                                 isReseted = true
                                 screen.isSwiping = false
-//                                screen.resetBarrelShader()
                                 refreshStage()
                             }
                         }
@@ -381,7 +370,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         var newModel: Entity? =null
 
         when(stageNumber) {
-            0 -> newModel     = MenuModel(screen.game.assets)
             1 -> newModel     = SunModel(screen.game.assets)
             2 -> newModel     = MercuryModel(screen.game.assets)
             3 -> newModel     = VenusModel(screen.game.assets)
