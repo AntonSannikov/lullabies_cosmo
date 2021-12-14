@@ -18,6 +18,7 @@ import com.twobsoft.lullabies.utils.Utils
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
     var isCallback = false
+    var isBackground = false
 
     // callbacks from notification media buttons
     fun initCallbacks() {
@@ -52,11 +53,12 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
 
     fun onAppPause() {
-        println("APP PAUSE")
+        isBackground = true
     }
 
     fun onAppResume() {
-        println("APP RESUME")
+        isBackground = false
+        if (screen.currentStageNumber != 0) createStage(getStageModel(screen.currentStageNumber))
     }
 
 
@@ -278,6 +280,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         screen.stage.addActor(screen.menuModel.background)
         screen.stage.addActor(screen.menuModel.radar)
         screen.isMenu = true
+        screen.currentStageNumber = 0
         screen.isInverseShading = false
     }
 
@@ -367,6 +370,9 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     private fun changeStage(increment: Int, callback: Boolean=false) {
         screen.currentStageNumber += increment
+
+        if (isBackground) return
+
         if (!callback) {
             screen.isSwiping = true
             MediaPlayer.play(screen.currentStageNumber, true)
