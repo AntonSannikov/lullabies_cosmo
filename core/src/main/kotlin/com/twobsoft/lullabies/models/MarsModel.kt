@@ -47,13 +47,13 @@ class MarsModel(val assets: Assets): Entity() {
         tex = oblako5Tex,
         texture = assets.getAsset(oblako5Tex)
     ).also {
+        it.xOffset = -(MainScreen.BG_WIDTH).toInt()
         it.isNeedReposition = true
-        it.xOffset = -(MainScreen.BG_WIDTH * 0.2f).toInt()
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 90f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 2f, 0f, 150f),
                     Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
@@ -65,7 +65,7 @@ class MarsModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 110f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 1.5f, 0f, 190f),
                     Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
@@ -77,7 +77,7 @@ class MarsModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 155f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 1.5f, 0f, 215f),
                     Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )
@@ -88,13 +88,13 @@ class MarsModel(val assets: Assets): Entity() {
         tex = oblako2Tex,
         texture = assets.getAsset(oblako2Tex)
     ).also {
-        it.xOffset = -(MainScreen.BG_WIDTH * 0.2).toInt()
+        it.xOffset = -(MainScreen.BG_WIDTH * 0.8).toInt()
         it.isNeedReposition = true
         it.actions.add(
         Actions.repeat(
             RepeatAction.FOREVER,
             Actions.sequence(
-                Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 140f),
+                Actions.moveBy(MainScreen.BG_WIDTH * 2f, 0f, 170f),
                 Actions.run { it.x = -MainScreen.BG_WIDTH }
             )
         )
@@ -105,13 +105,13 @@ class MarsModel(val assets: Assets): Entity() {
         tex = oblako1Tex,
         texture = assets.getAsset(oblako1Tex)
     ).also {
-        it.xOffset = (MainScreen.BG_WIDTH * 0.6f).toInt()
-        it.isNeedReposition = true
+//        it.xOffset = (MainScreen.BG_WIDTH * 0.6f).toInt()
+//        it.isNeedReposition = true
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(MainScreen.BG_WIDTH * 2, 0f, 100f),
+                    Actions.moveBy(MainScreen.BG_WIDTH * 1.5f, 0f, 200f),
                     Actions.run { it.x = -MainScreen.BG_WIDTH }
                 )
             )

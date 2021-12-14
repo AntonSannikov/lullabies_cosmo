@@ -47,14 +47,11 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
 
-
         val model = SplashScreenModel(game.assets)
         model.all.forEach { it as LayerActor
             stage.addActor(it)
             it.actions.forEach { action -> it.addAction(action) }
         }
-        game.assets.load(0)
-        game.assets.manager.finishLoading()
         menuModel = MenuSpineModel(game.assets)
 
         game.assets.loadHud()

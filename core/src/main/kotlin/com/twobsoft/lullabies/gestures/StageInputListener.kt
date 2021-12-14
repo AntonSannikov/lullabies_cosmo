@@ -1,5 +1,6 @@
 package com.twobsoft.lullabies.gestures
 
+import com.badlogic.gdx.LifecycleListener
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
@@ -16,14 +17,58 @@ import com.twobsoft.lullabies.utils.Utils
 
 class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
 
+    var isCallback = false
+
+    // callbacks from notification media buttons
+    fun initCallbacks() {
+        screen.game.serviceApi.initPlayCallback(::toPlay)
+        screen.game.serviceApi.initPauseCallback(::toPause)
+        screen.game.serviceApi.initPreviousCallback(::toPrevious)
+        screen.game.serviceApi.initNextCallback(::toNext)
+        screen.game.serviceApi.initOnPauseCallback(::onAppPause)
+        screen.game.serviceApi.initOnResumeCallback(::onAppResume)
+    }
+
+
+    fun toPause() {
+        println("CORE PAUSE")
+    }
+
+    fun toPlay() {
+        println("CORE PLAY")
+    }
+
+    fun toNext() {
+        isCallback = true
+        onLeft()
+        isCallback = false
+    }
+
+    fun toPrevious() {
+        isCallback = true
+        onRight()
+        isCallback = false
+    }
+
+
+    fun onAppPause() {
+        println("APP PAUSE")
+    }
+
+    fun onAppResume() {
+        println("APP RESUME")
+    }
+
+
 
     override fun onLeft() {
+        println("")
         if (screen.currentStageNumber == screen.STAGES_COUNT
             || screen.isSwiping
             || screen.currentStageNumber == 0) {
             return
         }
-        changeStage(1)
+        changeStage(1, isCallback)
     }
 
 
@@ -33,7 +78,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             || screen.currentStageNumber == 0) {
             return
         }
-        changeStage(-1)
+        changeStage(-1, isCallback)
     }
 
 
@@ -43,14 +88,14 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         val xNorm = x / MainScreen.BG_WIDTH
         val yNorm = y / MainScreen.BG_HEIGHT
 
-        if (screen.isMenu) {
+        if (screen.isMenu && screen.isMenuTappable) {
             for (spineActor in screen.menuModel.all) {
                 if (spineActor.hitBox.size > 2 &&
                     isPointInPolygon(Utils.floatArrayToVec2Array(spineActor.hitBox.toFloatArray()),
                         Vector2(x, MainScreen.BG_HEIGHT - y))
                 ) {
                     spineActor.isTransitionAnimation = true
-                    addRollingHud()
+//                    addRollingHud()
                     screen.shaderFocusOffset = Vector2(-(xNorm-0.5f),yNorm-0.5f)
                     screen.isBarrel = true
                     screen.isInterStellar = true
@@ -73,12 +118,15 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             }
         }
 
+
+        if (!screen.isHudTapable) return
+
         var hudTapHandler : (() -> Unit)? = null
 
         // HUD ACTORS
         //
         for (actor in screen.stage.actors) {
-            if (actor is HudGroup && screen.isHudTapable) {
+            if (actor is HudGroup) {
                 for (child in actor.children) {
                     val hudActor = child as HudActor
                     if (hudActor.hitBox.size > 2 &&
@@ -140,9 +188,10 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     fun addRollingHud() {
 
-        val startingScale = Vector2(MainScreen.BG_WIDTH * 0.0003f, MainScreen.BG_HEIGHT * 0.0003f)
-        val targetScale = Vector2(-MainScreen.BG_WIDTH * 0.0003f, -MainScreen.BG_HEIGHT * 0.0003f)
+        val startingScale = Vector2(MainScreen.BG_WIDTH * 0.0005f, MainScreen.BG_HEIGHT * 0.0005f)
+        val targetScale = Vector2(-MainScreen.BG_WIDTH * 0.0005f, -MainScreen.BG_HEIGHT * 0.0005f)
         screen.isHudTapable = false
+        screen.isMenuTappable = false
         screen.hudModel.all.forEach {
             it.y = -MainScreen.BG_HEIGHT * 0.3f
             it.x = -MainScreen.BG_WIDTH * 0.2f
@@ -229,7 +278,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         screen.stage.addActor(screen.menuModel.background)
         screen.stage.addActor(screen.menuModel.radar)
         screen.isMenu = true
-
         screen.isInverseShading = false
     }
 
@@ -317,11 +365,13 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     }
 
 
-    private fun changeStage(increment: Int) {
+    private fun changeStage(increment: Int, callback: Boolean=false) {
         screen.currentStageNumber += increment
-        screen.isSwiping = true
+        if (!callback) {
+            screen.isSwiping = true
+            MediaPlayer.play(screen.currentStageNumber, true)
+        }
 
-        MediaPlayer.play(screen.currentStageNumber, true)
 
         for (actor in screen.stage.actors) {
             if (actor is LayerActor) { actor.isNeedRemove = true }
@@ -390,5 +440,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
         return  newModel!!
     }
+
 
 }

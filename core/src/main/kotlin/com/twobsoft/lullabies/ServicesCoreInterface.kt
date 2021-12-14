@@ -8,6 +8,12 @@ interface ServicesCoreInterface {
     fun share()
     fun playMusic(stageNumber: Int, isSwitching: Boolean)
 
+    fun onPause()
+    fun onResume()
+
+    fun initOnPauseCallback(callback: () -> Unit)
+    fun initOnResumeCallback(callback: () -> Unit)
+
 }
 
 

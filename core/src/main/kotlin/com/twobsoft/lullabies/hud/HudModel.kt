@@ -52,7 +52,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             it.y = MainScreen.BG_HEIGHT * 0.02f
         } else {
             it.y = MainScreen.BG_HEIGHT * 0.025f
-            it.scaleBy(0.403f, 0.016f)
+            it.scaleBy(0.436f, 0.001f)
         }
 
     }

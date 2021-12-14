@@ -63,9 +63,6 @@ class HudActor(
 
     fun changeText(newText: String) {
         text = newText
-//        font.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-//        font.data.scale(MainScreen.BG_HEIGHT * 0.00153f)
-//        font.color.set(144 / 255f, 210 / 255f, 1f, 1f)
         textPartPointer = 0
         textPointer = 0
         isTextPartAdded = false
@@ -115,13 +112,10 @@ class HudActor(
         )
 
         if (isTextDrawing) {
-            //if (textX + textPointer >= textBound) {
-                if (textX + textPointer + textWidth <= textBound) {
-                    textPointer = textPartPointer
-                    isTextPartAdded = false
+            if (textX + textPointer + textWidth <= textBound) {
+                textPointer = textPartPointer
+                isTextPartAdded = false
             }
-
-//            if (textX + textPointer + textWidth >= textBound && !isTextPartAdded) {
             if (textX + textPointer <= textBound && !isTextPartAdded) {
                 addTextPart()
             }

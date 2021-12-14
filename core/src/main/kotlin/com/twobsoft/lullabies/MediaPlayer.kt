@@ -27,28 +27,5 @@ object MediaPlayer {
         serviceApi!!.playMusic(number, isSwitching)
     }
 
-    fun initCallbacks() {
-        serviceApi!!.initPlayCallback(::toPlay)
-        serviceApi!!.initPauseCallback(::toPause)
-        serviceApi!!.initPreviousCallback(::toPrevious)
-        serviceApi!!.initNextCallback(::toNext)
-    }
-
-
-    fun toPause() {
-        println("CORE PAUSE")
-    }
-
-    fun toPlay() {
-        println("CORE PLAY")
-    }
-
-    fun toNext() {
-        println("CORE NEXT")
-    }
-
-    fun toPrevious() {
-        println("CORE PREV")
-    }
 
 }

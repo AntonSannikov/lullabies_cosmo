@@ -33,6 +33,7 @@ class Assets {
     // MENU
     fun loadMenu() {
         MenuSpineModel.all.forEach { manager.load(it, Texture::class.java)  }
+        manager.finishLoading()
         MenuSpineModel.allSkeletons.forEach { skeletonLoader.loadSync(manager, AssetDescriptor(it, SkeletonData::class.java)) }
     }
 

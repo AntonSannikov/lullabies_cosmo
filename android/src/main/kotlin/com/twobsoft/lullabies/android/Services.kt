@@ -26,7 +26,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
     var corePauseCallback: () -> Unit = {}
     var corePreviousCallback: () -> Unit = {}
     var coreNextCallback: () -> Unit = {}
-
+    var coreOnAppPauseCallback: () -> Unit = {}
+    var coreOnAppResumeCallback: () -> Unit = {}
 
 
     val mediaButtonReceiver = object : BroadcastReceiver() {
@@ -221,6 +222,23 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         notificationManagerCompat.cancelAll()
         context.unregisterReceiver(mediaButtonReceiver)
 
+    }
+
+
+    override fun onPause() {
+        coreOnAppPauseCallback()
+    }
+
+    override fun onResume() {
+        coreOnAppResumeCallback()
+    }
+
+    override fun initOnPauseCallback(callback: () -> Unit) {
+        coreOnAppPauseCallback = callback
+    }
+
+    override fun initOnResumeCallback(callback: () -> Unit) {
+        coreOnAppResumeCallback = callback
     }
 
 }

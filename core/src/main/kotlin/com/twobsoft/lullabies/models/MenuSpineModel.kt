@@ -19,11 +19,24 @@ class MenuSpineModel(val assets: Assets) {
 
         val all = arrayOf(backgroundTex, radarTex)
 
-        const val sunAtlas      = "menu/sun/sun.atlas"
-        const val sunJson       = "menu/sun/json.json"
 
-
-        val allSkeletons = arrayOf(sunAtlas, sunJson)
+        val allSkeletons = arrayOf(
+            "menu/sun/sun.atlas", "menu/sun/json.json",
+            "menu/mercury/mercury.atlas", "menu/mercury/json.json",
+            "menu/venus/venus.atlas", "menu/venus/json.json",
+            "menu/earth/earth.atlas", "menu/earth/json.json",
+            "menu/moon/moon.atlas", "menu/moon/json.json",
+            "menu/mars/mars.atlas", "menu/mars/json.json",
+            "menu/jupiter/jupiter.atlas", "menu/jupiter/json.json",
+            "menu/saturn/saturn.atlas", "menu/saturn/json.json",
+            "menu/uranus/uranus.atlas", "menu/uranus/json.json",
+            "menu/neptune/neptune.atlas", "menu/neptune/json.json",
+            "menu/pluto/pluto.atlas", "menu/pluto/json.json",
+            "menu/asteroid/asteroid.atlas", "menu/asteroid/json.json",
+            "menu/comet/comet.atlas", "menu/comet/json.json",
+            "menu/spaceship/spaceship.atlas", "menu/spaceship/json.json",
+            "menu/ufo/ufo.atlas", "menu/ufo/json.json",
+        )
 
 
     }
@@ -35,7 +48,7 @@ class MenuSpineModel(val assets: Assets) {
     val sun = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/sun/sun.atlas")),
         assets.skeletonLoader.resolve("menu/sun/json.json"),
-        1f
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 1
         it.setPos(MainScreen.BG_WIDTH / 2, -MainScreen.BG_HEIGHT * 0.038f)
@@ -60,9 +73,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val mercury = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/mercury/mercury.atlas")),
-        Gdx.files.internal("menu/mercury/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/mercury/mercury.atlas")),
+        assets.skeletonLoader.resolve("menu/mercury/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 2
         it.setPos(MainScreen.BG_WIDTH * 0.85f, MainScreen.BG_HEIGHT * 0.23f)
@@ -82,9 +95,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val venus = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/venus/venus.atlas")),
-        Gdx.files.internal("menu/venus/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/venus/venus.atlas")),
+        assets.skeletonLoader.resolve("menu/venus/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 3
         it.setPos(MainScreen.BG_WIDTH * 0.126f, MainScreen.BG_HEIGHT * 0.29f)
@@ -107,9 +120,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val earth = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/earth/earth.atlas")),
-        Gdx.files.internal("menu/earth/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/earth/earth.atlas")),
+        assets.skeletonLoader.resolve("menu/earth/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 4
         it.setPos(MainScreen.BG_WIDTH * 0.652f, MainScreen.BG_HEIGHT * 0.37f)
@@ -133,9 +146,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val moon = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/moon/moon.atlas")),
-        Gdx.files.internal("menu/moon/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/moon/moon.atlas")),
+        assets.skeletonLoader.resolve("menu/moon/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 5
         it.setPos(MainScreen.BG_WIDTH * 0.6f, MainScreen.BG_HEIGHT * 0.5f)
@@ -158,9 +171,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val mars = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/mars/mars.atlas")),
-        Gdx.files.internal("menu/mars/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/mars/mars.atlas")),
+        assets.skeletonLoader.resolve("menu/mars/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 6
         it.setPos(MainScreen.BG_WIDTH * 0.877f, MainScreen.BG_HEIGHT * 0.63f)
@@ -180,9 +193,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val jupiter = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/saturn/saturn.atlas")),
-        Gdx.files.internal("menu/saturn/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/saturn/saturn.atlas")),
+        assets.skeletonLoader.resolve("menu/saturn/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 7
         it.setPos(MainScreen.BG_WIDTH * 0.282f, MainScreen.BG_HEIGHT * 0.31f)
@@ -214,9 +227,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val saturn = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/jupiter/jupiter.atlas")),
-        Gdx.files.internal("menu/jupiter/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/jupiter/jupiter.atlas")),
+        assets.skeletonLoader.resolve("menu/jupiter/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 8
         it.setPos(MainScreen.BG_WIDTH * 0.235f, MainScreen.BG_HEIGHT * 0.75f)
@@ -239,9 +252,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val uranus = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/uranus/uranus.atlas")),
-        Gdx.files.internal("menu/uranus/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/uranus/uranus.atlas")),
+        assets.skeletonLoader.resolve("menu/uranus/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 9
         it.setPos(MainScreen.BG_WIDTH * 0.807f, MainScreen.BG_HEIGHT * 0.76f)
@@ -264,9 +277,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val neptune = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/neptune/neptune.atlas")),
-        Gdx.files.internal("menu/neptune/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/neptune/neptune.atlas")),
+        assets.skeletonLoader.resolve("menu/neptune/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 10
         it.setPos(MainScreen.BG_WIDTH * 0.128f, MainScreen.BG_HEIGHT * 0.62f)
@@ -286,9 +299,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val pluto = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/pluto/pluto.atlas")),
-        Gdx.files.internal("menu/pluto/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/pluto/pluto.atlas")),
+        assets.skeletonLoader.resolve("menu/pluto/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 11
         it.setPos(MainScreen.BG_WIDTH * 0.126f, MainScreen.BG_HEIGHT * 0.16f)
@@ -309,9 +322,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val asteroid = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/asteroid/asteroid.atlas")),
-        Gdx.files.internal("menu/asteroid/json.json"),
-        1f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/asteroid/asteroid.atlas")),
+        assets.skeletonLoader.resolve("menu/asteroid/json.json"),
+        MainScreen.BG_HEIGHT / 2620
     ).also {
         it.stageNumber = 12
         it.setPos(MainScreen.BG_WIDTH * 0.475f, MainScreen.BG_HEIGHT * 0.82f)
@@ -335,9 +348,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val comet = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/comet/comet.atlas")),
-        Gdx.files.internal("menu/comet/json.json"),
-        0.9f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/comet/comet.atlas")),
+        assets.skeletonLoader.resolve("menu/comet/json.json"),
+        MainScreen.BG_HEIGHT / 2882
     ).also {
         it.stageNumber = 13
         it.setPos(MainScreen.BG_WIDTH * 0.31f, MainScreen.BG_HEIGHT * 0.46f)
@@ -361,9 +374,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val spaceship = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/spaceship/spaceship.atlas")),
-        Gdx.files.internal("menu/spaceship/json.json"),
-        0.8f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/spaceship/spaceship.atlas")),
+        assets.skeletonLoader.resolve("menu/spaceship/json.json"),
+        MainScreen.BG_HEIGHT / 3144
     ).also {
         it.stageNumber = 14
         it.setPos(MainScreen.BG_WIDTH * 0.45f, MainScreen.BG_HEIGHT * 0.65f)
@@ -388,9 +401,9 @@ class MenuSpineModel(val assets: Assets) {
     }
 
     val alienship = SpineComponent(
-        TextureAtlas(Gdx.files.internal("menu/ufo/ufo.atlas")),
-        Gdx.files.internal("menu/ufo/json.json"),
-        0.8f
+        TextureAtlas(assets.skeletonLoader.resolve("menu/ufo/ufo.atlas")),
+        assets.skeletonLoader.resolve("menu/ufo/json.json"),
+        MainScreen.BG_HEIGHT / 3144
     ).also {
         it.stageNumber = 15
         it.setPos(MainScreen.BG_WIDTH * 0.848f, MainScreen.BG_HEIGHT * 0.48f)

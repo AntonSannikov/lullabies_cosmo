@@ -1,5 +1,6 @@
 package com.twobsoft.lullabies
 
+import com.badlogic.gdx.Application
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -24,6 +25,7 @@ import com.twobsoft.lullabies.hud.HudGroup
 import com.twobsoft.lullabies.hud.HudModel
 import com.twobsoft.lullabies.models.*
 import com.twobsoft.lullabies.splash.SplashScreen
+import javax.security.sasl.AuthorizeCallback
 
 
 class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>() {
@@ -39,8 +41,10 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>(
 
     override fun create() {
         MediaPlayer.serviceApi = serviceApi
-        MediaPlayer.initCallbacks()
         KtxAsync.initiate()
+        assets.load(0)
+        assets.manager.finishLoading()
+
         assets.loadSplash()
         assets.manager.finishLoading()
         addScreen(SplashScreen(this))
@@ -118,6 +122,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     var isHudTapable = true
     var isSwiping = false
     var isMenu = false
+    var isMenuTappable = true
 
     init {
         //ShaderProgram.pedantic = false
@@ -129,6 +134,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         stage = Stage(viewport)
 
         inputListener = StageInputListener(this)
+        inputListener.initCallbacks()
         hudModel = HudModel(game.assets, inputListener)
 
         stage.addActor(menuModel.background)
@@ -297,6 +303,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
                 isShade = false
                 shadeTime = 0f
                 stage.batch.shader = null
+                if (isMenu) {
+                    isMenuTappable = true
+                }
             }
 
         } else if (isInverseShading) {
@@ -339,6 +348,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     }
 
     override fun dispose() {
+        interStellarShader.disposeSafely()
+        inverseShader.disposeSafely()
+        shadeShader.disposeSafely()
         barrelShader.disposeSafely()
         stage.disposeSafely()
         game.assets.dispose()

@@ -1,12 +1,13 @@
 package com.twobsoft.lullabies.android
 
-import android.media.MediaPlayer
+
 import android.os.Bundle
 
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.twobsoft.lullabies.LullabiesGame
-import com.twobsoft.lullabies.R
+
+
 
 
 /** Launches the Android application. */
@@ -14,13 +15,16 @@ class AndroidLauncher : AndroidApplication() {
 
 
     var servicesApi: ServicesApi?=null
+    var lifecycleListener: AppLyfecycleListener?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         servicesApi = ServicesApi( this)
-
+        lifecycleListener = AppLyfecycleListener(servicesApi!!)
         super.onCreate(savedInstanceState)
+        addLifecycleListener(lifecycleListener)
+
         initialize(
             LullabiesGame(servicesApi!!), AndroidApplicationConfiguration().apply {
                 // Configure your application here.
