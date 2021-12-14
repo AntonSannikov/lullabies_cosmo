@@ -44,7 +44,7 @@ android {
 		exclude 'META-INF/dependencies.txt'
 	}
 	defaultConfig {
-		applicationId 'com.twobsoft.lullabies'
+		applicationId 'com.twobsoft.babymozartspacetrip'
 		minSdkVersion 21
 		targetSdkVersion 30
 		versionCode 1
@@ -151,7 +151,7 @@ task run(type: Exec) {
 	}
 
 	def adb = path + "/platform-tools/adb"
-	commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.twobsoft.lullabies/com.twobsoft.lullabies.android.AndroidLauncher'
+	commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.twobsoft.babymozartspacetrip/com.twobsoft.babymozartspacetrip.android.AndroidLauncher'
 }
 
 eclipse.project.name = appName + "-android"
