@@ -12,7 +12,8 @@ import kotlinx.coroutines.MainScope
 class SpineComponent(
     val atlas: TextureAtlas,
     val jsonFile: FileHandle,
-    val scale: Float
+    val scale: Float,
+    var isAlwaysAnimated: Boolean=true
     ) {
 
 
@@ -20,14 +21,14 @@ class SpineComponent(
     private var timeScale = 0.5f
     private val transPositionDelta = 5f
 
+    var tapHandler : (() -> Unit)? = null
 
     var stageNumber = 0
     var scaling2 = scale
     var hitBox = arrayListOf<Float>()
     var rotation = 0f
     var isTransitionAnimation = false
-    var xOffset = 0f
-    var yOffset = 0f
+
 
     val json = SkeletonJson(atlas).also{
         it.scale = scale
@@ -42,7 +43,7 @@ class SpineComponent(
 
     var state = AnimationState(stateData).also {
         it.timeScale = 0.5f
-        it.setAnimation(0, "animation", true)
+        if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
     }
 
 

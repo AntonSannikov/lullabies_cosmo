@@ -1,14 +1,20 @@
 package com.twobsoft.lullabies.hud
 
 
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.badlogic.gdx.utils.Timer
 import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
 import com.twobsoft.lullabies.MediaPlayer
+import com.twobsoft.lullabies.components.LayerActor
+import com.twobsoft.lullabies.components.SpineComponent
 import com.twobsoft.lullabies.gestures.StageInputListener
 import com.twobsoft.lullabies.models.Entity
 
@@ -29,21 +35,29 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         const val shareAntennasTex = "hud/share_antennas.png"
         // deck
         const val deckTex = "hud/deck.png"
-        const val playlistTex = "hud/playlist.png"
-        const val joystickTex = "hud/joystick.png"
-        const val arrowLTex = "hud/arrowL.png"
-        const val playTex = "hud/play.png"
         const val clockTex = "hud/clock.png"
-        const val arrowRTex = "hud/arrowR.png"
+        // flares
+        const val optionsFlareTex = "hud/loop_flare.png"
+        const val shareFlareTex = "hud/share_flare.png"
+
 
         val all = arrayOf(
             frameTex, panelUpTex, optionsTex, lampLightTex, lampTex, shareButtonTex, shareAntennasTex,
-            deckTex, playlistTex, joystickTex, arrowLTex, playTex, clockTex, arrowRTex
+            deckTex, clockTex, optionsFlareTex, shareFlareTex
+        )
+
+        val allSkeletons = arrayOf(
+            "hud/joystick/skeletons.atlas", "hud/joystick/joystick.json",
+            "hud/left/skeletons.atlas", "hud/left/json.json",
+            "hud/right/skeletons.atlas", "hud/right/json.json",
+            "hud/play/skeletons.atlas", "hud/play/play.json",
         )
 
     }
 
     override val stageNumber = -1
+
+    val timeScale = 0.5f
 
     val frame = HudActor(tex = frameTex,
         actorTexture = assets.getAsset(frameTex)).also {
@@ -51,10 +65,9 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             it.scaleBy(0.072f, 0.0524f)
             it.y = MainScreen.BG_HEIGHT * 0.02f
         } else {
-            it.y = MainScreen.BG_HEIGHT * 0.025f
+            it.y = MainScreen.BG_HEIGHT * 0.03f
             it.scaleBy(0.436f, 0.001f)
         }
-
     }
 
     // upper panel
@@ -97,6 +110,50 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         // 4
         it.hitBox.add(MainScreen.BG_WIDTH * 0.141f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.915f)
+
+        it.tapHandler = {
+            flareToButton(it.x, it.y, Vector2(-0.85f, -0.88f), optionsFlareTex)
+            appListener.onLoop()
+        }
+    }
+
+    fun flareToButton(_x: Float, _y: Float, scaling: Vector2, tex: String, isSwicthable: Boolean=true, ) {
+        if (isSwicthable) {
+            if (appListener.screen.isLooping) {
+                appListener.screen.stage.actors.forEach {
+                    if (it is HudActor && it.tex == tex) {
+                        it.addAction(Actions.removeActor())
+                    }
+                }
+            } else {
+                val actor = HudActor(
+                    tex = tex,
+                    actorTexture = assets.getAsset(tex)
+                ).also {
+                    it.x = _x
+                    it.y = _y
+                    it.scaleBy(scaling.x, scaling.y)
+                }
+                appListener.screen.stage.addActor(actor)
+            }
+        } else {
+            val actor = HudActor(
+                tex = tex,
+                actorTexture = assets.getAsset(tex)
+            ).also {
+                it.x = _x
+                it.y = _y
+                it.scaleBy(scaling.x, scaling.y)
+            }
+            appListener.screen.stage.addActor(actor)
+
+            val timer  = Timer()
+            timer.scheduleTask(object : Timer.Task() {
+                override fun run() {
+                    actor.remove()
+                }
+            }, 0.1f)
+        }
     }
 
     val lampLight = HudActor(tex = lampLightTex,
@@ -127,8 +184,8 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
     val shareButton = HudActor(tex = shareButtonTex,
         actorTexture = assets.getAsset(shareButtonTex)).also {
         it.scaleBy(-0.85f, -0.9f)
-        it.y = MainScreen.BG_HEIGHT * 0.448f
         it.x = MainScreen.BG_WIDTH * 0.422f
+        it.y = MainScreen.BG_HEIGHT * 0.448f
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.846f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.91f)
@@ -141,6 +198,10 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         // 4
         it.hitBox.add(MainScreen.BG_WIDTH * 0.984f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.909f)
+
+        it.tapHandler = {
+            flareToButton(it.x, it.y, Vector2(-0.85f, -0.9f), shareFlareTex, false)
+        }
     }
 
     val shareAntennas = HudActor(tex = shareAntennasTex,
@@ -167,95 +228,126 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.scaleBy( 0.03f, -0.81f)
     }
 
-    val playlist = HudActor(tex = playlistTex,
-        actorTexture = assets.getAsset(playlistTex)).also {
-        it.scaleBy(-0.8f, -0.9f)
-        it.x = -MainScreen.BG_WIDTH * 0.33f
-        it.y = -MainScreen.BG_HEIGHT * 0.35f
-        // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.084f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.123f)
-        // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.092f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.19f)
-        // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.217f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.196f)
-        // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.238f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.129f)
-    }
-
-    val joystick = HudActor(
-        tex = joystickTex,
-        actorTexture = assets.getAsset(joystickTex),
+    val joystick = SpineComponent(
+        TextureAtlas(assets.skeletonLoader.resolve("hud/joystick/skeletons.atlas")),
+        assets.skeletonLoader.resolve("hud/joystick/joystick.json"),
+        MainScreen.BG_HEIGHT / 2620,
+        isAlwaysAnimated = false
     ).also {
-        it.scaleBy(-0.86f, -0.88f)
-        it.x = -MainScreen.BG_WIDTH * 0.21f
-        it.y = -MainScreen.BG_HEIGHT * 0.3f
+        it.stageNumber = 13
+        val x = MainScreen.BG_WIDTH * 0.21f
+        val y = MainScreen.BG_HEIGHT * 0.13f
+        it.setPos(x, y)
+        it.setTimeScale(timeScale)
+
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.238f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.168f)
+        it.hitBox.add(x - MainScreen.BG_WIDTH * 0.061f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.02f)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.24f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.255f)
+        it.hitBox.add(x - MainScreen.BG_WIDTH * 0.074f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.123f)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.347f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.259f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.246f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.253f)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.34f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.17f)
-
-        val map = hashMapOf<String, Float>()
-        map["scaleBy"] = -0.01f
-        map["duration"] = 0.2f
-        it.interActions.add(map)
-
-
-        it.tapHandler = { appListener.startMenuTransition() }
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.258f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.161f)
+        it.tapHandler = {
+            it.state.setAnimation(0, "animation", false)
+            appListener.startMenuTransition()
+        }
     }
 
-    val play = HudActor(tex = playTex,
-        actorTexture = assets.getAsset(playTex)).also {
-        it.scaleBy(-0.7f, -0.88f)
-        it.x = MainScreen.BG_WIDTH * 0.02f
-        it.y = -MainScreen.BG_HEIGHT * 0.34f
+    val play = SpineComponent(
+        TextureAtlas(assets.skeletonLoader.resolve("hud/play/skeletons.atlas")),
+        assets.skeletonLoader.resolve("hud/play/play.json"),
+        MainScreen.BG_HEIGHT / 2620,
+        isAlwaysAnimated = false
+    ).also {
+        it.stageNumber = 13
+        it.setPos(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT * 0.1f)
+        it.setTimeScale(timeScale)
+
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.402f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.136f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.121f)
         // 2
         it.hitBox.add(MainScreen.BG_WIDTH * 0.381f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.208f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.193f)
         // 3
         it.hitBox.add(MainScreen.BG_WIDTH * 0.642f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.208f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.193f)
         // 4
         it.hitBox.add(MainScreen.BG_WIDTH * 0.608f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.134f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.121f)
 
-        it.tapHandler = { MediaPlayer.play(appListener.screen.currentStageNumber) }
+        it.tapHandler = {
+            it.state.setAnimation(0, "animation", false)
+            MediaPlayer.play(appListener.screen.currentStageNumber)
+        }
     }
 
-    val arrowL = HudActor(tex = arrowLTex,
-        actorTexture = assets.getAsset(arrowLTex)).also {
-        it.scaleBy(-0.78f, -0.92f)
-        it.x = -MainScreen.BG_WIDTH * 0.18f
-        it.y = -MainScreen.BG_HEIGHT * 0.38f
+    val arrowL = SpineComponent(
+        TextureAtlas(assets.skeletonLoader.resolve("hud/left/skeletons.atlas")),
+        assets.skeletonLoader.resolve("hud/left/json.json"),
+        MainScreen.BG_HEIGHT / 2382,
+        isAlwaysAnimated = false
+    ).also {
+        it.stageNumber = 13
+        it.setPos(MainScreen.BG_WIDTH * 0.27f, MainScreen.BG_HEIGHT * 0.08f)
+        it.setTimeScale(timeScale)
+
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.233f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.185f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.102f)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.253f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.205f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.15f)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.374f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.326f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.155f)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.408f)
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.360f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.1f)
 
-        it.tapHandler = { appListener.onRight() }
+        it.tapHandler = {
+            it.state.setAnimation(0, "animation", false)
+            appListener.onRight()
+        }
     }
+
+    val arrowR = SpineComponent(
+        TextureAtlas(assets.skeletonLoader.resolve("hud/right/skeletons.atlas")),
+        assets.skeletonLoader.resolve("hud/right/json.json"),
+        MainScreen.BG_HEIGHT / 2382,
+        isAlwaysAnimated = false
+    ).also {
+        it.stageNumber = 13
+        it.setPos(MainScreen.BG_WIDTH * 0.73f, MainScreen.BG_HEIGHT * 0.08f)
+        it.setTimeScale(timeScale)
+
+        // 1
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.65f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.102f)
+        // 2
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.653f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.155f)
+        // 3
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.712f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.153f)
+        // 4
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.789f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.143f)
+        // 5
+        it.hitBox.add(MainScreen.BG_WIDTH * 0.786f)
+        it.hitBox.add(MainScreen.BG_HEIGHT * 0.102f)
+
+        it.tapHandler = {
+            it.state.setAnimation(0, "animation", false)
+            appListener.onLeft()
+        }
+    }
+
 
     val clock = HudActor(tex = clockTex,
         actorTexture = assets.getAsset(clockTex)).also {
@@ -274,40 +366,20 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         // 4
         it.hitBox.add(MainScreen.BG_WIDTH * 0.841f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.137f)
+
+        val map = hashMapOf<String, Float>()
+        map["scaleBy"] = -0.01f
+        map["duration"] = 0.1f
+        it.interActions.add(map)
+
+        it.tapHandler = { appListener.screen.game.serviceApi.createTimer() }
+
     }
 
-    val arrowR = HudActor(tex = arrowRTex,
-        actorTexture = assets.getAsset(arrowRTex)).also {
-        it.scaleBy(-0.78f, -0.92f)
-        it.x = MainScreen.BG_WIDTH * 0.2f
-        it.y = -MainScreen.BG_HEIGHT * 0.38f
-        // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.603f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.104f)
-        // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.629f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.15f)
-        // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.710f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.153f)
-        // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.776f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.139f)
-        // 5
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.755f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.106f)
-
-        it.tapHandler = { appListener.onLeft() }
-    }
 
     val deckGroup = HudGroup().also {
         it.addActor(deck)
-        it.addActor(playlist)
-        it.addActor(joystick)
-        it.addActor(play)
-        it.addActor(arrowL)
         it.addActor(clock)
-        it.addActor(arrowR)
     }
 
 
@@ -315,5 +387,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         upperPanelGroup,
         deckGroup,
     )
+
+    val allSkeletons = arrayOf(joystick, play, arrowL, arrowR)
 
 }

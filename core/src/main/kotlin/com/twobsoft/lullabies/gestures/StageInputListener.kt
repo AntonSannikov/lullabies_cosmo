@@ -21,6 +21,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     var isCallback = false
     var isBackground = false
 
+
     // callbacks from notification media buttons
     fun initCallbacks() {
         screen.game.serviceApi.initPlayCallback(::toPlay)
@@ -36,15 +37,18 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         println("CORE PAUSE")
     }
 
+
     fun toPlay() {
         println("CORE PLAY")
     }
+
 
     fun toNext() {
         isCallback = true
         onLeft()
         isCallback = false
     }
+
 
     fun toPrevious() {
         isCallback = true
@@ -57,11 +61,11 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         isBackground = true
     }
 
+
     fun onAppResume() {
         isBackground = false
         if (screen.currentStageNumber != 0) changeStage(0, true)
     }
-
 
 
     override fun onLeft() {
@@ -84,6 +88,10 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         changeStage(-1, isCallback)
     }
 
+    fun onLoop() {
+        screen.isLooping = !screen.isLooping
+        screen.game.serviceApi.setLooping(screen.isLooping)
+    }
 
     override fun onTap(x: Float, y: Float, count: Int, button: Int) {
 
@@ -150,9 +158,21 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                 break
             }
         }
+
+        if (hudTapHandler == null) {
+            for (spine in screen.hudModel.allSkeletons) {
+                if (spine.hitBox.size > 2 &&
+                    isPointInPolygon(Utils.floatArrayToVec2Array(spine.hitBox.toFloatArray()),
+                        Vector2(x, MainScreen.BG_HEIGHT - y))
+                )    {
+                    hudTapHandler = spine.tapHandler
+                    break
+                }
+            }
+
+        }
         //
         // HUD ACTORS
-
 
         hudTapHandler?.invoke()
     }
@@ -186,6 +206,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             }
             screen.stage.addActor(hudActor)
         }
+        screen.isHud = true
     }
 
 
@@ -237,6 +258,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                 i++
             }
         }
+        screen.isHud = false
     }
     //                                          HUD
     // =============================================================================================
@@ -245,7 +267,6 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     // =============================================================================================
     //                                    BACK TO MENU
-
     fun startMenuTransition() {
         var isHudRollbacks = false
         screen.stage.actors.forEach {

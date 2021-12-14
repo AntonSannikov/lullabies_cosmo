@@ -2,15 +2,24 @@ package com.twobsoft.lullabies.android
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.TimePickerDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.core.app.NotificationManagerCompat
 import com.twobsoft.lullabies.R
 import com.twobsoft.lullabies.ServicesCoreInterface
+import java.util.*
+import kotlin.concurrent.timerTask
+import android.media.AudioManager
+
+
+
 
 
 class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
@@ -18,10 +27,17 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
     var currentSong = 0
     var isPlaying = false
+    var isPaused = false
 
-    var mediaPlayer: MediaPlayer?=null
+    var lastVolume = 0f
+    var currentVolume = 0f
 
-    var notificationManager: NotificationManager?=null
+    var lastSelectedMinute: Int? = null
+    var lastSelectedHour: Int? = null
+
+    var mediaPlayer: MediaPlayer? = null
+
+    var notificationManager: NotificationManager? = null
     var corePlayCallback: () -> Unit = {}
     var corePauseCallback: () -> Unit = {}
     var corePreviousCallback: () -> Unit = {}
@@ -47,7 +63,7 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         }
     }
 
-    fun endOfTrackcallback() {
+    fun endOfTrackCallback() {
         println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
     }
 
@@ -55,7 +71,7 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         mediaPlayer = MediaPlayer.create(context, BackgroundSoundService.playlist[0].data)
 
         BackgroundSoundService.mediaPlayer = mediaPlayer
-        BackgroundSoundService.endOfTrackCallback = ::endOfTrackcallback
+        BackgroundSoundService.endOfTrackCallback = ::endOfTrackCallback
         createChannel()
         context.registerReceiver(mediaButtonReceiver, IntentFilter("TRACKS_TRACKS"))
         context.startService(Intent(context, OnClearFromRecentService::class.java))
@@ -119,6 +135,74 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
     }
 
 
+    fun pauseMusic() {
+        isPlaying = false
+        isPaused = true
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val volume_level = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        val maxVolume: Int = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        lastVolume = volume_level.toFloat() / maxVolume
+
+        CreateNotification.createNotification(
+            context,
+            BackgroundSoundService.playlist[currentSong],
+            R.drawable.ic_baseline_play_arrow_24,
+            currentSong,
+            BackgroundSoundService.playlist.size-1
+        )
+
+        val delta = 0.05f
+        currentVolume = lastVolume
+        val timer = Timer()
+        timer.schedule(
+            timerTask {
+                currentVolume -= delta
+                println(currentVolume)
+                if (currentVolume <= 0) {
+                    val intent = Intent(context, BackgroundSoundService::class.java)
+                    intent.putExtra("songIndex", currentSong)
+                    intent.putExtra("action", "pause")
+                    context.stopService(intent)
+                    context.startService(intent)
+                    BackgroundSoundService.mediaPlayer!!.setVolume(lastVolume, lastVolume)
+                    timer.cancel()
+                }
+                BackgroundSoundService.mediaPlayer!!.setVolume(currentVolume, currentVolume)
+            },
+            0, 50
+        )
+    }
+
+
+    override fun setLooping(value: Boolean) {
+        println("LOOPING: $value")
+        BackgroundSoundService.mediaPlayer!!.isLooping = value
+    }
+
+
+    override fun createTimer() {
+        val cal = Calendar.getInstance()
+        if (lastSelectedHour == null) lastSelectedHour = cal.get(Calendar.HOUR_OF_DAY)
+        if (lastSelectedMinute == null) lastSelectedMinute = cal.get(Calendar.MINUTE)
+        Handler(Looper.getMainLooper()).post {
+
+            val dialog = TimePickerDialog(
+                context,
+                { _, hourOfDay, minute ->
+                    lastSelectedHour = hourOfDay
+                    lastSelectedMinute = minute
+                    val timer = Timer()
+                    timer.schedule(
+                        timerTask { pauseMusic() },
+                        (lastSelectedHour!! * 3600000 + lastSelectedMinute!! * 60000).toLong()
+                    )
+                },
+                lastSelectedHour!!, lastSelectedMinute!!,
+                true
+            )
+            dialog.show()
+        }
+    }
 
 
     override fun onTrackPrevious() {
@@ -214,7 +298,6 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         context.startService(intent)
     }
 
-
     fun dispose(context: Context) {
         val intent = Intent(context, BackgroundSoundService::class.java)
         context.stopService(intent)
@@ -223,7 +306,6 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         context.unregisterReceiver(mediaButtonReceiver)
 
     }
-
 
     override fun onPause() {
         coreOnAppPauseCallback()

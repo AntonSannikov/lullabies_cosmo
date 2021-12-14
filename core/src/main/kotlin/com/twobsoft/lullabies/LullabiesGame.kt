@@ -50,6 +50,7 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>(
         addScreen(SplashScreen(this))
         setScreen<SplashScreen>()
     }
+
 }
 
 
@@ -70,10 +71,12 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     private val camera: OrthographicCamera
     private val viewport: Viewport
 
+
     // SHADERS AND RENDERING
     val fbo = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
     val fbo2 = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
     var shaderFocusOffset = Vector2(0f, 0f)
+
 
     // BARREL SHADER
     var barrelShaderPower: Float                = BARREL_SHADER_PULSE_START_POWER
@@ -85,6 +88,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         Gdx.files.internal("shaders/barrel/fragment.glsl").readString()
     )
     var isBarrel = false
+
 
     // SHADE SHADER
     val shadeShader = ShaderProgram(
@@ -106,6 +110,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     )
     var isInterStellar = false
 
+
     // INVERSE SHADING SHADER
     val inverseShader = ShaderProgram(
         Gdx.files.internal("shaders/inverse_shade/vertex.glsl").readString(),
@@ -122,7 +127,10 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     var isHudTapable = true
     var isSwiping = false
     var isMenu = false
+    var isHud = false
+    var isLooping = false
     var isMenuTappable = true
+
 
     init {
         //ShaderProgram.pedantic = false
@@ -274,7 +282,29 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
                 renderer.draw(polygonSpriteBatch, topActor!!.skeleton)
                 polygonSpriteBatch.end()
             }
+        } else if (isHud) {
+            for (spine in hudModel.allSkeletons) {
+                spine.state.update(delta)
+                spine.state.apply(spine.skeleton)
+                if (spine.rotation != 0f) {
+                    spine.skeleton.rootBone.rotation = spine.rotation
+                }
+                spine.skeleton.updateWorldTransform()
+
+                if (spine.isTransitionAnimation) {
+                    continue
+                }
+                polygonSpriteBatch.begin()
+                renderer.draw(polygonSpriteBatch, spine.skeleton)
+                polygonSpriteBatch.end()
+//                shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+//                shapeRenderer.color = Color.RED
+//                if (spine.hitBox.size > 2) {
+//                    shapeRenderer.polygon(spine.hitBox.toFloatArray())
+//                }
+            }
         }
+
         stage.batch.begin()
         if (!isHudTapable) {
             for (actor in stage.actors) {
@@ -346,6 +376,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         viewport.update(width, height, true)
         super.resize(width, height)
     }
+
 
     override fun dispose() {
         interStellarShader.disposeSafely()

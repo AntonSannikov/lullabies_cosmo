@@ -19,6 +19,7 @@ class BackgroundSoundService: Service() {
         var isNeedDestroy = false
         var endOfTrackCallback: ()-> Unit = {}
 
+
         var id = 0
 
         val playlist = arrayOf(
@@ -37,7 +38,7 @@ class BackgroundSoundService: Service() {
             Track("Eine Kleine Nachtmusik", "", com.twobsoft.lullabies.R.raw.file13, 13),
             Track("Kirie Eleison", "", com.twobsoft.lullabies.R.raw.file14, 14),
             Track("Sinfonia Concertante", "", com.twobsoft.lullabies.R.raw.file15, 15),
-            Track("16. Serenade in D major", "Haffner", com.twobsoft.lullabies.R.raw.file16, 16),
+            Track("Serenade in D major", "Haffner", com.twobsoft.lullabies.R.raw.file16, 16),
         )
     }
 
@@ -57,7 +58,7 @@ class BackgroundSoundService: Service() {
         val songIndex = intent!!.getIntExtra("songIndex", 0)
         val action = intent.getStringExtra("action")
 
-        mediaPlayer?.isLooping = true
+        mediaPlayer?.isLooping = false
 
         when (action) {
             "playNew" -> {
@@ -86,7 +87,6 @@ class BackgroundSoundService: Service() {
 
 
     override fun onDestroy() {
-        println("try to destroy $id")
         if (!isNeedDestroy) return
         mediaPlayer?.stop()
         mediaPlayer?.release()

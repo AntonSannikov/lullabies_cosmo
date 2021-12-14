@@ -27,7 +27,10 @@ class Assets {
 
     // UI
     fun loadHud() {
+        HudModel.allSkeletons.forEach { skeletonLoader.loadSync(manager, AssetDescriptor(it, SkeletonData::class.java)) }
+        manager.finishLoading()
         HudModel.all.forEach { manager.load(it, Texture::class.java) }
+
     }
 
     // MENU
