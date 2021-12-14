@@ -1,7 +1,7 @@
 package com.twobsoft.lullabies.hud
 
 
-import com.badlogic.gdx.graphics.Texture
+
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Timer
 import com.twobsoft.lullabies.Assets
 import com.twobsoft.lullabies.MainScreen
 import com.twobsoft.lullabies.MediaPlayer
-import com.twobsoft.lullabies.components.LayerActor
 import com.twobsoft.lullabies.components.SpineComponent
 import com.twobsoft.lullabies.gestures.StageInputListener
 import com.twobsoft.lullabies.models.Entity
@@ -51,9 +50,12 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             "hud/left/skeletons.atlas", "hud/left/json.json",
             "hud/right/skeletons.atlas", "hud/right/json.json",
             "hud/play/skeletons.atlas", "hud/play/play.json",
+            "hud/pause/skeletons.atlas", "hud/pause/pause.json",
         )
 
+        var playButton: SpineComponent?=null
     }
+
 
     override val stageNumber = -1
 
@@ -282,7 +284,23 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.121f)
 
         it.tapHandler = {
+            
+            if (appListener.screen.game.serviceApi.isPlaying) {
+                it.changeAtlas(
+                    TextureAtlas(assets.skeletonLoader.resolve("hud/play/skeletons.atlas")),
+                    assets.skeletonLoader.resolve("hud/play/play.json")
+                )
+                it.setPos(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT * 0.1f)
+            } else {
+                it.changeAtlas(
+                    TextureAtlas(assets.skeletonLoader.resolve("hud/pause/skeletons.atlas")),
+                    assets.skeletonLoader.resolve("hud/pause/pause.json")
+                )
+                it.setPos(MainScreen.BG_WIDTH * 0.494f, MainScreen.BG_HEIGHT * 0.1065f)
+            }
+
             it.state.setAnimation(0, "animation", false)
+
             MediaPlayer.play(appListener.screen.currentStageNumber)
         }
     }
@@ -294,7 +312,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         isAlwaysAnimated = false
     ).also {
         it.stageNumber = 13
-        it.setPos(MainScreen.BG_WIDTH * 0.27f, MainScreen.BG_HEIGHT * 0.08f)
+        it.setPos(MainScreen.BG_WIDTH * 0.3f, MainScreen.BG_HEIGHT * 0.08f)
         it.setTimeScale(timeScale)
 
         // 1
@@ -323,7 +341,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         isAlwaysAnimated = false
     ).also {
         it.stageNumber = 13
-        it.setPos(MainScreen.BG_WIDTH * 0.73f, MainScreen.BG_HEIGHT * 0.08f)
+        it.setPos(MainScreen.BG_WIDTH * 0.7f, MainScreen.BG_HEIGHT * 0.08f)
         it.setTimeScale(timeScale)
 
         // 1

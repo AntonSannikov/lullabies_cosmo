@@ -2,6 +2,7 @@ package com.twobsoft.lullabies.android
 
 
 import android.os.Bundle
+import android.view.WindowManager
 
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
@@ -30,11 +31,13 @@ class AndroidLauncher : AndroidApplication() {
                 // Configure your application here.
             }
         )
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onDestroy() {
         BackgroundSoundService.isNeedDestroy = true
         servicesApi?.dispose(this)
+
         super.onDestroy()
     }
 

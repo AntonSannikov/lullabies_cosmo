@@ -74,9 +74,9 @@ class BackgroundSoundService: Service() {
 
         }
 
-        Toast.makeText(applicationContext,
-            "$songIndex",
-            Toast.LENGTH_SHORT).show()
+//        Toast.makeText(applicationContext,
+//            "$songIndex",
+//            Toast.LENGTH_SHORT).show()
 
         return START_STICKY
     }

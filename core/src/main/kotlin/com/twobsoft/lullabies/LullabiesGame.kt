@@ -124,7 +124,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     //
     val inputListener: StageInputListener
     val hudModel : HudModel
-    var isHudTapable = true
+    var isHudTapable = false
     var isSwiping = false
     var isMenu = false
     var isHud = false

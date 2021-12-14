@@ -1,6 +1,8 @@
 package com.twobsoft.lullabies
 
 interface ServicesCoreInterface {
+    var isPlaying: Boolean
+    var isNeedNewPlay: Boolean
 
     fun initPlayCallback(callback: () -> Unit)
     fun initPauseCallback(callback: () -> Unit)

@@ -1,6 +1,7 @@
 package com.twobsoft.lullabies.gestures
 
 import com.badlogic.gdx.LifecycleListener
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
@@ -34,13 +35,15 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
 
     fun toPause() {
-        println("CORE PAUSE")
+        screen.hudModel.play.changeAtlas(
+            TextureAtlas(screen.game.assets.skeletonLoader.resolve("hud/play/skeletons.atlas")),
+            screen.game.assets.skeletonLoader.resolve("hud/play/play.json")
+        )
+        screen.hudModel.play.setPos(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT * 0.1f)
     }
 
 
-    fun toPlay() {
-        println("CORE PLAY")
-    }
+    fun toPlay() {}
 
 
     fun toNext() {
@@ -64,7 +67,24 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     fun onAppResume() {
         isBackground = false
-        if (screen.currentStageNumber != 0) changeStage(0, true)
+        if (screen.currentStageNumber != 0) {
+            changeStage(0, true)
+            if (screen.game.serviceApi.isPlaying) {
+                screen.hudModel.play.changeAtlas(
+                    TextureAtlas(screen.game.assets.skeletonLoader.resolve("hud/pause/skeletons.atlas")),
+                    screen.game.assets.skeletonLoader.resolve("hud/pause/pause.json")
+                )
+                screen.hudModel.play.setPos(MainScreen.BG_WIDTH * 0.494f, MainScreen.BG_HEIGHT * 0.1065f)
+            } else {
+                screen.hudModel.play.changeAtlas(
+                    TextureAtlas(screen.game.assets.skeletonLoader.resolve("hud/play/skeletons.atlas")),
+                    screen.game.assets.skeletonLoader.resolve("hud/play/play.json")
+                )
+                screen.hudModel.play.setPos(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT * 0.1f)
+            }
+        }
+
+
     }
 
 
@@ -88,10 +108,12 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         changeStage(-1, isCallback)
     }
 
+
     fun onLoop() {
         screen.isLooping = !screen.isLooping
         screen.game.serviceApi.setLooping(screen.isLooping)
     }
+
 
     override fun onTap(x: Float, y: Float, count: Int, button: Int) {
 
@@ -207,6 +229,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             screen.stage.addActor(hudActor)
         }
         screen.isHud = true
+        screen.isHudTapable = true
     }
 
 
@@ -259,6 +282,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             }
         }
         screen.isHud = false
+        screen.isHudTapable = false
     }
     //                                          HUD
     // =============================================================================================
@@ -311,6 +335,14 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
 
     fun createStage(stageModel: Entity) {
+
+        screen.currentStageNumber = stageModel.stageNumber
+
+        if (screen.game.serviceApi.isPlaying) {
+            screen.game.serviceApi.playMusic(screen.currentStageNumber, true)
+        } else {
+            screen.game.serviceApi.isNeedNewPlay = true
+        }
 
         screen.stage.actors.forEach {
             if (it is LayerActor) it.isNeedRemove = true
@@ -416,8 +448,12 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         if (!callback) {
             screen.isSwiping = true
             MediaPlayer.play(screen.currentStageNumber, true)
+            screen.hudModel.play.changeAtlas(
+                TextureAtlas(screen.game.assets.skeletonLoader.resolve("hud/pause/skeletons.atlas")),
+                screen.game.assets.skeletonLoader.resolve("hud/pause/pause.json")
+            )
+            screen.hudModel.play.setPos(MainScreen.BG_WIDTH * 0.494f, MainScreen.BG_HEIGHT * 0.1065f)
         }
-
 
 
         for (actor in screen.stage.actors) {

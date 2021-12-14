@@ -10,9 +10,9 @@ import com.twobsoft.lullabies.MainScreen
 import kotlinx.coroutines.MainScope
 
 class SpineComponent(
-    val atlas: TextureAtlas,
-    val jsonFile: FileHandle,
-    val scale: Float,
+    var atlas: TextureAtlas,
+    var jsonFile: FileHandle,
+    var scale: Float,
     var isAlwaysAnimated: Boolean=true
     ) {
 
@@ -30,7 +30,7 @@ class SpineComponent(
     var isTransitionAnimation = false
 
 
-    val json = SkeletonJson(atlas).also{
+    var json = SkeletonJson(atlas).also{
         it.scale = scale
     }
 
@@ -46,6 +46,26 @@ class SpineComponent(
         if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
     }
 
+
+    fun changeAtlas(_atlas: TextureAtlas, _jsonFile: FileHandle) {
+        atlas = _atlas
+        jsonFile = _jsonFile
+
+        json = SkeletonJson(atlas).also{
+            it.scale = scale
+        }
+
+        skeletonData = json.readSkeletonData(jsonFile)
+        skeleton = Skeleton(skeletonData).also {
+            it.setPosition(0f, 0f)
+        }
+
+        stateData = AnimationStateData(skeletonData)
+        state = AnimationState(stateData).also {
+            it.timeScale = 0.5f
+            if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
+        }
+    }
 
     fun setPos(_x: Float, _y: Float) {
         position = Vector2(_x, _y)
@@ -81,7 +101,7 @@ class SpineComponent(
             else result.y = position.y - transPositionDelta
         }
 
-
         return  result
     }
+
 }

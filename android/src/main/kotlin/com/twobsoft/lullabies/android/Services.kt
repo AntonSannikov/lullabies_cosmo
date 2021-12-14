@@ -26,7 +26,9 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
     var currentSong = 0
-    var isPlaying = false
+    override var isPlaying = false
+    override var isNeedNewPlay = false
+
     var isPaused = false
 
     var lastVolume = 0f
@@ -117,20 +119,56 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
     override fun playMusic(stageNumber: Int, isSwitching: Boolean) {
+
         currentSong = stageNumber-1
-        isPlaying = !isPlaying
-        CreateNotification.createNotification(
-            context,
-            BackgroundSoundService.playlist[currentSong],
-            R.drawable.ic_baseline_pause_24,
-            stageNumber-1,
-            BackgroundSoundService.playlist.size-1
-        )
-        val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex", currentSong)
-        intent.putExtra("action", "playNew")
-        context.stopService(intent)
-        context.startService(intent)
+
+        if (isSwitching || isPaused || isNeedNewPlay) {
+            isNeedNewPlay = false
+            isPaused = false
+            isPlaying = true
+            CreateNotification.createNotification(
+                context,
+                BackgroundSoundService.playlist[currentSong],
+                R.drawable.ic_baseline_pause_24,
+                stageNumber-1,
+                BackgroundSoundService.playlist.size-1
+            )
+            val intent = Intent(context, BackgroundSoundService::class.java)
+            intent.putExtra("songIndex", currentSong)
+            intent.putExtra("action", "playNew")
+            context.stopService(intent)
+            context.startService(intent)
+        } else {
+            if (isPlaying) {
+                isPlaying = false
+                CreateNotification.createNotification(
+                    context,
+                    BackgroundSoundService.playlist[currentSong],
+                    R.drawable.ic_baseline_play_arrow_24,
+                    stageNumber-1,
+                    BackgroundSoundService.playlist.size-1
+                )
+                val intent = Intent(context, BackgroundSoundService::class.java)
+                intent.putExtra("songIndex", currentSong)
+                intent.putExtra("action", "pause")
+                context.stopService(intent)
+                context.startService(intent)
+            } else {
+                isPlaying = true
+                CreateNotification.createNotification(
+                    context,
+                    BackgroundSoundService.playlist[currentSong],
+                    R.drawable.ic_baseline_pause_24,
+                    stageNumber-1,
+                    BackgroundSoundService.playlist.size-1
+                )
+                val intent = Intent(context, BackgroundSoundService::class.java)
+                intent.putExtra("songIndex", currentSong)
+                intent.putExtra("action", "resume")
+                context.stopService(intent)
+                context.startService(intent)
+            }
+        }
 
     }
 
@@ -165,6 +203,7 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
                     context.stopService(intent)
                     context.startService(intent)
                     BackgroundSoundService.mediaPlayer!!.setVolume(lastVolume, lastVolume)
+                    corePauseCallback()
                     timer.cancel()
                 }
                 BackgroundSoundService.mediaPlayer!!.setVolume(currentVolume, currentVolume)
@@ -175,7 +214,6 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
     override fun setLooping(value: Boolean) {
-        println("LOOPING: $value")
         BackgroundSoundService.mediaPlayer!!.isLooping = value
     }
 
@@ -256,8 +294,6 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
     override fun onTrackPause() {
 
         isPlaying = false
-
-        corePauseCallback()
 
         CreateNotification.createNotification(
             context,
