@@ -153,13 +153,15 @@ class LayerActor(
 
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
+        batch!!.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+
         super.draw(batch, parentAlpha)
 
         if (x < xBounds.x || x >= xBounds.y) {
             return
         }
 
-        batch!!.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+
 
         if (isOrbiting) {
             angle += angleDelta

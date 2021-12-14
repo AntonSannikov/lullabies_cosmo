@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.utils.Timer
 import com.twobsoft.lullabies.*
@@ -58,7 +59,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     fun onAppResume() {
         isBackground = false
-        if (screen.currentStageNumber != 0) createStage(getStageModel(screen.currentStageNumber))
+        if (screen.currentStageNumber != 0) changeStage(0, true)
     }
 
 
@@ -318,16 +319,12 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     }
 
 
-    fun createSwipeStage(stageModel: Entity, increment: Int) {
-        stageModel.all.forEach {
-            if (it is LayerActor || it is LayerGroup) {
-                if (MainScreen.BG_WIDTH > 1660 && MainScreen.layerWidth != 0f) {
-                    it.x += MainScreen.BG_WIDTH * increment - increment * (MainScreen.BG_WIDTH - MainScreen.layerWidth) / 2
-                } else {
-                    it.x += MainScreen.BG_WIDTH * increment
-                }
-            }
+    fun createSwipeStage(stageModel: Entity) {
 
+        val currentActors = arrayListOf<Actor>()
+        currentActors.addAll(screen.stage.actors)
+
+        stageModel.all.forEach {
             screen.stage.addActor(it)
             if ((it is LayerActor && !it.isNeedReposition) || it is LayerGroup) {
                 it.actions.forEach { action -> it.addAction(action) }
@@ -335,6 +332,28 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                 it.xOffset = (-1..1).random() * (0..MainScreen.BG_WIDTH.toInt()).random()
             }
         }
+
+        var i = 0
+        var length = screen.stage.actors.size
+
+        while(i < length) {
+            val actor = screen.stage.actors[i]
+            if (actor is LayerActor && actor.isNeedRemove) {
+                actor.remove()
+                length--
+            } else if (actor is LayerGroup && actor.isNeedRemove) {
+                actor.remove()
+                length--
+            }
+            else {
+                i++
+            }
+        }
+
+        currentActors.forEach {
+            screen.stage.addActor(it)
+        }
+
     }
 
 
@@ -379,6 +398,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         }
 
 
+
         for (actor in screen.stage.actors) {
             if (actor is LayerActor) { actor.isNeedRemove = true }
             if (actor is LayerGroup) { actor.isNeedRemove = true }
@@ -386,7 +406,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
         val newStageModel = getStageModel(screen.currentStageNumber)
 
-        createSwipeStage(newStageModel, increment)
+        createSwipeStage(newStageModel)
 
         if (screen.currentStageNumber != 0) {
             refreshHud()
@@ -399,26 +419,22 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                 if (it is LayerActor && it.isOrbit) it.stopAnimation()
                 it.addAction(
                     Actions.sequence(
-                        getSwipingAction(increment),
-                        Actions.run {
-                            if (!isReseted) {
-                                isReseted = true
-                                screen.isSwiping = false
-                                refreshStage()
+                        Actions.fadeOut(0.5f, Interpolation.linear),
+                        Actions.parallel(
+                            Actions.fadeIn(0.5f, Interpolation.linear),
+                            Actions.run {
+                                if (!isReseted) {
+                                    isReseted = true
+                                    screen.isSwiping = false
+                                    refreshStage()
+
+                                }
                             }
-                        }
+                        )
+
                     )
                 )
             }
-        }
-    }
-
-
-    fun getSwipingAction(increment: Int) :Action {
-        if (MainScreen.BG_WIDTH > 1600) {
-            return Actions.moveBy(-MainScreen.BG_WIDTH * increment + increment * (MainScreen.BG_WIDTH - MainScreen.layerWidth) / 2, 0f, 0.5f)
-        } else {
-            return Actions.moveBy(-MainScreen.BG_WIDTH * increment, 0f, 0.5f)
         }
     }
 
