@@ -127,7 +127,7 @@ class PlutoModel(val assets: Assets): Entity() {
         cWidth = MainScreen.BG_WIDTH * 0.2f,
         cHeight = MainScreen.layerHeight * 0.116f,
         cX = MainScreen.BG_WIDTH * 0.0188f - MainScreen.BG_WIDTH * 0.1f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.694f - MainScreen.layerHeight * 0.058f
+        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.694f - MainScreen.layerHeight * 0.058f
     ).also {
         it.originX = it.cWidth / 2
         it.originY = it.cHeight / 2
@@ -155,7 +155,7 @@ class PlutoModel(val assets: Assets): Entity() {
         cWidth = MainScreen.BG_WIDTH * 0.119f,
         cHeight = MainScreen.layerHeight * 0.081f,
         cX = MainScreen.BG_WIDTH * 0.097f - MainScreen.BG_WIDTH * 0.0595f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.736f - MainScreen.layerHeight * 0.04f
+        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.736f - MainScreen.layerHeight * 0.04f
     ).also {
         it.originX = it.cWidth / 2
         it.originY = it.cHeight / 2
@@ -183,7 +183,7 @@ class PlutoModel(val assets: Assets): Entity() {
         cWidth = MainScreen.BG_WIDTH * 0.18f,
         cHeight = MainScreen.layerHeight * 0.116f,
         cX = MainScreen.BG_WIDTH * 0.264f - MainScreen.BG_WIDTH * 0.09f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.777f - MainScreen.layerHeight * 0.058f
+        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.777f - MainScreen.layerHeight * 0.058f
     ).also {
         it.originX = it.cWidth / 2
         it.originY = it.cHeight / 2
@@ -211,7 +211,7 @@ class PlutoModel(val assets: Assets): Entity() {
         cWidth = MainScreen.BG_WIDTH * 0.12f,
         cHeight = MainScreen.layerHeight * 0.081f,
         cX = MainScreen.BG_WIDTH * 0.765f - MainScreen.BG_WIDTH * 0.06f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.715f - MainScreen.layerHeight * 0.04f
+        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.715f - MainScreen.layerHeight * 0.04f
     ).also {
         it.originX = it.cWidth / 2
         it.originY = it.cHeight / 2
@@ -239,7 +239,7 @@ class PlutoModel(val assets: Assets): Entity() {
         cWidth = MainScreen.layerHeight * MainScreen.BG_WIDTH * 0.18f,
         cHeight = MainScreen.layerHeight * 0.116f,
         cX = MainScreen.BG_WIDTH * 0.877f - MainScreen.BG_WIDTH * 0.09f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.713f - MainScreen.layerHeight * 0.058f
+        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.713f - MainScreen.layerHeight * 0.058f
     ).also {
         it.originX = it.cWidth / 2
         it.originY = it.cHeight / 2

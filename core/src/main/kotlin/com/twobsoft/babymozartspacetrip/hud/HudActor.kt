@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.twobsoft.babymozartspacetrip.MainScreen
-
+import ktx.assets.disposeSafely
 
 
 class HudActor(
@@ -94,6 +94,14 @@ class HudActor(
         }
         return  result.toTypedArray()
 
+    }
+
+
+    override fun remove(): Boolean {
+        actorTexture.disposeSafely()
+        texture.disposeSafely()
+        font.disposeSafely()
+        return super.remove()
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {

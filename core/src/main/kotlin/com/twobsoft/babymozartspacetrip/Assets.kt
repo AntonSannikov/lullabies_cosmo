@@ -24,6 +24,10 @@ class Assets {
         SplashScreenModel.all.forEach { manager.load(it, Texture::class.java) }
     }
 
+    fun unloadSplash() {
+        SplashScreenModel.all.forEach { manager.unload(it) }
+    }
+
     // UI
     fun loadHud() {
         HudModel.allSkeletons.forEach { skeletonLoader.loadSync(manager, AssetDescriptor(it, SkeletonData::class.java)) }

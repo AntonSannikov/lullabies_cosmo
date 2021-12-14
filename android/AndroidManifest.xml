@@ -14,12 +14,12 @@
 			android:icon="@mipmap/launcher_icon"
 			android:isGame="true"
 			android:appCategory="game"
-        	android:label="BabyMozartSpaceTrip"
+        	android:label="Baby Mozart Space Trip"
         	tools:ignore="UnusedAttribute"
 			android:theme="@style/GdxTheme">
 		<activity
 				android:name="com.twobsoft.babymozartspacetrip.android.AndroidLauncher"
-				android:label="BabyMozartSpaceTrip"
+				android:label="Baby Mozart Space Trip"
 				android:screenOrientation="portrait"
 				android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
           		android:exported="true">

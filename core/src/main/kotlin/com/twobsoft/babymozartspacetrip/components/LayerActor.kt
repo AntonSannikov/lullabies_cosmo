@@ -94,7 +94,7 @@ class LayerActor(
 
         if (!isMenu) {
             if (MainScreen.BG_WIDTH <= 1600) {
-                y = if (cY == 0f) MainScreen.BG_HEIGHT * 0.08f else cY
+                y = if (cY == 0f) MainScreen.bottomPadding else cY
             }
             // tablet
             else {

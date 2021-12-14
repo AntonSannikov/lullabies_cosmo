@@ -12,6 +12,7 @@ import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.models.MenuSpineModel
 import ktx.app.KtxScreen
+import ktx.assets.disposeSafely
 
 class SplashScreen(val game: LullabiesGame): KtxScreen {
 
@@ -23,20 +24,14 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
         val shapeRenderer = ShapeRenderer()
     }
 
-    // SHADE SHADER
-    val shadeShader = ShaderProgram(
-        Gdx.files.internal("shaders/shade/vertex.glsl").readString(),
-        Gdx.files.internal("shaders/shade/fragment.glsl").readString()
-    )
-    var shadeTime = 0f
-    var isShade = false
-
     // INVERSE SHADING SHADER
     val inverseShader = ShaderProgram(
         Gdx.files.internal("shaders/inverse_shade/vertex.glsl").readString(),
         Gdx.files.internal("shaders/inverse_shade/fragment.glsl").readString()
     )
     var isInverseShading = false
+    var shadeTime = 0f
+    var isShade = false
 
     var isAssetsLoaded = false
     var isTransitionDone = false
@@ -71,6 +66,15 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
         game.assets.load(14)
         game.assets.load(15)
     }
+
+
+    override fun dispose() {
+        inverseShader.disposeSafely()
+        stage.disposeSafely()
+        game.assets.unloadSplash()
+        super.dispose()
+    }
+
 
     override fun render(delta: Float) {
         val gl = Gdx.graphics.gL20

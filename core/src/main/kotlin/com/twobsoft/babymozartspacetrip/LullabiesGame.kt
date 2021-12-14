@@ -61,6 +61,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         val layerHeight         = BG_WIDTH * 1.5625f
         val shapeRenderer       = ShapeRenderer()
         var layerWidth          = 0f
+        val bottomPadding       = BG_HEIGHT * 0.12f
     }
 
     val STAGES_COUNT = 15
@@ -177,6 +178,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         inverseShadingTime = 0.5f
         time = 6f
     }
+
 
 
 

@@ -73,7 +73,7 @@ class AlienshipModel(val assets: Assets): Entity() {
         cWidth = MainScreen.BG_WIDTH * 0.14f,
         cHeight = MainScreen.layerHeight * 0.084f,
         cX = MainScreen.BG_WIDTH * 0.59f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.31f - MainScreen.layerHeight * 0.042f,
+        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.31f - MainScreen.layerHeight * 0.042f,
     ).also {
         it.orbitRadius = MainScreen.layerHeight * 0.018f
         it.angleDelta = -0.8f
