@@ -26,6 +26,7 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
     var currentSong = 0
+    val AVAILABLE_STAGES = 15
     override var isPlaying = false
     override var isNeedNewPlay = false
 
@@ -216,11 +217,12 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
     override fun setLooping(value: Boolean) {
         BackgroundSoundService.mediaPlayer!!.isLooping = value
+        BackgroundSoundService.isLooping = value
     }
 
 
     override fun createTimer() {
-        val cal = Calendar.getInstance()
+//        val cal = Calendar.getInstance()
         //cal.get(Calendar.HOUR_OF_DAY)
         //cal.get(Calendar.MINUTE)
         if (lastSelectedHour == null) lastSelectedHour = 0
@@ -248,9 +250,10 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
     override fun onTrackPrevious() {
         if (currentSong == 0) {
-            return
+            currentSong = AVAILABLE_STAGES - 1
+        } else {
+            currentSong--
         }
-        currentSong--
         isPlaying = true
 
         corePreviousCallback()
@@ -316,11 +319,13 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
     override fun onTrackNext() {
-        if (currentSong == BackgroundSoundService.playlist.size - 1) {
-            return
+        if (currentSong == AVAILABLE_STAGES - 1) {
+            currentSong = 0
+        } else {
+            currentSong++
         }
         isPlaying = true
-        currentSong++
+
 
         coreNextCallback()
 

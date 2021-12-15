@@ -23,7 +23,7 @@ class SaturnModel(val assets: Assets): Entity() {
 
     override val stageNumber = 8
 
-    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
+    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

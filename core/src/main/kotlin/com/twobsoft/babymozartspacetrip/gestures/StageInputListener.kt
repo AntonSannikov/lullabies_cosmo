@@ -1,13 +1,16 @@
 package com.twobsoft.babymozartspacetrip.gestures
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.utils.Timer
+import com.twobsoft.babymozartspacetrip.HudHandler
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.MediaPlayer
 import com.twobsoft.lullabies.*
@@ -15,14 +18,19 @@ import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.hud.HudActor
 import com.twobsoft.babymozartspacetrip.components.LayerGroup
 import com.twobsoft.babymozartspacetrip.hud.HudGroup
+import com.twobsoft.babymozartspacetrip.hud.HudModel
 import com.twobsoft.babymozartspacetrip.models.*
 import com.twobsoft.babymozartspacetrip.utils.Utils
+import kotlinx.coroutines.awaitAll
+import ktx.scene2d.actors
 
-class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionListener {
+class StageInputListener(
+    val screen: MainScreen,
+    val hudHandler: HudHandler
+    ): MyGestureListener.DirectionListener {
 
     var isCallback = false
     var isBackground = false
-
 
     // callbacks from notification media buttons
     fun initCallbacks() {
@@ -37,11 +45,9 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     fun toPause() {
         Gdx.app.postRunnable {
-            screen.hudModel.play.changeAtlas(
-                TextureAtlas(screen.game.assets.skeletonLoader.resolve("hud/play/skeletons.atlas")),
-                screen.game.assets.skeletonLoader.resolve("hud/play/play.json")
-            )
-            screen.hudModel.play.setPos(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT * 0.1f)
+            screen.hudModel.play.state.timeScale = 20f
+            screen.hudModel.play.state.setAnimation(0, "animation", false)
+            screen.hudModel.play.state.timeScale = 0.5f
         }
     }
 
@@ -74,17 +80,17 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
             Gdx.app.postRunnable {
                 changeStage(0, true)
                 if (screen.game.serviceApi.isPlaying) {
-                    screen.hudModel.play.changeAtlas(
-                        TextureAtlas(screen.game.assets.skeletonLoader.resolve("hud/pause/skeletons.atlas")),
-                        screen.game.assets.skeletonLoader.resolve("hud/pause/pause.json")
-                    )
-                    screen.hudModel.play.setPos(MainScreen.BG_WIDTH * 0.494f, MainScreen.BG_HEIGHT * 0.1065f)
+                    screen.hudModel.play.state.timeScale = 20f
+                    screen.hudModel.play.state.setAnimation(0, "animation", false)
+                    val timer = Timer()
+                    timer.scheduleTask(object : Timer.Task() {
+                        override fun run() {
+                            screen.hudModel.play.state.timeScale = 0.5f
+                        }
+                    }, 0.1f)
                 } else {
-                    screen.hudModel.play.changeAtlas(
-                        TextureAtlas(screen.game.assets.skeletonLoader.resolve("hud/play/skeletons.atlas")),
-                        screen.game.assets.skeletonLoader.resolve("hud/play/play.json")
-                    )
-                    screen.hudModel.play.setPos(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT * 0.1f)
+                    screen.hudModel.play.state.clearTrack(0)
+                    screen.hudModel.play.skeleton.setToSetupPose()
                 }
             }
         }
@@ -93,28 +99,25 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
 
     override fun onLeft() {
         println("")
-        if (screen.currentStageNumber == screen.STAGES_COUNT
-            || screen.isSwiping
-            || screen.currentStageNumber == 0) {
-            return
+        if (screen.isSwiping || screen.currentStageNumber == 0) { return }
+        if (screen.currentStageNumber == screen.AVAILABLE_STAGES) {
+            screen.currentStageNumber = 1
+            changeStage(0, isCallback)
+        } else {
+            changeStage(1, isCallback)
         }
-        changeStage(1, isCallback)
+
     }
 
 
     override fun onRight() {
-        if (screen.currentStageNumber == 1
-            || screen.isSwiping
-            || screen.currentStageNumber == 0) {
-            return
+        if (screen.isSwiping || screen.currentStageNumber == 0) { return }
+        if (screen.currentStageNumber == 1) {
+            screen.currentStageNumber = screen.AVAILABLE_STAGES
+            changeStage(0, isCallback)
+        } else {
+            changeStage(-1, isCallback)
         }
-        changeStage(-1, isCallback)
-    }
-
-
-    fun onLoop() {
-        screen.isLooping = !screen.isLooping
-        screen.game.serviceApi.setLooping(screen.isLooping)
     }
 
 
@@ -210,88 +213,51 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
     override fun onPan(x: Float, y: Float, deltaX: Float, deltaY: Float) {}
 
 
-    // =============================================================================================
-    //                                          HUD
-    fun refreshHud() {
-        var length = screen.stage.actors.size - 1
-        var i = 0
-        while (i < length) {
-            val actor = screen.stage.actors[i]
-            if (actor is HudGroup) {
-                actor.actions.clear()
-                actor.remove()
-                length --
-            } else { i++ }
+    fun clearStage() {
+        var length = screen.stage.actors.size
+        while (0 < length) {
+            screen.stage.actors[0].remove()
+            length--
         }
+        screen.stage.actors.clear()
+    }
 
-        for (hudActor in screen.hudModel.all) {
-            if (hudActor is HudGroup) {
-                hudActor.children.forEach { it as HudActor
-                    if (it.text != "") {
-                        it.changeText(MediaPlayer.playlist[screen.currentStageNumber-1]!!)
+
+    fun toggleNightMode() {
+        if (!MainScreen.isNightMode) {
+            screen.nightShaderTime = 1.25f
+            MainScreen.isNightMode = true
+            screen.stage.actors.forEach {
+                if (it is HudGroup) {
+                    var i = 0
+                    for (actor in it.children) {
+                        if (actor is HudActor && actor.tex == "hud/lamp_light.png") {
+                            actor.addAction(Actions.removeActor())
+                            break
+                        }
+                        i++
                     }
+                } else if (it is LayerActor && it.tex.contains("background.png")) {
+                    it.changeBackground(
+                        "planets/sleep.jpg",
+                        screen.game.assets.getAsset("planets/sleep.jpg")
+                    )
                 }
             }
-            screen.stage.addActor(hudActor)
-        }
-        screen.isHud = true
-        screen.isHudTapable = true
-    }
-
-
-    fun addRollingHud() {
-
-        val startingScale = Vector2(MainScreen.BG_WIDTH * 0.0005f, MainScreen.BG_HEIGHT * 0.0005f)
-        val targetScale = Vector2(-MainScreen.BG_WIDTH * 0.0005f, -MainScreen.BG_HEIGHT * 0.0005f)
-        screen.isHudTapable = false
-        screen.isMenuTappable = false
-        screen.hudModel.all.forEach {
-            it.y = -MainScreen.BG_HEIGHT * 0.3f
-            it.x = -MainScreen.BG_WIDTH * 0.2f
-            it.scaleBy(startingScale.x, startingScale.y)
-            screen.stage.addActor(it)
-            it.addAction(
-                Actions.parallel(
-                    Actions.scaleBy(targetScale.x, targetScale.y, 0.8f),
-                    Actions.moveBy(MainScreen.BG_WIDTH * 0.2f, MainScreen.BG_HEIGHT * 0.3f, 0.8f)
-                )
-            )
-        }
-    }
-
-
-    fun rollbackHud() {
-        screen.stage.actors.forEach {
-            if (it is HudGroup) {
-                it.addAction(
-                    Actions.sequence(
-                        Actions.delay(0.3f),
-                        Actions.run { removeHud() }
-                    )
-                )
+        } else {
+            MainScreen.isNightMode = false
+            screen.nightShaderTime = 0.875f
+            screen.isNightShader = true
+            for (actor in screen.stage.actors) {
+                if (actor is LayerActor && actor.tex.contains("sleep.jpg")) {
+                    val background = getStageModel(screen.currentStageNumber).background
+                    actor.changeBackground(background.tex, background.texture)
+                    break
+                }
             }
+            hudHandler.addLampLight()
         }
     }
-
-
-    fun removeHud() {
-        var i = 0
-        var length = screen.stage.actors.size
-
-        while (i < length) {
-            val actor = screen.stage.actors[i]
-            if (actor is HudGroup) {
-                actor.remove()
-                length--
-            } else {
-                i++
-            }
-        }
-        screen.isHud = false
-        screen.isHudTapable = false
-    }
-    //                                          HUD
-    // =============================================================================================
 
 
 
@@ -309,7 +275,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                                 if (!isHudRollbacks) {
                                     screen.isInverseShading = true
                                     isHudRollbacks = true
-                                    rollbackHud()
+                                    hudHandler.rollbackHud()
                                 }
                             }
                         ),
@@ -330,7 +296,18 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         }
         screen.menuModel = MenuSpineModel(screen.game.assets)
         screen.stage.addActor(screen.menuModel.background)
+        screen.stage.addActor(screen.menuModel.stars)
         screen.stage.addActor(screen.menuModel.radar)
+
+        screen.stage.actors.forEach {
+            if (it is LayerActor && it.tex == "menu/stars.png") {
+                it.addAction(Actions.repeat(
+                    RepeatAction.FOREVER,
+                    Actions.rotateBy(360f, 220f),
+                ))
+            }
+        }
+
         screen.isMenu = true
         screen.currentStageNumber = 0
         screen.isInverseShading = false
@@ -374,7 +351,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         }
 
         refreshStage()
-        refreshHud()
+        hudHandler.refreshHud()
     }
 
 
@@ -454,13 +431,15 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         if (!callback) {
             screen.isSwiping = true
             MediaPlayer.play(screen.currentStageNumber, true)
-            screen.hudModel.play.changeAtlas(
-                TextureAtlas(screen.game.assets.skeletonLoader.resolve("hud/pause/skeletons.atlas")),
-                screen.game.assets.skeletonLoader.resolve("hud/pause/pause.json")
-            )
-            screen.hudModel.play.setPos(MainScreen.BG_WIDTH * 0.494f, MainScreen.BG_HEIGHT * 0.1065f)
+            screen.hudModel.play.state.timeScale = 20f
+            screen.hudModel.play.state.setAnimation(0, "animation", false)
+            val timer = Timer()
+            timer.scheduleTask(object : Timer.Task() {
+                override fun run() {
+                    screen.hudModel.play.state.timeScale = 0.5f
+                }
+            }, 0.1f)
         }
-
 
         for (actor in screen.stage.actors) {
             if (actor is LayerActor) { actor.isNeedRemove = true }
@@ -472,7 +451,7 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
         createSwipeStage(newStageModel)
 
         if (screen.currentStageNumber != 0) {
-            refreshHud()
+            hudHandler.refreshHud()
         }
 
         var isReseted = false
@@ -490,11 +469,9 @@ class StageInputListener(val screen: MainScreen): MyGestureListener.DirectionLis
                                     isReseted = true
                                     screen.isSwiping = false
                                     refreshStage()
-
                                 }
                             }
                         )
-
                     )
                 )
             }

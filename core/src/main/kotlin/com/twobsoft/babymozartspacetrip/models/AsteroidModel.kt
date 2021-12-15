@@ -25,7 +25,7 @@ class AsteroidModel(val assets: Assets): Entity() {
 
     override val stageNumber = 12
 
-    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
 
     val plan5 = LayerActor(tex = plan5Tex, texture = assets.getAsset(plan5Tex)).also {
         it.actions.add(

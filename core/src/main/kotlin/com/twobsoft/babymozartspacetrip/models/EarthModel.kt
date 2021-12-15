@@ -16,7 +16,7 @@ class EarthModel(val assets: Assets): Entity() {
         const val cloud1Tex     = "planets/earth/cloud1.png"
         const val cloud2Tex     = "planets/earth/cloud2.png"
         const val cloud3Tex     = "planets/earth/cloud3.png"
-        const val skyTex        = "planets/earth/sky.png"
+        const val skyTex        = "planets/earth/background.png"
         const val rockTex       = "planets/earth/rock.png"
         const val riverTex      = "planets/earth/river.png"
         const val forestTex     = "planets/earth/forest.png"
@@ -42,8 +42,8 @@ class EarthModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH * 2.2f, 0f, 220f),
-                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, 0f),
+                    Actions.moveBy(-MainScreen.BG_WIDTH * 2.2f, 0f, 280f),
+                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, MainScreen.bottomPadding),
                 )
             )
         )
@@ -54,8 +54,8 @@ class EarthModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH * 2.2f, 0f, 160f),
-                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, 0f),
+                    Actions.moveBy(-MainScreen.BG_WIDTH * 2.2f, 0f, 190f),
+                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, MainScreen.bottomPadding),
                 )
             )
         )
@@ -66,14 +66,14 @@ class EarthModel(val assets: Assets): Entity() {
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH * 2.2f, 0f, 200f),
-                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, 0f),
+                    Actions.moveBy(-MainScreen.BG_WIDTH * 2.2f, 0f, 230f),
+                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, MainScreen.bottomPadding),
                 )
             )
         )
     }
 
-    val sky = LayerActor(tex = skyTex, texture = assets.getAsset(skyTex))
+    override val background = LayerActor(tex = skyTex, texture = assets.getAsset(skyTex))
 
     val rock = LayerActor(tex = rockTex, texture = assets.getAsset(rockTex)).also {
         it.actions.add(
@@ -123,7 +123,7 @@ class EarthModel(val assets: Assets): Entity() {
                 RepeatAction.FOREVER,
                 Actions.sequence(
                     Actions.moveBy(-MainScreen.BG_WIDTH * 2.2f, 0f, 150f),
-                    Actions.run { it.x = MainScreen.BG_WIDTH * 1.2f }
+                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, it.cY),
                 )
             )
         )
@@ -174,6 +174,6 @@ class EarthModel(val assets: Assets): Entity() {
         texture = assets.getAsset(leafTex)
     )
 
-    override val all = arrayOf<Actor>(sky, cloud2, rock, cloud3, cloud1, river, forest, smoke, coast, treerock)
+    override val all = arrayOf<Actor>(background, cloud2, rock, cloud3, cloud1, river, forest, smoke, coast, treerock)
 
 }

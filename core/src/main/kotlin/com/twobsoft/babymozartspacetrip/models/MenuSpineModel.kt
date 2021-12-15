@@ -1,6 +1,8 @@
 package com.twobsoft.babymozartspacetrip.models
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerActor
@@ -11,11 +13,11 @@ class MenuSpineModel(val assets: Assets) {
     val timeScale = 0.2f
 
     companion object {
-        const val backgroundTex = "menu/background.png"
+        const val backgroundTex = "menu/background.jpg"
         const val radarTex      = "menu/radar.png"
+        const val starsTex      = "menu/stars.png"
 
-        val all = arrayOf(backgroundTex, radarTex)
-
+        val all = arrayOf(backgroundTex, radarTex, starsTex)
 
         val allSkeletons = arrayOf(
             "menu/sun/sun.atlas", "menu/sun/json.json",
@@ -35,11 +37,16 @@ class MenuSpineModel(val assets: Assets) {
             "menu/ufo/ufo.atlas", "menu/ufo/json.json",
         )
 
-
     }
 
     val background = LayerActor(tex = backgroundTex, isMenu = true, assets.getAsset(backgroundTex))
     val radar = LayerActor(tex = radarTex, texture = assets.getAsset(radarTex))
+
+    val stars = LayerActor(
+        tex = starsTex,
+        texture = assets.getAsset(starsTex),
+        cY = 0.1f
+    )
 
 
     val sun = SpineComponent(

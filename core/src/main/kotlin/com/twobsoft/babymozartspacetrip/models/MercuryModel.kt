@@ -21,7 +21,7 @@ class MercuryModel(val assets: Assets): Entity() {
 
     override val stageNumber = 2
 
-    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
+    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
             it.originX = 0f
             it.actions.add(
                 Actions.repeat(

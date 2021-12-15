@@ -40,6 +40,7 @@ class Assets {
     fun loadMenu() {
         MenuSpineModel.all.forEach { manager.load(it, Texture::class.java)  }
         manager.finishLoading()
+        manager.load("planets/sleep.jpg", Texture::class.java)
         MenuSpineModel.allSkeletons.forEach { skeletonLoader.loadSync(manager, AssetDescriptor(it, SkeletonData::class.java)) }
     }
 

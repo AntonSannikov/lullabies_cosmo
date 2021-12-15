@@ -21,7 +21,7 @@ class SpaceshipModel(val assets: Assets): Entity() {
 
     override val stageNumber = 14
 
-    val background = LayerActor(
+    override val background = LayerActor(
         tex = backgroundTex,
         texture = assets.getAsset(backgroundTex),
         isRepeated = true,

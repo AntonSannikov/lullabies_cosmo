@@ -22,7 +22,7 @@ class VenusModel(val assets: Assets): Entity() {
 
     override val stageNumber = 3
 
-    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
 
     val plan4 = LayerActor(tex = plan4Tex, texture = assets.getAsset(plan4Tex)).also {
         it.actions.add(

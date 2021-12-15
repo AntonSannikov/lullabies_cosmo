@@ -1,10 +1,12 @@
 package com.twobsoft.babymozartspacetrip.hud
 
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -29,14 +31,14 @@ class HudActor(
     var textX = 0f
     var textY = 0f
     val font = BitmapFont()
-    var textPointer = 0
-    var textPartPointer = 0
+    var textPointer = 0f
+    var textPartPointer = 0f
     var textBound = MainScreen.BG_WIDTH
     var textWidth = 0f
     var isTextDrawing = false
     var isTextPartAdded = false
     var interActions = arrayListOf<HashMap<String, Float>>()
-
+    var stageZIndex = 0
 
     init {
         if (text != "") {
@@ -63,8 +65,8 @@ class HudActor(
 
     fun changeText(newText: String) {
         text = newText
-        textPartPointer = 0
-        textPointer = 0
+        textPartPointer = 0f
+        textPointer = 0f
         isTextPartAdded = false
         val glyphLayout = GlyphLayout(font, text)
         textWidth = glyphLayout.width
@@ -72,10 +74,9 @@ class HudActor(
     }
 
     fun addTextPart() {
-//        textPartPointer = (textBound + textWidth * 1.3).toInt()
         if (textWidth >= MainScreen.BG_WIDTH * 0.8) {
-            textPartPointer = (MainScreen.BG_WIDTH * 0.9f + textWidth / 2).toInt()
-        } else textPartPointer = (MainScreen.BG_WIDTH * 0.9f).toInt()
+            textPartPointer = MainScreen.BG_WIDTH * 0.9f + textWidth / 2
+        } else textPartPointer = MainScreen.BG_WIDTH * 0.9f
 
         isTextPartAdded = true
     }
@@ -129,13 +130,13 @@ class HudActor(
             }
 
             font.draw(batch, text, textX + textPointer, textY)
-            textPointer--
+            textPointer -= 0.7f
 
         }
 
         if (isTextPartAdded) {
             font.draw(batch, text, textX + textPartPointer, textY)
-            textPartPointer--
+            textPartPointer -= 0.7f
         }
 
 

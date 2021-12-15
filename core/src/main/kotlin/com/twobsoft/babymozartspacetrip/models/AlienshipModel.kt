@@ -29,7 +29,7 @@ class AlienshipModel(val assets: Assets): Entity() {
 
     override val stageNumber = 15
 
-    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
+    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

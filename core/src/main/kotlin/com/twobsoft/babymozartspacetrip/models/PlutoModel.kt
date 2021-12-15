@@ -31,7 +31,7 @@ class PlutoModel(val assets: Assets): Entity() {
 
     override val stageNumber = 11
 
-    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
 
     val sun = LayerActor(tex = sunTex, texture = assets.getAsset(sunTex)).also {
         it.actions.add(

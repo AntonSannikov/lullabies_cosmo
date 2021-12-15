@@ -20,7 +20,7 @@ class NeptuneModel(val assets: Assets): Entity() {
 
     override val stageNumber = 10
 
-    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
+    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

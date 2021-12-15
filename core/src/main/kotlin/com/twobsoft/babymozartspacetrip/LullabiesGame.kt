@@ -15,11 +15,15 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.esotericsoftware.spine.*
 import com.twobsoft.babymozartspacetrip.LullabiesGame.Companion.BARREL_SHADER_PULSE_MAX_POWER
 import com.twobsoft.babymozartspacetrip.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_POWER
+import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.components.SpineComponent
 import com.twobsoft.babymozartspacetrip.gestures.StageInputListener
+import com.twobsoft.babymozartspacetrip.hud.HudActor
 import com.twobsoft.babymozartspacetrip.hud.HudGroup
 import com.twobsoft.babymozartspacetrip.hud.HudModel
 import com.twobsoft.babymozartspacetrip.models.MenuSpineModel
@@ -62,10 +66,12 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         val shapeRenderer       = ShapeRenderer()
         var layerWidth          = 0f
         val bottomPadding       = BG_HEIGHT * 0.12f
+        var isNightMode         = false
     }
 
     val STAGES_COUNT = 15
-    var currentStageNumber = 4
+    val AVAILABLE_STAGES = 15
+    var currentStageNumber = 1
 
     val stage: Stage
     private val camera: OrthographicCamera
@@ -76,6 +82,14 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     val fbo = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
     val fbo2 = FrameBuffer(Pixmap.Format.RGB888, BG_WIDTH.toInt(), BG_HEIGHT.toInt(), false)
     var shaderFocusOffset = Vector2(0f, 0f)
+
+    // NIGHT SHADER
+    val nightShader = ShaderProgram(
+        Gdx.files.internal("shaders/night/vertex.glsl").readString(),
+        Gdx.files.internal("shaders/night/fragment.glsl").readString()
+    )
+    var nightShaderTime = 1.25f
+    var isNightShader = false
 
 
     // BARREL SHADER
@@ -122,6 +136,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
 
 
     //
+    val hudHandler = HudHandler(this)
     val inputListener: StageInputListener
     val hudModel : HudModel
     var isHudTapable = false
@@ -141,12 +156,11 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         viewport = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
         stage = Stage(viewport)
 
-        inputListener = StageInputListener(this)
+        inputListener = StageInputListener(this, hudHandler)
         inputListener.initCallbacks()
         hudModel = HudModel(game.assets, inputListener)
 
-        stage.addActor(menuModel.background)
-        stage.addActor(menuModel.radar)
+        inputListener.createMenu()
 
         Gdx.input.inputProcessor = GestureDetector(
             MyGestureListener(inputListener)
@@ -211,10 +225,6 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
             barrelShaderPower += powerDelta
         }
 
-        if (!isShade && !isInverseShading && !isInterStellar && !isBarrel) {
-            polygonSpriteBatch.shader = null
-            stage.batch.shader = null
-        }
 
         fbo.begin()
         stage.act()
@@ -238,7 +248,29 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
             interStellarShader.setUniformi("u_texture_noise", 0)
             interStellarShader.setUniformf("iTime", time)
             stage.batch.shader = interStellarShader
-//            polygonSpriteBatch.shader = interStellarShader
+        }
+
+        // NIGHT SHADER
+        if (!isMenu) {
+            if (isNightMode) {
+                nightShaderTime += 0.008f
+                nightShader.bind()
+                nightShader.setUniformf("isNight", 1f)
+                nightShader.setUniformf("iTime", nightShaderTime)
+                stage.batch.shader          = nightShader
+                polygonSpriteBatch.shader   = nightShader
+            } else if (isNightShader) {
+                nightShaderTime += 0.005f
+                if (nightShaderTime >= 1.25f) {
+                    nightShaderTime = 1.25f
+                    isNightShader = false
+                }
+                nightShader.bind()
+                nightShader.setUniformf("isNight", 0f)
+                nightShader.setUniformf("iTime", nightShaderTime)
+                stage.batch.shader          = nightShader
+                polygonSpriteBatch.shader   = nightShader
+            }
         }
 
         var textureRegion = TextureRegion(texture0, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
@@ -284,13 +316,6 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
                 polygonSpriteBatch.end()
             }
         } else if (isHud) {
-            stage.batch.begin()
-            for (actor in stage.actors) {
-                if (actor is HudGroup) {
-                    actor.draw(stage.batch, 1f)
-                }
-            }
-            stage.batch.end()
             for (spine in hudModel.allSkeletons) {
                 spine.state.update(delta)
                 spine.state.apply(spine.skeleton)
@@ -305,12 +330,14 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
                 polygonSpriteBatch.begin()
                 renderer.draw(polygonSpriteBatch, spine.skeleton)
                 polygonSpriteBatch.end()
+
 //                shapeRenderer.set(ShapeRenderer.ShapeType.Line)
 //                shapeRenderer.color = Color.RED
 //                if (spine.hitBox.size > 2) {
 //                    shapeRenderer.polygon(spine.hitBox.toFloatArray())
 //                }
             }
+
         }
 
         fbo2.end()
@@ -362,6 +389,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
+
+        stage.batch.shader          = null
+        polygonSpriteBatch.shader   = null
 
         shapeRenderer.end()
 

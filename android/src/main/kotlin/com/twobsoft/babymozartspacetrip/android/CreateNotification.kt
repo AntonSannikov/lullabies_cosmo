@@ -69,38 +69,50 @@ class CreateNotification {
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            if (pos == 0) {
-                result.add(NotificationCompat.Action(
-                    playButton,
-                    "Play", pendingIntentPlay)
-                )
-                result.add(NotificationCompat.Action(
-                    R.drawable.ic_baseline_skip_next_24,
-                    "Next", pendingIntentNext)
-                )
-            } else if (pos == size-1) {
-                result.add(NotificationCompat.Action(
-                    R.drawable.ic_baseline_skip_previous_24,
-                    "Previous", pendingIntentPrevious)
-                )
-                result.add(NotificationCompat.Action(
-                    playButton,
-                    "Play", pendingIntentPlay)
-                )
-            } else {
-                result.add(NotificationCompat.Action(
-                    R.drawable.ic_baseline_skip_previous_24,
-                    "Previous", pendingIntentPrevious)
-                )
-                result.add(NotificationCompat.Action(
-                    playButton,
-                    "Play", pendingIntentPlay)
-                )
-                result.add(NotificationCompat.Action(
-                    R.drawable.ic_baseline_skip_next_24,
-                    "Next", pendingIntentNext))
+//            if (pos == 0) {
+//                result.add(NotificationCompat.Action(
+//                    playButton,
+//                    "Play", pendingIntentPlay)
+//                )
+//                result.add(NotificationCompat.Action(
+//                    R.drawable.ic_baseline_skip_next_24,
+//                    "Next", pendingIntentNext)
+//                )
+//            } else if (pos == size-1) {
+//                result.add(NotificationCompat.Action(
+//                    R.drawable.ic_baseline_skip_previous_24,
+//                    "Previous", pendingIntentPrevious)
+//                )
+//                result.add(NotificationCompat.Action(
+//                    playButton,
+//                    "Play", pendingIntentPlay)
+//                )
+//            } else {
+//                result.add(NotificationCompat.Action(
+//                    R.drawable.ic_baseline_skip_previous_24,
+//                    "Previous", pendingIntentPrevious)
+//                )
+//                result.add(NotificationCompat.Action(
+//                    playButton,
+//                    "Play", pendingIntentPlay)
+//                )
+//                result.add(NotificationCompat.Action(
+//                    R.drawable.ic_baseline_skip_next_24,
+//                    "Next", pendingIntentNext))
+//
+//            }
 
-            }
+            result.add(NotificationCompat.Action(
+                R.drawable.ic_baseline_skip_previous_24,
+                "Previous", pendingIntentPrevious)
+            )
+            result.add(NotificationCompat.Action(
+                playButton,
+                "Play", pendingIntentPlay)
+            )
+            result.add(NotificationCompat.Action(
+                R.drawable.ic_baseline_skip_next_24,
+                "Next", pendingIntentNext))
             return  result
         }
 
@@ -118,7 +130,8 @@ class CreateNotification {
 //            val icon = BitmapFactory.decodeResource(context.resources, R.mipmap.launcher_icon_foreground)
 
             val mediaActions = getActions(pos, size, context, playButton)
-            val mediaStyle = getMediaStyle(mediaActions.size)
+//            val mediaStyle = getMediaStyle(mediaActions.size)
+            val mediaStyle = androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2)
 
             mediaStyle.setMediaSession(mediaSessionCompat.sessionToken)
 

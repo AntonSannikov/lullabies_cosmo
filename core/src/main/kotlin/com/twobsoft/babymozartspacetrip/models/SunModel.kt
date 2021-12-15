@@ -28,7 +28,7 @@ class SunModel(val assets: Assets): Entity() {
 
     override val stageNumber = 1
 
-    val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
 
     val stars = LayerActor(
         tex = starsTex,

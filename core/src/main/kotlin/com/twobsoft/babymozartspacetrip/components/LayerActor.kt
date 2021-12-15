@@ -1,6 +1,7 @@
 package com.twobsoft.babymozartspacetrip.components
 
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
@@ -18,9 +19,9 @@ class LayerGroup: Group() {
 
 
 class LayerActor(
-    val tex: String,
+    var tex: String,
     val isMenu: Boolean = false,
-    val texture: Texture,
+    var texture: Texture,
     val cHeight: Float = 0f,
     val cWidth: Float = 0f,
     val cX: Float = 0f,
@@ -64,6 +65,11 @@ class LayerActor(
 
 
     init {
+        if (MainScreen.isNightMode && !isMenu && tex.contains("background.png")) {
+            tex = "planets/sleep.jpg"
+            texture = Texture(Gdx.files.internal("planets/sleep.jpg"))
+        }
+
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         if (isRepeated) texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         if (isOrbit) isOrbiting = true
@@ -74,16 +80,17 @@ class LayerActor(
         width = MainScreen.BG_WIDTH
 
         if (cHeight == 0f) {
-            height = if (tex != "menu/background.png" && tex != "splash/background.jpg") width * 100 / 64
+            height = if (tex != "menu/background.jpg" && tex != "splash/background.jpg") width * 100 / 64
             else MainScreen.BG_HEIGHT
         } else {
             height = cHeight
         }
 
+
         // tablet
         if (MainScreen.BG_WIDTH > 1600) {
-            height = if (tex != "menu/background.png") MainScreen.BG_HEIGHT * 0.8f else MainScreen.BG_HEIGHT
-            width = if (tex != "menu/background.png") height * 0.64f else MainScreen.BG_WIDTH
+            height = if (tex != "menu/background.jpg") MainScreen.BG_HEIGHT * 0.8f else MainScreen.BG_HEIGHT
+            width = if (tex != "menu/background.jpg") height * 0.64f else MainScreen.BG_WIDTH
             MainScreen.layerWidth = width
         }
 
@@ -106,7 +113,25 @@ class LayerActor(
         if (cX != 0f) { x = cX }
         if (cY != 0f) { y = cY }
 
+        if (tex == "menu/stars.png") {
+            height = MainScreen.BG_HEIGHT * 1.2f
+            width = MainScreen.BG_HEIGHT * 1.2f
+            x = -(width - MainScreen.BG_WIDTH) / 2
+            y = -(height - MainScreen.BG_HEIGHT) / 2
+            originX = width / 2
+            originY = height / 2
+        }
+
         layers.add(texture)
+    }
+
+    fun changeBackground(_tex: String, _texture: Texture) {
+        tex = _tex
+        texture = _texture
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        layers.clear()
+        layers.add(texture)
+        if (isRepeated) texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
     }
 
     fun offsetToPosition() {

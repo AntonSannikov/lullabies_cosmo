@@ -15,8 +15,7 @@ class BackgroundSoundService: Service() {
         var mediaPlayer: MediaPlayer?= null
         var isNeedDestroy = false
         var endOfTrackCallback: ()-> Unit = {}
-
-
+        var isLooping = false
         var id = 0
 
         val playlist = arrayOf(
@@ -55,14 +54,13 @@ class BackgroundSoundService: Service() {
         val songIndex = intent!!.getIntExtra("songIndex", 0)
         val action = intent.getStringExtra("action")
 
-        mediaPlayer?.isLooping = false
-
         when (action) {
             "playNew" -> {
                 mediaPlayer?.reset()
                 mediaPlayer = MediaPlayer.create(
                     this, playlist[songIndex].data
                 )
+                mediaPlayer!!.isLooping = isLooping
                 mediaPlayer?.start()
                 mediaPlayer!!.setOnCompletionListener { endOfTrackCallback() }
             }

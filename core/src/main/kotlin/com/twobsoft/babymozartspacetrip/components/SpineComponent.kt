@@ -21,7 +21,7 @@ class SpineComponent(
     var tapHandler : (() -> Unit)? = null
 
     var stageNumber = 0
-    var scaling2 = scale
+    var scaling2 = 1f
     var hitBox = arrayListOf<Float>()
     var rotation = 0f
     var isTransitionAnimation = false

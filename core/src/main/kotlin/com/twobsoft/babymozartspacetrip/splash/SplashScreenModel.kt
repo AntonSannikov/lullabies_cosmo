@@ -28,7 +28,7 @@ class SplashScreenModel(val assets: Assets) : Entity() {
 
     val padding = (MainScreen.BG_HEIGHT - (MainScreen.BG_WIDTH * 100 / 64)) / 2
 
-    val background = LayerActor(
+    override val background = LayerActor(
         tex = backgroundTex,
         texture = assets.manager.getAsset(backgroundTex),
         cY = 0.1f

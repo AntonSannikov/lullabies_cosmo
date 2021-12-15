@@ -13,7 +13,7 @@ import com.twobsoft.babymozartspacetrip.components.LayerGroup
 class MoonModel(val assets: Assets): Entity() {
 
     companion object {
-        const val backgroundTex   = "planets/moon/fon.png"
+        const val backgroundTex   = "planets/moon/background.png"
         const val planetsTex      = "planets/moon/planets.png"
         const val zemlyaTex       = "planets/moon/zemlya.png"
         const val star1Tex        = "planets/moon/star1.png"
@@ -31,7 +31,7 @@ class MoonModel(val assets: Assets): Entity() {
 
     override val stageNumber = 5
 
-    val background  = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background  = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
     val moonGroup = LayerGroup()
 
     val planets = LayerActor(tex = planetsTex, texture = assets.getAsset(planetsTex))
