@@ -6,8 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.MainScreen
+import com.twobsoft.babymozartspacetrip.MainScreen.Companion.ratio
 import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.models.Entity
+import com.twobsoft.babymozartspacetrip.utils.Utils
 import ktx.assets.getAsset
 
 class SplashScreenModel(val assets: Assets) : Entity() {
@@ -26,18 +28,22 @@ class SplashScreenModel(val assets: Assets) : Entity() {
 
     override val stageNumber = -1
 
-    val padding = (MainScreen.BG_HEIGHT - (MainScreen.BG_WIDTH * 100 / 64)) / 2
-
     override val background = LayerActor(
         tex = backgroundTex,
         texture = assets.manager.getAsset(backgroundTex),
-        cY = 0.1f
-    )
+    ).also {
+        it.width = MainScreen.BG_WIDTH
+        it.height = MainScreen.BG_HEIGHT
+    }
 
     val star1 = LayerActor(
         tex = star1Tex,
-        texture = assets.manager.getAsset(star1Tex)
+        texture = assets.manager.getAsset(star1Tex),
     ).also {
+        it.width = MainScreen.BG_WIDTH
+        it.height = MainScreen.BG_HEIGHT
+        it.originX = it.width / 2
+        it.originY = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -50,6 +56,10 @@ class SplashScreenModel(val assets: Assets) : Entity() {
         tex = star2Tex,
         texture = assets.manager.getAsset(star2Tex)
     ).also {
+        it.width = MainScreen.BG_WIDTH
+        it.height = MainScreen.BG_HEIGHT
+        it.originX = it.width / 2
+        it.originY = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -62,6 +72,10 @@ class SplashScreenModel(val assets: Assets) : Entity() {
         tex = star3Tex,
         texture = assets.manager.getAsset(star3Tex)
     ).also {
+        it.width = MainScreen.BG_WIDTH
+        it.height = MainScreen.BG_HEIGHT
+        it.originX = it.width / 2
+        it.originY = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -73,13 +87,14 @@ class SplashScreenModel(val assets: Assets) : Entity() {
     val title = LayerActor(
         tex = titleTex,
         texture = assets.manager.getAsset(titleTex),
-        cWidth = MainScreen.BG_WIDTH * 0.8f,
-        cHeight = MainScreen.BG_WIDTH * 0.8f,
-        cY = MainScreen.BG_HEIGHT / 2 - MainScreen.BG_WIDTH * 0.4f + padding / 4,
-        cX = MainScreen.BG_WIDTH / 2 - MainScreen.BG_WIDTH * 0.4f
+        isOriginalSize = true,
     ).also {
-        it.originX = it.cWidth/2
-        it.originY = it.cHeight/2
+        it.x = (MainScreen.BG_WIDTH - it.width) / 2
+        it.y = (MainScreen.BG_HEIGHT - it.height) / 2
+        it.originX = it.width / 2
+        it.originY = it.height / 2
+        val scale = Utils.getScale(0.7f, 0.7f * ratio, it.width, it.height)
+        it.scaleBy(scale.x, scale.y)
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -94,11 +109,12 @@ class SplashScreenModel(val assets: Assets) : Entity() {
     val cometBot = LayerActor(
         tex = cometBotTex,
         texture = assets.manager.getAsset(cometBotTex),
-        cWidth = MainScreen.BG_WIDTH * 0.4f,
-        cHeight = MainScreen.BG_HEIGHT * 0.2f,
-        cY = padding + MainScreen.BG_HEIGHT * 0.3f,
-        cX = MainScreen.BG_WIDTH / 2
+        isOriginalSize = true,
     ).also {
+        it.originX = it.width / 2
+        it.originY = it.height / 2
+        val scale = Utils.getScale(0.4f, 0.2f, it.width, it.height)
+        it.scaleBy(scale.x, scale.y)
         it.isSplashOrbit = true
         it.splashOrbitY = 0.35f
     }
@@ -106,14 +122,15 @@ class SplashScreenModel(val assets: Assets) : Entity() {
     val cometUp = LayerActor(
         tex = cometUpTex,
         texture = assets.manager.getAsset(cometUpTex),
-        cWidth = MainScreen.BG_WIDTH * 0.4f,
-        cHeight = MainScreen.BG_HEIGHT * 0.2f,
-        cY = MainScreen.BG_HEIGHT * 0.8f - MainScreen.BG_HEIGHT * 0.1f,
-        cX = MainScreen.BG_WIDTH * 0.8f
+        isOriginalSize = true,
     ).also {
+        it.originX = it.width / 2
+        it.originY = it.height / 2
+        val scale = Utils.getScale(0.3f, 0.2f, it.width, it.height)
+        it.scaleBy(scale.x, scale.y)
         it.isSplashOrbit = true
         it.splashAngleDelta = 1f
-        it.angleOffset = -115f
+        it.angleOffset = -117f
         it.splashOrbitX = 0.53f
         it.splashOrbitY = 0.27f
     }

@@ -19,12 +19,12 @@ class HudActor(
     val tex: String,
     var text: String = "",
     val actorTexture: Texture,
-
+    val isOriginSize: Boolean = false,
     ): Actor() {
 
     var texture: Texture? = null
     var srcWidth: Int = 0
-    var scrHeight: Int = 0
+    var srcHeight: Int = 0
     val hitBox = arrayListOf<Float>()
     var tapHandler : (() -> Unit)? = null
 
@@ -35,6 +35,7 @@ class HudActor(
     var textPartPointer = 0f
     var textBound = MainScreen.BG_WIDTH
     var textWidth = 0f
+    var textHeight = 0f
     var isTextDrawing = false
     var isTextPartAdded = false
     var interActions = arrayListOf<HashMap<String, Float>>()
@@ -47,17 +48,23 @@ class HudActor(
             font.data.scale(MainScreen.BG_HEIGHT * 0.00153f)
             font.color.set(144 / 255f, 210 / 255f, 1f, 1f)
             val glyphLayout = GlyphLayout(font, text)
-            textWidth = glyphLayout.width
+            textWidth   = glyphLayout.width
+            textHeight  = glyphLayout.height
         }
 
         srcWidth = actorTexture.width
-        scrHeight = actorTexture.height
+        srcHeight = actorTexture.height
 
-        width = MainScreen.BG_WIDTH
-        height = MainScreen.BG_HEIGHT
+        if (isOriginSize) {
+            width = srcWidth.toFloat()
+            height = srcHeight.toFloat()
+        }
 
-        originX = MainScreen.BG_WIDTH / 2
-        originY = MainScreen.BG_HEIGHT / 2
+//        width = MainScreen.BG_WIDTH
+//        height = MainScreen.BG_HEIGHT
+//
+//        originX = MainScreen.BG_WIDTH / 2
+//        originY = MainScreen.BG_HEIGHT / 2
 
         texture = actorTexture
 
@@ -116,7 +123,7 @@ class HudActor(
             scaleX, scaleY,
             rotation,
             0, 0,
-            srcWidth, scrHeight,
+            srcWidth, srcHeight,
             false, false
         )
 

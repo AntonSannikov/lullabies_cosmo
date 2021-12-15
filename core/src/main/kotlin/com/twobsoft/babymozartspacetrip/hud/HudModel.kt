@@ -19,6 +19,7 @@ import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.components.SpineComponent
 import com.twobsoft.babymozartspacetrip.gestures.StageInputListener
 import com.twobsoft.babymozartspacetrip.models.Entity
+import com.twobsoft.babymozartspacetrip.utils.Utils
 import ktx.scene2d.vis.visTextTooltip
 
 
@@ -59,6 +60,12 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             "hud/play/play.atlas", "hud/play/play.json",
         )
 
+        var sideFramePadding    = 0f
+        var layerWidth          = 0f
+        var layerHeight         = 0f
+        var layerXPosition      = 0f
+        var layerYPosition      = 0f
+
     }
 
     override val background = LayerActor(panelUpTex, texture = assets.getAsset(panelUpTex))
@@ -69,36 +76,40 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
 
     val frame = HudActor(
         tex = frameTex,
-        actorTexture = assets.getAsset(frameTex)
+        actorTexture = assets.getAsset(frameTex),
+        isOriginSize = true
     ).also {
-        if (MainScreen.BG_WIDTH > 1600) {
-            it.scaleBy(0.072f, 0.0524f)
-            it.y = MainScreen.BG_HEIGHT * 0.02f
+        it.x = (MainScreen.BG_WIDTH - it.width) / 2
+        it.y = (MainScreen.BG_HEIGHT - it.height) / 2
+        it.originX = it.width / 2
+        it.originY = it.height / 2
+        var scale = Vector2()
+        if (MainScreen.isTablet) {
+            scale = Utils.getScale(1.1f, 1.5f, it.width, it.height)
+            it.scaleBy(scale.x, scale.y)
         } else {
-            it.y = MainScreen.BG_HEIGHT * 0.02f
-            it.scaleBy(0.436f, 0.46f)
+            scale = Utils.getScale(1.38f, 1.5f, it.width, it.height)
+            it.scaleBy(scale.x, scale.y)
         }
+
+        sideFramePadding    = 276 * (1 + scale.x) - (it.width * (1 + scale.x) - MainScreen.BG_WIDTH) / 2
+        layerWidth          = MainScreen.BG_WIDTH - sideFramePadding*1.9f
+        layerHeight         = layerWidth * 100 / 64
+        layerXPosition      = (MainScreen.BG_WIDTH - layerWidth) / 2
+        layerYPosition      = (MainScreen.BG_HEIGHT - layerHeight) / 1.5f
     }
 
     // upper panel
     val panelUp = HudActor(
         tex = panelUpTex,
         text = MediaPlayer.playlist[appListener.screen.currentStageNumber-1]!!,
-        actorTexture = assets.getAsset(panelUpTex)
+        actorTexture = assets.getAsset(panelUpTex),
+        isOriginSize = true
     ).also {
-        if (MainScreen.BG_WIDTH > 1600) {
-            it.y = MainScreen.BG_HEIGHT * 0.442f
-            it.scaleBy(-MainScreen.BG_WIDTH * 0.00018f, -MainScreen.BG_HEIGHT * 0.00036f)
-        } else {
-            it.y = MainScreen.BG_HEIGHT * 0.448f
-            it.scaleBy(-0.26f, -0.92f)
-        }
+
         it.textX = MainScreen.BG_WIDTH * 0.25f
-        if (MainScreen.BG_WIDTH > 1600) {
-            it.textY = MainScreen.BG_HEIGHT * 0.973f
-        } else {
-            it.textY = MainScreen.BG_HEIGHT * 0.971f
-        }
+        it.textY = (MainScreen.BG_HEIGHT - it.textHeight) / 0.5f
+
         it.textBound = MainScreen.BG_WIDTH * 0.17f
     }
 
@@ -229,6 +240,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
 
         it.tapHandler = {
             flareToButton(it.x, it.y, Vector2(-0.85f, -0.905f), shareFlareTex, false)
+            appListener.share()
         }
     }
 
@@ -260,10 +272,17 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
     }
 
     // deck -------------------------------------------------------------
-    val deck = HudActor(tex = deckTex,
-        actorTexture = assets.getAsset(deckTex)).also {
-        it.y = -MainScreen.BG_HEIGHT * 0.335f
-        it.scaleBy( 0.03f, -0.81f)
+    val deck = HudActor(
+        tex = deckTex,
+        actorTexture = assets.getAsset(deckTex),
+        isOriginSize = true
+    ).also {
+        it.x = (MainScreen.BG_WIDTH - it.width) / 2
+        it.y = MainScreen.BG_HEIGHT * 0.07f
+        it.originX = it.width / 2
+        it.originY = it.height / 2
+        val scale = Utils.getScale(0.997f, 0.2f, it.width, it.height)
+        it.scaleBy(scale.x, scale.y)
     }
 
     val joystick = SpineComponent(

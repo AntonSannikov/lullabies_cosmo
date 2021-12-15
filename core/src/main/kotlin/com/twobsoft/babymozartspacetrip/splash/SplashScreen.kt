@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerActor
-import com.twobsoft.babymozartspacetrip.models.MenuSpineModel
+import com.twobsoft.babymozartspacetrip.menu.MenuSpineModel
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 
@@ -48,23 +48,22 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
             it.actions.forEach { action -> it.addAction(action) }
         }
         menuModel = MenuSpineModel(game.assets)
-
         game.assets.loadHud()
-        game.assets.load(1)
-        game.assets.load(2)
-        game.assets.load(3)
-        game.assets.load(4)
-        game.assets.load(5)
-        game.assets.load(6)
-        game.assets.load(7)
-        game.assets.load(8)
-        game.assets.load(9)
-        game.assets.load(10)
-        game.assets.load(11)
-        game.assets.load(12)
-        game.assets.load(13)
-        game.assets.load(14)
-        game.assets.load(15)
+//        game.assets.load(1)
+//        game.assets.load(2)
+//        game.assets.load(3)
+//        game.assets.load(4)
+//        game.assets.load(5)
+//        game.assets.load(6)
+//        game.assets.load(7)
+//        game.assets.load(8)
+//        game.assets.load(9)
+//        game.assets.load(10)
+//        game.assets.load(11)
+//        game.assets.load(12)
+//        game.assets.load(13)
+//        game.assets.load(14)
+//        game.assets.load(15)
     }
 
 
@@ -80,6 +79,8 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
         val gl = Gdx.graphics.gL20
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+        shapeRenderer.begin()
 
         if (game.assets.manager.update()) {
             if (!isAssetsLoaded) {
@@ -118,6 +119,8 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
             stage.act()
             stage.draw()
         }
+
+        shapeRenderer.end()
 
     }
 

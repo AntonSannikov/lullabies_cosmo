@@ -1,8 +1,6 @@
-package com.twobsoft.babymozartspacetrip.models
+package com.twobsoft.babymozartspacetrip.menu
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerActor
@@ -39,14 +37,35 @@ class MenuSpineModel(val assets: Assets) {
 
     }
 
-    val background = LayerActor(tex = backgroundTex, isMenu = true, assets.getAsset(backgroundTex))
-    val radar = LayerActor(tex = radarTex, texture = assets.getAsset(radarTex))
+    val background = LayerActor(
+        tex = backgroundTex,
+        isMenu = true,
+        assets.getAsset(backgroundTex)
+    ).also {
+        it.width = MainScreen.BG_WIDTH
+        it.height = MainScreen.BG_HEIGHT
+    }
+
+    val radar = LayerActor(
+        tex = radarTex,
+        texture = assets.getAsset(radarTex),
+        isOriginalSize = true
+    ).also {
+        it.x = (MainScreen.BG_WIDTH - it.width) / 2
+        it.y = -MainScreen.BG_HEIGHT * 0.05f
+        it.originX = it.width / 2
+        it.originY = it.height / 2
+        it.scaleBy(-0.05f, -0.05f)
+    }
 
     val stars = LayerActor(
         tex = starsTex,
         texture = assets.getAsset(starsTex),
-        cY = 0.1f
-    )
+        isOriginalSize = true
+    ).also {
+        it.originX = it.width / 2
+        it.originY = it.height / 2
+    }
 
 
     val sun = SpineComponent(

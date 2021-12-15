@@ -1,8 +1,6 @@
 package com.twobsoft.babymozartspacetrip.gestures
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
@@ -18,11 +16,9 @@ import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.hud.HudActor
 import com.twobsoft.babymozartspacetrip.components.LayerGroup
 import com.twobsoft.babymozartspacetrip.hud.HudGroup
-import com.twobsoft.babymozartspacetrip.hud.HudModel
+import com.twobsoft.babymozartspacetrip.menu.MenuSpineModel
 import com.twobsoft.babymozartspacetrip.models.*
 import com.twobsoft.babymozartspacetrip.utils.Utils
-import kotlinx.coroutines.awaitAll
-import ktx.scene2d.actors
 
 class StageInputListener(
     val screen: MainScreen,
@@ -213,13 +209,9 @@ class StageInputListener(
     override fun onPan(x: Float, y: Float, deltaX: Float, deltaY: Float) {}
 
 
-    fun clearStage() {
-        var length = screen.stage.actors.size
-        while (0 < length) {
-            screen.stage.actors[0].remove()
-            length--
-        }
-        screen.stage.actors.clear()
+
+    fun share() {
+        screen.game.serviceApi.share()
     }
 
 

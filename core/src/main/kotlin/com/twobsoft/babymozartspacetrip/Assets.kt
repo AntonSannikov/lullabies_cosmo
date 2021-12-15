@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.esotericsoftware.spine.SkeletonData
 import com.esotericsoftware.spine.utils.SkeletonDataLoader
 import com.twobsoft.babymozartspacetrip.hud.HudModel
+import com.twobsoft.babymozartspacetrip.menu.MenuSpineModel
 import com.twobsoft.babymozartspacetrip.models.*
 import com.twobsoft.babymozartspacetrip.splash.SplashScreenModel
 import ktx.assets.async.loadSync

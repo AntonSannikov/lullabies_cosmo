@@ -17,9 +17,8 @@ import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
 import java.util.*
 import kotlin.concurrent.timerTask
 import android.media.AudioManager
-
-
-
+import androidx.core.app.ShareCompat
+import androidx.core.content.ContextCompat.startActivity
 
 
 class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
@@ -117,7 +116,15 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
     override fun share() {
-        println("SHARE")
+        val appPackageName = context.packageName
+        val text = "Check out the App at: https://play.google.com/store/apps/details?id=$appPackageName"
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        context.startActivity(shareIntent)
     }
 
 

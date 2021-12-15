@@ -2,6 +2,7 @@ package com.twobsoft.babymozartspacetrip.utils
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
+import com.twobsoft.babymozartspacetrip.MainScreen
 
 class Utils {
 
@@ -29,6 +30,24 @@ class Utils {
             return result
         }
 
+        fun getScale(
+            tXpercent: Float,
+            tYpercent: Float,
+            width: Float,
+            height: Float
+        ): Vector2 {
+            val targetWidth = MainScreen.BG_WIDTH * tXpercent
+            val targetHeight = MainScreen.BG_HEIGHT * tYpercent
+            val difWidth = targetWidth - width
+            val difHeight = targetHeight - height
+            return Vector2(difWidth / width, difHeight / height)
+        }
+
+        fun getYoffset(height: Float): Float {
+
+
+            return 0.5f
+        }
 
     }
 

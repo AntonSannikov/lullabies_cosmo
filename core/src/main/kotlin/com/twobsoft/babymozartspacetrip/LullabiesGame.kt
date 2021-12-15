@@ -15,18 +15,13 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.esotericsoftware.spine.*
 import com.twobsoft.babymozartspacetrip.LullabiesGame.Companion.BARREL_SHADER_PULSE_MAX_POWER
 import com.twobsoft.babymozartspacetrip.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_POWER
-import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.components.SpineComponent
 import com.twobsoft.babymozartspacetrip.gestures.StageInputListener
-import com.twobsoft.babymozartspacetrip.hud.HudActor
-import com.twobsoft.babymozartspacetrip.hud.HudGroup
 import com.twobsoft.babymozartspacetrip.hud.HudModel
-import com.twobsoft.babymozartspacetrip.models.MenuSpineModel
+import com.twobsoft.babymozartspacetrip.menu.MenuSpineModel
 import com.twobsoft.lullabies.MyGestureListener
 import com.twobsoft.babymozartspacetrip.splash.SplashScreen
 
@@ -60,11 +55,12 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>(
 class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxScreen {
 
     companion object {
+        val isTablet            = Gdx.graphics.width.toFloat() >= 1600f
         val BG_WIDTH            = Gdx.graphics.width.toFloat()
         val BG_HEIGHT           = Gdx.graphics.height.toFloat()
-        val layerHeight         = BG_WIDTH * 1.5625f
+        val ratio               = BG_WIDTH / BG_HEIGHT
+        val layerHeight         = 1f
         val shapeRenderer       = ShapeRenderer()
-        var layerWidth          = 0f
         val bottomPadding       = BG_HEIGHT * 0.12f
         var isNightMode         = false
     }

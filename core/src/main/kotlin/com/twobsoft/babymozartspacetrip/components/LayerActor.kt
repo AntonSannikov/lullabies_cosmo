@@ -2,11 +2,14 @@ package com.twobsoft.babymozartspacetrip.components
 
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.twobsoft.babymozartspacetrip.MainScreen
+import com.twobsoft.babymozartspacetrip.splash.SplashScreen
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sin
@@ -27,7 +30,8 @@ class LayerActor(
     val cX: Float = 0f,
     val cY: Float = 0f,
     val isOrbit: Boolean = false,
-    val isRepeated: Boolean = false
+    val isRepeated: Boolean = false,
+    val isOriginalSize: Boolean = false
 )
     : Actor() {
 
@@ -77,41 +81,10 @@ class LayerActor(
         srcWidth = texture.width
         srcHeight = texture.height
 
-        width = MainScreen.BG_WIDTH
-
-        if (cHeight == 0f) {
-            height = if (tex != "menu/background.jpg" && tex != "splash/background.jpg") width * 100 / 64
-            else MainScreen.BG_HEIGHT
-        } else {
-            height = cHeight
+        if (isOriginalSize) {
+            width   = srcWidth.toFloat()
+            height  = srcHeight.toFloat()
         }
-
-
-        // tablet
-        if (MainScreen.BG_WIDTH > 1600) {
-            height = if (tex != "menu/background.jpg") MainScreen.BG_HEIGHT * 0.8f else MainScreen.BG_HEIGHT
-            width = if (tex != "menu/background.jpg") height * 0.64f else MainScreen.BG_WIDTH
-            MainScreen.layerWidth = width
-        }
-
-        if (cWidth != 0f) { width = cWidth }
-
-        originX = MainScreen.BG_WIDTH / 2
-        originY = MainScreen.BG_HEIGHT / 2
-
-        if (!isMenu) {
-            if (MainScreen.BG_WIDTH <= 1600) {
-                y = if (cY == 0f) MainScreen.bottomPadding else cY
-            }
-            // tablet
-            else {
-                x += (MainScreen.BG_WIDTH - width) / 2
-                y = if (cY == 0f) MainScreen.BG_HEIGHT * 0.15f else cY
-            }
-        }
-
-        if (cX != 0f) { x = cX }
-        if (cY != 0f) { y = cY }
 
         if (tex == "menu/stars.png") {
             height = MainScreen.BG_HEIGHT * 1.2f
@@ -177,8 +150,6 @@ class LayerActor(
             return
         }
 
-
-
         if (isOrbiting) {
             angle += angleDelta
 
@@ -217,6 +188,7 @@ class LayerActor(
         }
 
         for (layer in layers) {
+
             batch.draw(layer,
                 x, y,
                 originX, originY,
@@ -236,11 +208,11 @@ class LayerActor(
 //            MainScreen.shapeRenderer.rect(x,y,width,height)
 //        }
 
-//        if (tex == "splash/comet_bot.png") {
-//            SplashScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-//            SplashScreen.shapeRenderer.color = Color.RED
-//            SplashScreen.shapeRenderer.rect(x,y,width,height)
-//        }
+
+//        SplashScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+//        SplashScreen.shapeRenderer.color = Color.RED
+//        SplashScreen.shapeRenderer.rect(x,y,width,height)
+
 
 
     }

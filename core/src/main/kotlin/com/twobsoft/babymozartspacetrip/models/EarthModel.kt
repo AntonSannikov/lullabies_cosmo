@@ -1,6 +1,8 @@
 package com.twobsoft.babymozartspacetrip.models
 
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -9,6 +11,10 @@ import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import com.twobsoft.babymozartspacetrip.MainScreen
+import com.twobsoft.babymozartspacetrip.hud.HudModel.Companion.layerHeight
+import com.twobsoft.babymozartspacetrip.hud.HudModel.Companion.layerWidth
+import com.twobsoft.babymozartspacetrip.hud.HudModel.Companion.layerXPosition
+import com.twobsoft.babymozartspacetrip.hud.HudModel.Companion.layerYPosition
 
 
 class EarthModel(val assets: Assets): Entity() {
@@ -32,10 +38,16 @@ class EarthModel(val assets: Assets): Entity() {
 
     override val stageNumber = 4
 
+
     val cloud1 = LayerActor(
         tex = cloud1Tex,
-        texture = assets.getAsset(cloud1Tex)
+        texture = Texture(Gdx.files.internal(cloud1Tex)),
+        isOriginalSize = true
     ).also {
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
         it.xOffset = (MainScreen.BG_WIDTH * 0.2f).toInt()
         it.isNeedReposition = true
         it.actions.add(
@@ -49,7 +61,15 @@ class EarthModel(val assets: Assets): Entity() {
         )
     }
 
-    val cloud2 = LayerActor(tex = cloud2Tex, texture = assets.getAsset(cloud2Tex)).also {
+    val cloud2 = LayerActor(
+        tex = cloud2Tex,
+        texture = Texture(Gdx.files.internal(cloud2Tex)),
+        isOriginalSize = true
+    ).also {
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -61,7 +81,15 @@ class EarthModel(val assets: Assets): Entity() {
         )
     }
 
-    val cloud3 = LayerActor(tex = cloud3Tex, texture = assets.getAsset(cloud3Tex)).also {
+    val cloud3 = LayerActor(
+        tex = cloud3Tex,
+        texture = Texture(Gdx.files.internal(cloud3Tex)),
+        isOriginalSize = true
+    ).also {
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -73,9 +101,22 @@ class EarthModel(val assets: Assets): Entity() {
         )
     }
 
-    override val background = LayerActor(tex = skyTex, texture = assets.getAsset(skyTex))
+    override val background = LayerActor(
+        tex = skyTex,
+        texture = Texture(Gdx.files.internal(skyTex))
+    ).also {
+        it.width = MainScreen.BG_WIDTH
+        it.height = MainScreen.BG_HEIGHT
+    }
 
-    val rock = LayerActor(tex = rockTex, texture = assets.getAsset(rockTex)).also {
+    val rock = LayerActor(
+        tex = rockTex,
+        texture = Texture(Gdx.files.internal(rockTex)),
+    ).also {
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -87,7 +128,14 @@ class EarthModel(val assets: Assets): Entity() {
         )
     }
 
-    val river = LayerActor(tex = riverTex, texture = assets.getAsset(riverTex)).also {
+    val river = LayerActor(
+        tex = riverTex,
+        texture = Texture(Gdx.files.internal(riverTex)),
+    ).also {
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -99,7 +147,14 @@ class EarthModel(val assets: Assets): Entity() {
         )
     }
 
-    val forest = LayerActor(tex = forestTex, texture = assets.getAsset(forestTex)).also {
+    val forest = LayerActor(
+        tex = forestTex,
+        texture = Texture(Gdx.files.internal(forestTex)),
+    ).also {
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -113,11 +168,13 @@ class EarthModel(val assets: Assets): Entity() {
 
     val smoke = LayerActor(
         tex = smokeTex,
-        texture = assets.getAsset(smokeTex),
-        cHeight = MainScreen.BG_HEIGHT * 0.3f,
-        cY = MainScreen.BG_HEIGHT * 0.32f
+        texture = Texture(Gdx.files.internal(smokeTex)),
+
     ).also {
-        it.scaleBy(0.2f)
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -129,8 +186,14 @@ class EarthModel(val assets: Assets): Entity() {
         )
     }
 
-
-    val coast = LayerActor(tex = coastTex, texture = assets.getAsset(coastTex)).also {
+    val coast = LayerActor(
+        tex = coastTex,
+        texture = Texture(Gdx.files.internal(coastTex)),
+    ).also {
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -144,11 +207,14 @@ class EarthModel(val assets: Assets): Entity() {
 
     val treerock = LayerActor(
         tex = treerockTex,
-        texture = assets.getAsset(treerockTex),
-        cY = MainScreen.BG_HEIGHT * 0.17f,
+        texture = Texture(Gdx.files.internal(treerockTex)),
     ).also {
-        it.originX = MainScreen.BG_WIDTH / 2
-        it.originY = MainScreen.BG_HEIGHT
+        it.width = layerWidth
+        it.height = layerHeight
+        it.x = layerXPosition
+        it.y = layerYPosition
+//        it.originX = it.width / 2
+//        it.originY = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -157,13 +223,13 @@ class EarthModel(val assets: Assets): Entity() {
                         Actions.scaleBy(0.6f, 0.6f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                         Actions.scaleBy(-0.6f, -0.6f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                     ),
-                    Actions.sequence(
-                        Actions.moveBy(-MainScreen.BG_WIDTH * 0.1f, MainScreen.BG_HEIGHT * 0.4f,
-                            LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.moveBy(
-                            MainScreen.BG_WIDTH * 0.1f, -MainScreen.BG_HEIGHT * 0.4f,
-                            LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    )
+//                    Actions.sequence(
+//                        Actions.moveBy(-MainScreen.BG_WIDTH * 0.1f, MainScreen.BG_HEIGHT * 0.1f,
+//                            LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+//                        Actions.moveBy(
+//                            MainScreen.BG_WIDTH * 0.1f, -MainScreen.BG_HEIGHT * 0.1f,
+//                            LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+//                    )
                 )
             )
         )
@@ -171,7 +237,7 @@ class EarthModel(val assets: Assets): Entity() {
 
     val leaf = LayerActor(
         tex = leafTex,
-        texture = assets.getAsset(leafTex)
+        texture = Texture(Gdx.files.internal(leafTex))
     )
 
     override val all = arrayOf<Actor>(background, cloud2, rock, cloud3, cloud1, river, forest, smoke, coast, treerock)
