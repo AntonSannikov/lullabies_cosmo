@@ -1,5 +1,7 @@
 package com.twobsoft.babymozartspacetrip.models
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -23,14 +25,18 @@ class SpaceshipModel(val assets: Assets): Entity() {
 
     override val background = LayerActor(
         tex = backgroundTex,
-        texture = assets.getAsset(backgroundTex),
+        texture = Texture(Gdx.files.internal(backgroundTex)),
         isRepeated = true,
     ).also {
         it.xDelta = -1
         it.yDelta = -1
     }
 
-    val earth = LayerActor(tex = earthTex, texture = assets.getAsset(earthTex)).also {
+    val earth = LayerActor(
+        tex = earthTex,
+        texture = Texture(Gdx.files.internal(earthTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -45,9 +51,23 @@ class SpaceshipModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan3         = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex))
-    val plan2         = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex))
-    val plan1         = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex))
+    val plan3 = LayerActor(
+        tex = plan3Tex,
+        texture = Texture(Gdx.files.internal(plan3Tex)),
+        isSceneDefaultLayer = true
+    )
+
+    val plan2 = LayerActor(
+        tex = plan2Tex,
+        texture = Texture(Gdx.files.internal(plan2Tex)),
+        isSceneDefaultLayer = true
+    )
+
+    val plan1 = LayerActor(
+        tex = plan1Tex,
+        texture = Texture(Gdx.files.internal(plan1Tex)),
+        isSceneDefaultLayer = true
+    )
 
     override val all = arrayOf<Actor>(background, earth, plan3, plan2, plan1)
 }

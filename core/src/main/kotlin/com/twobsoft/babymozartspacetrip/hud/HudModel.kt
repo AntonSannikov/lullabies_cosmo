@@ -220,7 +220,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         tex = lampTex,
         actorTexture = assets.getAsset(lampTex)
     ).also {
-        it.width    = MainScreen.BG_WIDTH * 0.075f
+        it.width    = layerWidth * 0.11f
         it.height   = it.width * 1.763f
         it.x        = (MainScreen.BG_WIDTH - it.width) / 2
         it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - upperPanelWindowHeight - it.height
@@ -457,9 +457,9 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         tex = clockTex,
         actorTexture = assets.getAsset(clockTex)
     ).also {
-        it.width    = MainScreen.BG_WIDTH * 0.13f
+        it.width    = layerWidth * 0.19f
         it.height   = it.width * 1.488f
-        it.x        = MainScreen.BG_WIDTH - sideFramePadding - it.width*1.1f
+        it.x        = MainScreen.BG_WIDTH * 0.7f
         it.y        = MainScreen.BG_HEIGHT * 0.12f
 
         // 1

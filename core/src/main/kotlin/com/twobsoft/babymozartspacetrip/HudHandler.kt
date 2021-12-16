@@ -3,7 +3,6 @@ package com.twobsoft.babymozartspacetrip
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.babymozartspacetrip.hud.HudActor
@@ -48,27 +47,6 @@ class HudHandler(val screen: MainScreen) {
         }
         screen.isHud = true
         screen.isHudTapable = true
-    }
-
-
-    fun addRollingHud() {
-
-        val startingScale = Vector2(MainScreen.BG_WIDTH * 0.0005f, MainScreen.BG_HEIGHT * 0.0005f)
-        val targetScale = Vector2(-MainScreen.BG_WIDTH * 0.0005f, -MainScreen.BG_HEIGHT * 0.0005f)
-        screen.isHudTapable = false
-        screen.isMenuTappable = false
-        screen.hudModel.all.forEach {
-            it.y = -MainScreen.BG_HEIGHT * 0.3f
-            it.x = -MainScreen.BG_WIDTH * 0.2f
-            it.scaleBy(startingScale.x, startingScale.y)
-            screen.stage.addActor(it)
-            it.addAction(
-                Actions.parallel(
-                    Actions.scaleBy(targetScale.x, targetScale.y, 0.8f),
-                    Actions.moveBy(MainScreen.BG_WIDTH * 0.2f, MainScreen.BG_HEIGHT * 0.3f, 0.8f)
-                )
-            )
-        }
     }
 
 

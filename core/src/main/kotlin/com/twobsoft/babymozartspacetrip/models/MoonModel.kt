@@ -1,5 +1,7 @@
 package com.twobsoft.babymozartspacetrip.models
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
@@ -8,6 +10,7 @@ import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerGroup
+import com.twobsoft.babymozartspacetrip.hud.HudModel
 
 
 class MoonModel(val assets: Assets): Entity() {
@@ -31,12 +34,24 @@ class MoonModel(val assets: Assets): Entity() {
 
     override val stageNumber = 5
 
-    override val background  = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background  = LayerActor(
+        tex = backgroundTex,
+        texture = Texture(Gdx.files.internal(backgroundTex))
+    )
+
     val moonGroup = LayerGroup()
 
-    val planets = LayerActor(tex = planetsTex, texture = assets.getAsset(planetsTex))
+    val planets = LayerActor(
+        tex = planetsTex,
+        texture = Texture(Gdx.files.internal(planetsTex)),
+        isSceneDefaultLayer = true
+    )
 
-    val zemlya = LayerActor(tex = zemlyaTex, texture = assets.getAsset(zemlyaTex)).also {
+    val zemlya = LayerActor(
+        tex = zemlyaTex,
+        texture = Texture(Gdx.files.internal(zemlyaTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -48,9 +63,14 @@ class MoonModel(val assets: Assets): Entity() {
         )
     }
 
-    val star1 = LayerActor(tex = star1Tex, texture = assets.getAsset(star1Tex)).also {
-        it.originY = MainScreen.BG_HEIGHT * 0.7f
-        it.originX = MainScreen.BG_HEIGHT * 0.3f
+    val star1 = LayerActor(
+        tex = star1Tex,
+        texture = Texture(Gdx.files.internal(star1Tex)),
+    ).also {
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = MainScreen.BG_HEIGHT
+        it.originY  = MainScreen.BG_HEIGHT * 0.7f
+        it.originX  = MainScreen.BG_HEIGHT * 0.3f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -63,9 +83,14 @@ class MoonModel(val assets: Assets): Entity() {
         )
     }
 
-    val star2 = LayerActor(tex = star2Tex, texture = assets.getAsset(star2Tex)).also {
-        it.originY = MainScreen.BG_HEIGHT * 0.7f
-        it.originX = MainScreen.BG_HEIGHT * 0.3f
+    val star2 = LayerActor(
+        tex = star2Tex,
+        texture = Texture(Gdx.files.internal(star2Tex)),
+    ).also {
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = MainScreen.BG_HEIGHT
+        it.originY  = MainScreen.BG_HEIGHT * 0.7f
+        it.originX  = MainScreen.BG_HEIGHT * 0.3f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -78,38 +103,39 @@ class MoonModel(val assets: Assets): Entity() {
         )
     }
 
-    val star3 = LayerActor(tex = star3Tex, texture = assets.getAsset(star3Tex))
+    val star3 = LayerActor(
+        tex = star3Tex,
+        texture = Texture(Gdx.files.internal(star3Tex))
+    ).also {
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = MainScreen.BG_HEIGHT
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
+    }
 
 
-    val gory = LayerActor(tex = goryTex, texture = assets.getAsset(goryTex))
-//        .also {
-//        it.actions.add(
-//            Actions.repeat(
-//                RepeatAction.FOREVER,
-//                Actions.parallel(
-//                    Actions.sequence(
-//                        Actions.scaleBy(0.06f, 0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-//                        Actions.scaleBy(-0.06f, -0.06f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-//                    ),
-//                    Actions.sequence(
-//                        Actions.moveBy(-MainScreen.BG_HEIGHT * 0.007f, -MainScreen.BG_HEIGHT * 0.01f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-//                        Actions.moveBy(MainScreen.BG_HEIGHT * 0.007f, MainScreen.BG_HEIGHT * 0.01f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-//                    )
-//                )
-//            )
-//        )
-//    }
+    val gory = LayerActor(
+        tex = goryTex,
+        texture = Texture(Gdx.files.internal(goryTex)),
+        isSceneDefaultLayer = true
+    )
 
-    val luna = LayerActor(tex = lunaTex, texture = assets.getAsset(lunaTex))
+
+    val luna = LayerActor(
+        tex = lunaTex,
+        texture = Texture(Gdx.files.internal(lunaTex)),
+        isSceneDefaultLayer = true
+    )
 
     val flag = LayerActor(
         tex = flagTex,
-        texture = assets.getAsset(flagTex),
-        cWidth = MainScreen.BG_WIDTH * 0.15f,
-        cHeight = MainScreen.BG_HEIGHT * 0.15f,
-        cX = MainScreen.BG_WIDTH * 0.28f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.24f
-    )
+        texture = Texture(Gdx.files.internal(flagTex)),
+    ).also {
+        it.width    = HudModel.layerWidth * 0.15f
+        it.height   = it.width * 1.92f
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth * 0.37f
+        it.y        = HudModel.layerYPosition + HudModel.layerHeight * 0.25f
+    }
 
     init {
         moonGroup.addActor(gory)

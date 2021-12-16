@@ -1,6 +1,8 @@
 package com.twobsoft.babymozartspacetrip.models
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -10,6 +12,7 @@ import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerActor
+import com.twobsoft.babymozartspacetrip.hud.HudModel
 
 class AlienshipModel(val assets: Assets): Entity() {
 
@@ -29,7 +32,12 @@ class AlienshipModel(val assets: Assets): Entity() {
 
     override val stageNumber = 15
 
-    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
+    override val background = LayerActor(
+        tex = backgroundTex,
+        texture = Texture(Gdx.files.internal(backgroundTex))
+    ).also {
+        it.originX = it.width / 2
+        it.originY = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -41,8 +49,12 @@ class AlienshipModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan4 = LayerActor(tex = plan4Tex, texture = assets.getAsset(plan4Tex)).also {
-        it.orbitRadius = MainScreen.layerHeight * 0.04f
+    val plan4 = LayerActor(
+        tex = plan4Tex,
+        texture = Texture(Gdx.files.internal(plan4Tex)),
+        isSceneDefaultLayer = true
+    ).also {
+        it.orbitRadius = HudModel.layerHeight * 0.04f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -62,22 +74,34 @@ class AlienshipModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan3 = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex))
-    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex))
-    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex))
+    val plan3 = LayerActor(
+        tex = plan3Tex,
+        texture = Texture(Gdx.files.internal(plan3Tex)),
+        isSceneDefaultLayer = true
+    )
+    val plan2 = LayerActor(
+        tex = plan2Tex,
+        texture = Texture(Gdx.files.internal(plan2Tex)),
+        isSceneDefaultLayer = true
+    )
+    val plan1 = LayerActor(
+        tex = plan1Tex,
+        texture = Texture(Gdx.files.internal(plan1Tex)),
+        isSceneDefaultLayer = true
+    )
 
     val hologram = LayerActor(
         tex = hologramTex,
-        texture = assets.getAsset(hologramTex),
+        texture = Texture(Gdx.files.internal(hologramTex)),
         isOrbit = true,
-        cWidth = MainScreen.BG_WIDTH * 0.14f,
-        cHeight = MainScreen.layerHeight * 0.084f,
-        cX = MainScreen.BG_WIDTH * 0.59f,
-        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.31f - MainScreen.layerHeight * 0.042f,
     ).also {
-        it.orbitRadius = MainScreen.layerHeight * 0.018f
+        it.width    = HudModel.layerWidth * 0.2f
+        it.height   = it.width * 0.648f
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.667f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight*0.32f
+        it.orbitRadius = HudModel.layerHeight * 0.018f
         it.angleDelta = -0.8f
-        it.orbitAnchor = Vector2(it.cX, it.cY)
+        it.orbitAnchor = Vector2(it.x, it.y)
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -91,9 +115,11 @@ class AlienshipModel(val assets: Assets): Entity() {
         )
     }
 
-    val flare = LayerActor(tex = flareTex, texture = assets.getAsset(flareTex)).also {
-        it.originX = MainScreen.BG_WIDTH * 0.598f
-        it.originY = MainScreen.BG_HEIGHT * 0.457f
+    val flare = LayerActor(
+        tex = flareTex,
+        texture = Texture(Gdx.files.internal(flareTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

@@ -1,5 +1,7 @@
 package com.twobsoft.babymozartspacetrip.models
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -23,7 +25,12 @@ class SaturnModel(val assets: Assets): Entity() {
 
     override val stageNumber = 8
 
-    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
+    override val background = LayerActor(
+        tex = backgroundTex,
+        texture = Texture(Gdx.files.internal(backgroundTex)),
+    ).also {
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -35,7 +42,11 @@ class SaturnModel(val assets: Assets): Entity() {
         )
     }
 
-    val sun = LayerActor(tex = sunTex, texture = assets.getAsset(sunTex)).also {
+    val sun = LayerActor(
+        tex = sunTex,
+        texture = Texture(Gdx.files.internal(sunTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -47,26 +58,27 @@ class SaturnModel(val assets: Assets): Entity() {
         )
     }
 
-    val ring = LayerActor(tex = ringTex, texture = assets.getAsset(ringTex)).also {
+    val ring = LayerActor(
+        tex = ringTex,
+        texture = Texture(Gdx.files.internal(ringTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
-                Actions.parallel(
-                    Actions.sequence(
-                        Actions.scaleBy(0.05f, 0.05f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.scaleBy(-0.05f, -0.05f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    ),
-                    Actions.sequence(
-                        Actions.moveBy(100f, 100f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.moveBy(-100f, -100f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    ),
-                )
-
+                Actions.sequence(
+                    Actions.scaleBy(0.07f, 0.07f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    Actions.scaleBy(-0.07f, -0.07f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                ),
             )
         )
     }
 
-    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex)).also {
+    val plan2 = LayerActor(
+        tex = plan2Tex,
+        texture = Texture(Gdx.files.internal(plan2Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -78,7 +90,11 @@ class SaturnModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
+    val plan1 = LayerActor(
+        tex = plan1Tex,
+        texture = Texture(Gdx.files.internal(plan1Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

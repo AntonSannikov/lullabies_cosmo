@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.twobsoft.babymozartspacetrip.MainScreen
+import com.twobsoft.babymozartspacetrip.hud.HudModel
 import com.twobsoft.babymozartspacetrip.splash.SplashScreen
 import kotlin.math.PI
 import kotlin.math.abs
@@ -25,13 +26,10 @@ class LayerActor(
     var tex: String,
     val isMenu: Boolean = false,
     var texture: Texture,
-    val cHeight: Float = 0f,
-    val cWidth: Float = 0f,
-    val cX: Float = 0f,
-    val cY: Float = 0f,
     val isOrbit: Boolean = false,
     val isRepeated: Boolean = false,
-    val isOriginalSize: Boolean = false
+    val isOriginalSize: Boolean = false,
+    val isSceneDefaultLayer: Boolean = false
 )
     : Actor() {
 
@@ -45,6 +43,8 @@ class LayerActor(
     var xOffset = 0
     var yOffset = 0
     var xBounds = Vector2(-MainScreen.BG_WIDTH, MainScreen.BG_WIDTH)
+    var origX = 0f
+    var origY = 0f
 
     // orbit
     var orbitRadius = 0f
@@ -81,9 +81,25 @@ class LayerActor(
         srcWidth = texture.width
         srcHeight = texture.height
 
+        if (tex.contains("background")) {
+            width   = MainScreen.BG_WIDTH
+            height  = MainScreen.BG_HEIGHT
+        }
+
         if (isOriginalSize) {
             width   = srcWidth.toFloat()
             height  = srcHeight.toFloat()
+        }
+
+        if (isSceneDefaultLayer) {
+            width = HudModel.layerWidth
+            height = HudModel.layerHeight
+            x = HudModel.layerXPosition
+            y = HudModel.layerYPosition
+            originX = width / 2
+            originY = height / 2
+            origX   = originX
+            origY   = originY
         }
 
         if (tex == "menu/stars.png") {
@@ -98,6 +114,15 @@ class LayerActor(
         layers.add(texture)
     }
 
+
+    fun initOrigin(_x: Float, _y: Float) {
+        origX   = _x
+        origY   = _y
+        originX = _x
+        originY = _y
+    }
+
+
     fun changeBackground(_tex: String, _texture: Texture) {
         tex = _tex
         texture = _texture
@@ -106,6 +131,7 @@ class LayerActor(
         layers.add(texture)
         if (isRepeated) texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
     }
+
 
     fun offsetToPosition() {
         x = -xOffset.toFloat()
@@ -202,7 +228,7 @@ class LayerActor(
         }
 
 
-//        if (tex == "splash/comet_bot.png") {
+//        if (tex.contains("svet")) {
 //            MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
 //            MainScreen.shapeRenderer.color = Color.RED
 //            MainScreen.shapeRenderer.rect(x,y,width,height)

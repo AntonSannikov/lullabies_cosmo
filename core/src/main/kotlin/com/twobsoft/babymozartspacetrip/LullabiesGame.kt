@@ -40,9 +40,6 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>(
     override fun create() {
         MediaPlayer.serviceApi = serviceApi
         KtxAsync.initiate()
-        assets.load(0)
-        assets.manager.finishLoading()
-
         assets.loadSplash()
         assets.manager.finishLoading()
         addScreen(SplashScreen(this))
@@ -59,7 +56,6 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         val BG_WIDTH            = Gdx.graphics.width.toFloat()
         val BG_HEIGHT           = Gdx.graphics.height.toFloat()
         val ratio               = BG_WIDTH / BG_HEIGHT
-        val layerHeight         = 1f
         val shapeRenderer       = ShapeRenderer()
         val bottomPadding       = BG_HEIGHT * 0.12f
         var isNightMode         = false
@@ -333,7 +329,6 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
 //                    shapeRenderer.polygon(spine.hitBox.toFloatArray())
 //                }
             }
-
         }
 
         fbo2.end()

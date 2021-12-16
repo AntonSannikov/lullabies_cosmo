@@ -139,13 +139,13 @@ class HudActor(
             textPartPointer -= 0.7f
         }
 
-        if (tex == "hud/lamp_light.png") {
-            MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-            MainScreen.shapeRenderer.color = Color.RED
-            if (hitBox.size > 2) {
-                MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
-            }
-        }
+
+//        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+//        MainScreen.shapeRenderer.color = Color.RED
+//        if (hitBox.size > 2) {
+//            MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
+//        }
+
 
     }
 }

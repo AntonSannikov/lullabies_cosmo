@@ -1,5 +1,7 @@
 package com.twobsoft.babymozartspacetrip.models
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -21,7 +23,12 @@ class UranusModel(val assets: Assets): Entity() {
 
     override val stageNumber = 9
 
-    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex)).also {
+    override val background = LayerActor(
+        tex = backgroundTex,
+        texture = Texture(Gdx.files.internal(backgroundTex))
+    ).also {
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -39,7 +46,11 @@ class UranusModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan4 = LayerActor(tex = plan4Tex, texture = assets.getAsset(plan4Tex)).also {
+    val plan4 = LayerActor(
+        tex = plan4Tex,
+        texture = Texture(Gdx.files.internal(plan4Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -57,7 +68,11 @@ class UranusModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan3 = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex)).also {
+    val plan3 = LayerActor(
+        tex = plan3Tex,
+        texture = Texture(Gdx.files.internal(plan3Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -69,7 +84,11 @@ class UranusModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex)).also {
+    val plan2 = LayerActor(
+        tex = plan2Tex,
+        texture = Texture(Gdx.files.internal(plan2Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -87,7 +106,11 @@ class UranusModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
+    val plan1 = LayerActor(
+        tex = plan1Tex,
+        texture = Texture(Gdx.files.internal(plan1Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

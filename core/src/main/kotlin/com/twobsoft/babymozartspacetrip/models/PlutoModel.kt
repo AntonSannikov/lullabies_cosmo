@@ -1,7 +1,9 @@
 package com.twobsoft.babymozartspacetrip.models
 
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -10,7 +12,7 @@ import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerActor
-
+import com.twobsoft.babymozartspacetrip.hud.HudModel
 
 
 class PlutoModel(val assets: Assets): Entity() {
@@ -31,9 +33,16 @@ class PlutoModel(val assets: Assets): Entity() {
 
     override val stageNumber = 11
 
-    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background = LayerActor(
+        tex = backgroundTex,
+        texture = Texture(Gdx.files.internal(backgroundTex))
+    )
 
-    val sun = LayerActor(tex = sunTex, texture = assets.getAsset(sunTex)).also {
+    val sun = LayerActor(
+        tex = sunTex,
+        texture = Texture(Gdx.files.internal(sunTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -45,7 +54,12 @@ class PlutoModel(val assets: Assets): Entity() {
         )
     }
 
-    val stars = LayerActor(tex = starsTex, texture = assets.getAsset(starsTex)).also {
+    val stars = LayerActor(
+        tex = starsTex,
+        texture = Texture(Gdx.files.internal(starsTex))
+    ).also {
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = MainScreen.BG_HEIGHT
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -66,7 +80,11 @@ class PlutoModel(val assets: Assets): Entity() {
         )
     }
 
-    val planet = LayerActor(tex = planetTex, texture = assets.getAsset(planetTex)).also {
+    val planet = LayerActor(
+        tex = planetTex,
+        texture = Texture(Gdx.files.internal(planetTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -85,7 +103,11 @@ class PlutoModel(val assets: Assets): Entity() {
 
     }
 
-    val plan3 = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex)).also {
+    val plan3 = LayerActor(
+        tex = plan3Tex,
+        texture = Texture(Gdx.files.internal(plan3Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -97,7 +119,11 @@ class PlutoModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex)).also {
+    val plan2 = LayerActor(
+        tex = plan2Tex,
+        texture = Texture(Gdx.files.internal(plan2Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -109,7 +135,11 @@ class PlutoModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
+    val plan1 = LayerActor(
+        tex = plan1Tex,
+        texture = Texture(Gdx.files.internal(plan1Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -123,14 +153,14 @@ class PlutoModel(val assets: Assets): Entity() {
 
     val flare1 = LayerActor(
         tex = flareTex,
-        texture = assets.getAsset(flareTex),
-        cWidth = MainScreen.BG_WIDTH * 0.2f,
-        cHeight = MainScreen.layerHeight * 0.116f,
-        cX = MainScreen.BG_WIDTH * 0.0188f - MainScreen.BG_WIDTH * 0.1f,
-        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.694f - MainScreen.layerHeight * 0.058f
+        texture = Texture(Gdx.files.internal(flareTex)),
     ).also {
-        it.originX = it.cWidth / 2
-        it.originY = it.cHeight / 2
+        it.width    = MainScreen.BG_WIDTH * 0.15f
+        it.height   = it.width
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.0175f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight * 0.6975f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -151,14 +181,14 @@ class PlutoModel(val assets: Assets): Entity() {
 
     val flare2 = LayerActor(
         tex = flareTex,
-        texture = assets.getAsset(flareTex),
-        cWidth = MainScreen.BG_WIDTH * 0.119f,
-        cHeight = MainScreen.layerHeight * 0.081f,
-        cX = MainScreen.BG_WIDTH * 0.097f - MainScreen.BG_WIDTH * 0.0595f,
-        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.736f - MainScreen.layerHeight * 0.04f
+        texture = Texture(Gdx.files.internal(flareTex)),
     ).also {
-        it.originX = it.cWidth / 2
-        it.originY = it.cHeight / 2
+        it.width    = MainScreen.BG_WIDTH * 0.13f
+        it.height   = it.width
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.1f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight * 0.74f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -179,14 +209,14 @@ class PlutoModel(val assets: Assets): Entity() {
 
     val flare3 = LayerActor(
         tex = flareTex,
-        texture = assets.getAsset(flareTex),
-        cWidth = MainScreen.BG_WIDTH * 0.18f,
-        cHeight = MainScreen.layerHeight * 0.116f,
-        cX = MainScreen.BG_WIDTH * 0.264f - MainScreen.BG_WIDTH * 0.09f,
-        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.777f - MainScreen.layerHeight * 0.058f
+        texture = Texture(Gdx.files.internal(flareTex)),
     ).also {
-        it.originX = it.cWidth / 2
-        it.originY = it.cHeight / 2
+        it.width    = MainScreen.BG_WIDTH * 0.13f
+        it.height   = it.width
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.254f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight * 0.779f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -207,21 +237,21 @@ class PlutoModel(val assets: Assets): Entity() {
 
     val flare4 = LayerActor(
         tex = flareTex,
-        texture = assets.getAsset(flareTex),
-        cWidth = MainScreen.BG_WIDTH * 0.12f,
-        cHeight = MainScreen.layerHeight * 0.081f,
-        cX = MainScreen.BG_WIDTH * 0.765f - MainScreen.BG_WIDTH * 0.06f,
-        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.715f - MainScreen.layerHeight * 0.04f
+        texture = Texture(Gdx.files.internal(flareTex)),
     ).also {
-        it.originX = it.cWidth / 2
-        it.originY = it.cHeight / 2
+        it.width    = MainScreen.BG_WIDTH * 0.1f
+        it.height   = it.width
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.766f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight*0.723f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.parallel(
                     Actions.sequence(
-                        Actions.scaleBy(0.6f, 0.6f, LullabiesGame.ANIMATION_TIME / 10, Interpolation.fade),
-                        Actions.scaleBy(-0.6f, -0.6f, LullabiesGame.ANIMATION_TIME / 10, Interpolation.fade),
+                        Actions.scaleBy(0.8f, 0.8f, LullabiesGame.ANIMATION_TIME / 10, Interpolation.fade),
+                        Actions.scaleBy(-0.8f, -0.8f, LullabiesGame.ANIMATION_TIME / 10, Interpolation.fade),
                     ),
                     Actions.sequence(
                         Actions.color(Color.RED, LullabiesGame.ANIMATION_TIME / 10, Interpolation.fade),
@@ -235,14 +265,14 @@ class PlutoModel(val assets: Assets): Entity() {
 
     val flare5 = LayerActor(
         tex = flareTex,
-        texture = assets.getAsset(flareTex),
-        cWidth = MainScreen.layerHeight * MainScreen.BG_WIDTH * 0.18f,
-        cHeight = MainScreen.layerHeight * 0.116f,
-        cX = MainScreen.BG_WIDTH * 0.877f - MainScreen.BG_WIDTH * 0.09f,
-        cY = MainScreen.bottomPadding + MainScreen.layerHeight * 0.713f - MainScreen.layerHeight * 0.058f
+        texture = Texture(Gdx.files.internal(flareTex)),
     ).also {
-        it.originX = it.cWidth / 2
-        it.originY = it.cHeight / 2
+        it.width    = MainScreen.BG_WIDTH * 0.13f
+        it.height   = it.width
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.88f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight*0.716f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -263,7 +293,8 @@ class PlutoModel(val assets: Assets): Entity() {
 
 
     override val all = arrayOf<Actor>(
-        background, sun, stars, planet, plan3,
+        background,
+        sun, stars, planet, plan3,
         flare1,
         flare2,
         flare3,

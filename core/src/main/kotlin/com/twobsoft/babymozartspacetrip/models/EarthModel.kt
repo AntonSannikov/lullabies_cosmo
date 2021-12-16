@@ -11,6 +11,8 @@ import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import com.twobsoft.babymozartspacetrip.MainScreen
+import com.twobsoft.babymozartspacetrip.components.LayerGroup
+import com.twobsoft.babymozartspacetrip.hud.HudModel
 import com.twobsoft.babymozartspacetrip.hud.HudModel.Companion.layerHeight
 import com.twobsoft.babymozartspacetrip.hud.HudModel.Companion.layerWidth
 import com.twobsoft.babymozartspacetrip.hud.HudModel.Companion.layerXPosition
@@ -42,12 +44,8 @@ class EarthModel(val assets: Assets): Entity() {
     val cloud1 = LayerActor(
         tex = cloud1Tex,
         texture = Texture(Gdx.files.internal(cloud1Tex)),
-        isOriginalSize = true
+        isSceneDefaultLayer = true
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
         it.xOffset = (MainScreen.BG_WIDTH * 0.2f).toInt()
         it.isNeedReposition = true
         it.actions.add(
@@ -64,12 +62,8 @@ class EarthModel(val assets: Assets): Entity() {
     val cloud2 = LayerActor(
         tex = cloud2Tex,
         texture = Texture(Gdx.files.internal(cloud2Tex)),
-        isOriginalSize = true
+        isSceneDefaultLayer = true
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -84,12 +78,8 @@ class EarthModel(val assets: Assets): Entity() {
     val cloud3 = LayerActor(
         tex = cloud3Tex,
         texture = Texture(Gdx.files.internal(cloud3Tex)),
-        isOriginalSize = true
+        isSceneDefaultLayer = true
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -105,18 +95,17 @@ class EarthModel(val assets: Assets): Entity() {
         tex = skyTex,
         texture = Texture(Gdx.files.internal(skyTex))
     ).also {
-        it.width = MainScreen.BG_WIDTH
-        it.height = MainScreen.BG_HEIGHT
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = MainScreen.BG_HEIGHT
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
     }
 
     val rock = LayerActor(
         tex = rockTex,
         texture = Texture(Gdx.files.internal(rockTex)),
+        isSceneDefaultLayer = true
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -131,11 +120,9 @@ class EarthModel(val assets: Assets): Entity() {
     val river = LayerActor(
         tex = riverTex,
         texture = Texture(Gdx.files.internal(riverTex)),
+        isSceneDefaultLayer = true
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
+        it.initOrigin(0f, 0f)
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -150,11 +137,9 @@ class EarthModel(val assets: Assets): Entity() {
     val forest = LayerActor(
         tex = forestTex,
         texture = Texture(Gdx.files.internal(forestTex)),
+        isSceneDefaultLayer = true
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
+        it.initOrigin(0f, 0f)
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -169,31 +154,30 @@ class EarthModel(val assets: Assets): Entity() {
     val smoke = LayerActor(
         tex = smokeTex,
         texture = Texture(Gdx.files.internal(smokeTex)),
-
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = layerHeight / 2.5f
+        it.y        = layerYPosition + layerHeight * 0.25f
+        it.initOrigin(0f, 0f)
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.moveBy(-MainScreen.BG_WIDTH * 2.2f, 0f, 150f),
-                    Actions.moveTo(MainScreen.BG_WIDTH * 1.2f, it.cY),
-                )
+                    Actions.moveBy(-MainScreen.BG_WIDTH*2f, 0f, 150f),
+                    Actions.moveTo(MainScreen.BG_WIDTH, it.y),
+                ),
+
             )
         )
     }
 
+
     val coast = LayerActor(
         tex = coastTex,
         texture = Texture(Gdx.files.internal(coastTex)),
+        isSceneDefaultLayer = true
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
+        it.initOrigin(0f, 0f)
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -208,13 +192,9 @@ class EarthModel(val assets: Assets): Entity() {
     val treerock = LayerActor(
         tex = treerockTex,
         texture = Texture(Gdx.files.internal(treerockTex)),
+        isSceneDefaultLayer = true
     ).also {
-        it.width = layerWidth
-        it.height = layerHeight
-        it.x = layerXPosition
-        it.y = layerYPosition
-//        it.originX = it.width / 2
-//        it.originY = it.height / 2
+        it.initOrigin(0f, 0f)
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -240,6 +220,13 @@ class EarthModel(val assets: Assets): Entity() {
         texture = Texture(Gdx.files.internal(leafTex))
     )
 
-    override val all = arrayOf<Actor>(background, cloud2, rock, cloud3, cloud1, river, forest, smoke, coast, treerock)
+    override val all = arrayOf<Actor>(
+        background,
+        cloud2,
+        rock,
+        cloud3, cloud1,
+        river,
+        forest, smoke, coast, treerock
+    )
 
 }

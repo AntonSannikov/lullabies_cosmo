@@ -1,6 +1,8 @@
 package com.twobsoft.babymozartspacetrip.models
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -9,6 +11,7 @@ import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerActor
+import com.twobsoft.babymozartspacetrip.hud.HudModel
 
 class AsteroidModel(val assets: Assets): Entity() {
 
@@ -25,9 +28,16 @@ class AsteroidModel(val assets: Assets): Entity() {
 
     override val stageNumber = 12
 
-    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background = LayerActor(
+        tex = backgroundTex,
+        texture = Texture(Gdx.files.internal(backgroundTex))
+    )
 
-    val plan5 = LayerActor(tex = plan5Tex, texture = assets.getAsset(plan5Tex)).also {
+    val plan5 = LayerActor(
+        tex = plan5Tex,
+        texture = Texture(Gdx.files.internal(plan5Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -39,7 +49,11 @@ class AsteroidModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan4 = LayerActor(tex = plan4Tex, texture = assets.getAsset(plan4Tex)).also {
+    val plan4 = LayerActor(
+        tex = plan4Tex,
+        texture = Texture(Gdx.files.internal(plan4Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -57,7 +71,11 @@ class AsteroidModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan3 = LayerActor(tex = plan3Tex, texture = assets.getAsset(plan3Tex)).also {
+    val plan3 = LayerActor(
+        tex = plan3Tex,
+        texture = Texture(Gdx.files.internal(plan3Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -71,7 +89,8 @@ class AsteroidModel(val assets: Assets): Entity() {
 
     val plan2 = LayerActor(
         tex = plan2Tex,
-        texture = assets.getAsset(plan2Tex),
+        texture = Texture(Gdx.files.internal(plan2Tex)),
+        isSceneDefaultLayer = true,
         isOrbit = true
     ).also {
         it.orbitRadius = 150f
@@ -96,10 +115,12 @@ class AsteroidModel(val assets: Assets): Entity() {
 
     val plan1 = LayerActor(
         tex = plan1Tex,
-        texture = assets.getAsset(plan1Tex),
+        texture = Texture(Gdx.files.internal(plan1Tex)),
+        isSceneDefaultLayer = true,
         isOrbit = true
     ).also {
-        it.orbitRadius = 250f
+        it.orbitRadius = 170f
+        it.angleDelta = 0.1f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -113,14 +134,14 @@ class AsteroidModel(val assets: Assets): Entity() {
 
     val flare1 = LayerActor(
         tex = flareTex,
-        texture = assets.getAsset(flareTex),
-        cWidth = MainScreen.BG_WIDTH * 0.3f,
-        cHeight = MainScreen.layerHeight * 0.175f,
-        cX = MainScreen.BG_WIDTH * 0.337f - MainScreen.BG_WIDTH * 0.15f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.425f - MainScreen.layerHeight * 0.088f
+        texture = Texture(Gdx.files.internal(flareTex)),
     ).also {
-        it.originX = it.cWidth / 2
-        it.originY = it.cHeight / 2
+        it.width    = HudModel.layerWidth * 0.15f
+        it.height   = it.width
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.365f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight*0.43f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -142,14 +163,14 @@ class AsteroidModel(val assets: Assets): Entity() {
 
     val flare2 = LayerActor(
         tex = flareTex,
-        texture = assets.getAsset(flareTex),
-        cWidth = MainScreen.BG_WIDTH * 0.2f,
-        cHeight = MainScreen.layerHeight * 0.116f,
-        cX = MainScreen.BG_WIDTH * 0.7f - MainScreen.BG_WIDTH * 0.1f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.363f - MainScreen.layerHeight * 0.058f
+        texture = Texture(Gdx.files.internal(flareTex)),
     ).also {
-        it.originX = it.cWidth / 2
-        it.originY = it.cHeight / 2
+        it.width    = HudModel.layerWidth * 0.15f
+        it.height   = it.width
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.72f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight*0.37f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -171,14 +192,14 @@ class AsteroidModel(val assets: Assets): Entity() {
 
     val flare3 = LayerActor(
         tex = flareTex,
-        texture = assets.getAsset(flareTex),
-        cWidth = MainScreen.BG_WIDTH * 0.1f,
-        cHeight = MainScreen.layerHeight * 0.058f,
-        cX = MainScreen.BG_WIDTH * 0.626f - MainScreen.BG_WIDTH * 0.05f,
-        cY = MainScreen.BG_HEIGHT * 0.08f + MainScreen.layerHeight * 0.228f - MainScreen.layerHeight * 0.029f
+        texture = Texture(Gdx.files.internal(flareTex)),
     ).also {
-        it.originX = it.cWidth / 2
-        it.originY = it.cHeight / 2
+        it.width    = HudModel.layerWidth * 0.15f
+        it.height   = it.width
+        it.x        = HudModel.layerXPosition - it.width / 2 + HudModel.layerWidth*0.65f
+        it.y        = HudModel.layerYPosition - it.height / 2 + HudModel.layerHeight*0.22f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -197,7 +218,6 @@ class AsteroidModel(val assets: Assets): Entity() {
             )
         )
     }
-
 
 
     override val all = arrayOf<Actor>(

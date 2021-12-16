@@ -1,5 +1,7 @@
 package com.twobsoft.babymozartspacetrip.models
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -7,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.LullabiesGame
+import com.twobsoft.babymozartspacetrip.MainScreen
+import com.twobsoft.babymozartspacetrip.hud.HudModel
 
 
 class SunModel(val assets: Assets): Entity() {
@@ -28,18 +32,27 @@ class SunModel(val assets: Assets): Entity() {
 
     override val stageNumber = 1
 
-    override val background = LayerActor(tex = backgroundTex, texture = assets.getAsset(backgroundTex))
+    override val background = LayerActor(
+        tex = backgroundTex,
+        texture = Texture(Gdx.files.internal(backgroundTex)),
+    )
 
     val stars = LayerActor(
         tex = starsTex,
         isRepeated = true,
-        texture = assets.getAsset(starsTex)
+        texture = Texture(Gdx.files.internal(starsTex))
     ).also {
-        it.xDelta = 2
-        it.yDelta = -1
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = MainScreen.BG_HEIGHT
+        it.xDelta   = 2
+        it.yDelta   = -1
     }
 
-    val planet = LayerActor(tex = planetTex, texture = assets.getAsset(planetTex)).also {
+    val planet = LayerActor(
+        tex = planetTex,
+        texture = Texture(Gdx.files.internal(planetTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -51,7 +64,11 @@ class SunModel(val assets: Assets): Entity() {
         )
     }
 
-    val lava = LayerActor(tex = lavaTex, texture = assets.getAsset(lavaTex)).also {
+    val lava = LayerActor(
+        tex = lavaTex,
+        texture = Texture(Gdx.files.internal(lavaTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -63,7 +80,11 @@ class SunModel(val assets: Assets): Entity() {
         )
     }
 
-    val protuberance = LayerActor(tex = protuberanceTex, texture = assets.getAsset(protuberanceTex)).also {
+    val protuberance = LayerActor(
+        tex = protuberanceTex,
+        texture = Texture(Gdx.files.internal(protuberanceTex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.parallel(
                 Actions.repeat(
@@ -93,7 +114,11 @@ class SunModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan2 = LayerActor(tex = plan2Tex, texture = assets.getAsset(plan2Tex)).also {
+    val plan2 = LayerActor(
+        tex = plan2Tex,
+        texture = Texture(Gdx.files.internal(plan2Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -105,7 +130,11 @@ class SunModel(val assets: Assets): Entity() {
         )
     }
 
-    val plan1 = LayerActor(tex = plan1Tex, texture = assets.getAsset(plan1Tex)).also {
+    val plan1 = LayerActor(
+        tex = plan1Tex,
+        texture = Texture(Gdx.files.internal(plan1Tex)),
+        isSceneDefaultLayer = true
+    ).also {
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -117,7 +146,13 @@ class SunModel(val assets: Assets): Entity() {
         )
     }
 
-    val sparks = LayerActor(tex = sparksTex, texture = assets.getAsset(sparksTex)).also {
+    val sparks = LayerActor(
+        tex = sparksTex,
+        texture = Texture(Gdx.files.internal(sparksTex)),
+    ).also {
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = MainScreen.BG_HEIGHT
+
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

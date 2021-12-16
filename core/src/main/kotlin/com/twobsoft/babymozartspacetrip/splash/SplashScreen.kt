@@ -36,8 +36,6 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
     var isAssetsLoaded = false
     var isTransitionDone = false
 
-    val menuModel: MenuSpineModel
-
     init {
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
@@ -47,23 +45,8 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
             stage.addActor(it)
             it.actions.forEach { action -> it.addAction(action) }
         }
-        menuModel = MenuSpineModel(game.assets)
+        game.assets.loadMenu()
         game.assets.loadHud()
-//        game.assets.load(1)
-//        game.assets.load(2)
-//        game.assets.load(3)
-//        game.assets.load(4)
-//        game.assets.load(5)
-//        game.assets.load(6)
-//        game.assets.load(7)
-//        game.assets.load(8)
-//        game.assets.load(9)
-//        game.assets.load(10)
-//        game.assets.load(11)
-//        game.assets.load(12)
-//        game.assets.load(13)
-//        game.assets.load(14)
-//        game.assets.load(15)
     }
 
 
@@ -100,7 +83,7 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
                     isShade = true
                 }
             } else if (isShade) {
-                val mainScreen = MainScreen(game, menuModel)
+                val mainScreen = MainScreen(game, MenuSpineModel(game.assets))
                 mainScreen.isShade = true
                 mainScreen.isInitialShading = true
                 isTransitionDone = true
