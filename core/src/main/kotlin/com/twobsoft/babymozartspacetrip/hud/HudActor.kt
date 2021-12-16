@@ -41,6 +41,7 @@ class HudActor(
     var interActions = arrayListOf<HashMap<String, Float>>()
     var stageZIndex = 0
 
+
     init {
         if (text != "") {
             isTextDrawing = true
@@ -60,12 +61,6 @@ class HudActor(
             height = srcHeight.toFloat()
         }
 
-//        width = MainScreen.BG_WIDTH
-//        height = MainScreen.BG_HEIGHT
-//
-//        originX = MainScreen.BG_WIDTH / 2
-//        originY = MainScreen.BG_HEIGHT / 2
-
         texture = actorTexture
 
     }
@@ -77,7 +72,6 @@ class HudActor(
         isTextPartAdded = false
         val glyphLayout = GlyphLayout(font, text)
         textWidth = glyphLayout.width
-
     }
 
     fun addTextPart() {
@@ -101,7 +95,6 @@ class HudActor(
             }
         }
         return  result.toTypedArray()
-
     }
 
 
@@ -146,11 +139,13 @@ class HudActor(
             textPartPointer -= 0.7f
         }
 
+        if (tex == "hud/lamp_light.png") {
+            MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+            MainScreen.shapeRenderer.color = Color.RED
+            if (hitBox.size > 2) {
+                MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
+            }
+        }
 
-//        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
-//        MainScreen.shapeRenderer.color = Color.RED
-//        if (hitBox.size > 2) {
-//            MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
-//        }
     }
 }

@@ -49,9 +49,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
 
         val all = arrayOf(
             frameTex, panelUpTex, optionsTex, lampLightTex, lampTex, shareButtonTex, shareAntennasTex,
-            deckTex, clockTex,
-//            optionsFlareTex, shareFlareTex
-        )
+            deckTex, clockTex)
 
         val allSkeletons = arrayOf(
             "hud/joystick/skeletons.atlas", "hud/joystick/joystick.json",
@@ -61,10 +59,17 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         )
 
         var sideFramePadding    = 0f
+        var sideFrameSmallPad   = 0f
+        var upperFramePadding   = 0f
+        var bottomFramePadding  = 0f
         var layerWidth          = 0f
         var layerHeight         = 0f
         var layerXPosition      = 0f
         var layerYPosition      = 0f
+
+        var upperPanelWindowHeight  = 0f
+        var upperPanelWindowWidth   = 0f
+        var upperPanelSideHeight    = 0f
 
     }
 
@@ -80,7 +85,6 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         isOriginSize = true
     ).also {
         it.x = (MainScreen.BG_WIDTH - it.width) / 2
-        it.y = (MainScreen.BG_HEIGHT - it.height) / 2
         it.originX = it.width / 2
         it.originY = it.height / 2
         var scale = Vector2()
@@ -88,15 +92,23 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             scale = Utils.getScale(1.1f, 1.5f, it.width, it.height)
             it.scaleBy(scale.x, scale.y)
         } else {
-            scale = Utils.getScale(1.38f, 1.5f, it.width, it.height)
+            scale = Utils.getScale(1.42f, 1.5f, it.width, it.height)
             it.scaleBy(scale.x, scale.y)
         }
 
-        sideFramePadding    = 276 * (1 + scale.x) - (it.width * (1 + scale.x) - MainScreen.BG_WIDTH) / 2
-        layerWidth          = MainScreen.BG_WIDTH - sideFramePadding*1.9f
-        layerHeight         = layerWidth * 100 / 64
-        layerXPosition      = (MainScreen.BG_WIDTH - layerWidth) / 2
-        layerYPosition      = (MainScreen.BG_HEIGHT - layerHeight) / 1.5f
+        sideFramePadding        = 276 * (1 + scale.x) - (it.width * (1 + scale.x) - MainScreen.BG_WIDTH) / 2
+        sideFrameSmallPad       = 248 * (1 + scale.x) - (it.width * (1 + scale.x) - MainScreen.BG_WIDTH) / 2
+        upperFramePadding       = 627 * (1 + scale.y) - (it.height * (1 + scale.y) - MainScreen.BG_HEIGHT) / 2
+        bottomFramePadding      = 815 * (1 + scale.y) - (it.height * (1 + scale.y) - MainScreen.BG_HEIGHT) / 2
+        layerWidth              = MainScreen.BG_WIDTH - sideFramePadding*1.9f
+        layerHeight             = layerWidth * 100 / 64
+        layerXPosition          = (MainScreen.BG_WIDTH - layerWidth) / 2
+        layerYPosition          = (MainScreen.BG_HEIGHT - layerHeight) / 1.5f
+        upperPanelWindowHeight  = 124 * (1 + scale.y)
+        upperPanelSideHeight    = 164 * (1 + scale.y)
+        upperPanelWindowWidth   = 684 * (1 + scale.x)
+
+        it.y = (MainScreen.BG_HEIGHT - it.height) / 2 + upperFramePadding / 2
     }
 
     // upper panel
@@ -106,38 +118,44 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         actorTexture = assets.getAsset(panelUpTex),
         isOriginSize = true
     ).also {
-
-        it.textX = MainScreen.BG_WIDTH * 0.25f
-        it.textY = (MainScreen.BG_HEIGHT - it.textHeight) / 0.5f
-
-        it.textBound = MainScreen.BG_WIDTH * 0.17f
+        it.height       = upperPanelSideHeight * 1.1f
+        it.width        = it.height * 5f
+        it.x            = (MainScreen.BG_WIDTH - it.width) / 2
+        it.y            = MainScreen.BG_HEIGHT - upperFramePadding / 2 - it.height * 0.95f
+        it.textX        = MainScreen.BG_WIDTH * 0.25f
+        it.textY        = MainScreen.BG_HEIGHT - (upperFramePadding + upperPanelWindowHeight - it.textHeight) / 2
+        it.textBound    = MainScreen.BG_WIDTH * 0.17f
     }
 
-    val options = HudActor(tex = optionsTex,
-        actorTexture = assets.getAsset(optionsTex)).also {
-        it.scaleBy(-0.84f, -0.88f)
-        it.x = -MainScreen.BG_WIDTH * 0.425f
-        it.y = MainScreen.BG_HEIGHT * 0.435f
+    val options = HudActor(
+        tex = optionsTex,
+        actorTexture = assets.getAsset(optionsTex)
+    ).also {
+        it.width    = (MainScreen.BG_WIDTH - upperPanelWindowWidth - sideFrameSmallPad * 2) / 2.15f
+        it.height   = upperPanelSideHeight * 1.7f
+        it.x        = sideFrameSmallPad
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - it.height*0.98f
+
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.009f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.915f)
+        it.hitBox.add(it.x)
+        it.hitBox.add(it.y)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.015f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.995f)
+        it.hitBox.add(it.x)
+        it.hitBox.add(it.y + it.height)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.136f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.996f)
+        it.hitBox.add(it.x + (it.width))
+        it.hitBox.add(it.y + it.height)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.141f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.915f)
+        it.hitBox.add(it.x + (it.width))
+        it.hitBox.add(it.y)
 
         it.tapHandler = {
-            flareToButton(it.x, it.y, Vector2(-0.84f, -0.88f), optionsFlareTex)
+            flareToButton(it.x, it.y, Vector2(it.width, it.height), optionsFlareTex)
             appListener.hudHandler.onLoop()
         }
     }
 
-    fun flareToButton(_x: Float, _y: Float, scaling: Vector2, _tex: String, isSwicthable: Boolean=true, ) {
+    fun flareToButton(_x: Float, _y: Float, size: Vector2, _tex: String, isSwicthable: Boolean=true, ) {
         if (isSwicthable) {
             if (appListener.screen.isLooping) {
                 appListener.screen.stage.actors.forEach {
@@ -150,9 +168,10 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
                     tex = _tex,
                     actorTexture = Texture(Gdx.files.internal(_tex))
                 ).also {
-                    it.x = _x
-                    it.y = _y
-                    it.scaleBy(scaling.x, scaling.y)
+                    it.x        = _x
+                    it.y        = _y
+                    it.width    = size.x
+                    it.height   = size.y
                 }
                 appListener.screen.stage.addActor(actor)
             }
@@ -161,9 +180,10 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
                 tex = _tex,
                 actorTexture = Texture(Gdx.files.internal(_tex))
             ).also {
-                it.x = _x
-                it.y = _y
-                it.scaleBy(scaling.x, scaling.y)
+                it.x        = _x
+                it.y        = _y
+                it.width    = size.x
+                it.height   = size.y
             }
             appListener.screen.stage.addActor(actor)
 
@@ -176,79 +196,91 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         }
     }
 
-    val lampLight = HudActor(tex = lampLightTex,
-        actorTexture = assets.getAsset(lampLightTex)).also {
-        it.scaleBy(-0.2f, -0.8f)
-        it.y = MainScreen.BG_HEIGHT * 0.37f
-        it.x = MainScreen.BG_WIDTH * 0.019f
+    val lampLight = HudActor(
+        tex = lampLightTex,
+        actorTexture = assets.getAsset(lampLightTex)
+    ).also {
+        it.width    = MainScreen.BG_WIDTH * 0.3f
+        it.height   = it.width * 0.898f
+        it.x        = (MainScreen.BG_WIDTH - it.width) / 2
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - upperPanelWindowHeight - it.height*0.85f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.addAction(
             Actions.repeat(RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.scaleBy(0.15f, 0.15f, 5f, Interpolation.fade),
-                    Actions.scaleBy(-0.15f, -0.15f, 5f, Interpolation.fade)
+                    Actions.scaleBy(0.4f, 0.4f, 5f, Interpolation.fade),
+                    Actions.scaleBy(-0.4f, -0.4f, 5f, Interpolation.fade)
                 )
             )
         )
     }
 
-    val lamp = HudActor(tex = lampTex,
-        actorTexture = assets.getAsset(lampTex)).also {
-        it.scaleBy(-0.88f, -0.9f)
-        if (MainScreen.BG_WIDTH > 1600) {
-            it.y = MainScreen.BG_HEIGHT * 0.395f
-        } else {
-            it.y = MainScreen.BG_HEIGHT * 0.388f
-        }
+    val lamp = HudActor(
+        tex = lampTex,
+        actorTexture = assets.getAsset(lampTex)
+    ).also {
+        it.width    = MainScreen.BG_WIDTH * 0.075f
+        it.height   = it.width * 1.763f
+        it.x        = (MainScreen.BG_WIDTH - it.width) / 2
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - upperPanelWindowHeight - it.height
+
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.441f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.828f)
+        it.hitBox.add(it.x)
+        it.hitBox.add(it.y)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.441f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.932f)
+        it.hitBox.add(it.x)
+        it.hitBox.add(it.y + it.height)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.551f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.932f)
+        it.hitBox.add(it.x + (it.width))
+        it.hitBox.add(it.y + it.height)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.551f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.828f)
+        it.hitBox.add(it.x + (it.width))
+        it.hitBox.add(it.y)
 
         val map = hashMapOf<String, Float>()
-        map["scaleBy"] = -0.01f
+        map["scaleBy"] = -0.03f
         map["duration"] = 0.2f
         it.interActions.add(map)
 
         it.tapHandler = { appListener.toggleNightMode() }
     }
 
-    val shareButton = HudActor(tex = shareButtonTex,
-        actorTexture = assets.getAsset(shareButtonTex)).also {
-        it.scaleBy(-0.85f, -0.905f)
-        it.x = MainScreen.BG_WIDTH * 0.422f
-        it.y = MainScreen.BG_HEIGHT * 0.448f
+    val shareButton = HudActor(
+        tex = shareButtonTex,
+        actorTexture = assets.getAsset(shareButtonTex)
+    ).also {
+        it.width    = (MainScreen.BG_WIDTH - upperPanelWindowWidth - sideFrameSmallPad * 2) / 2.15f
+        it.height   = upperPanelSideHeight * 1.22f
+        it.x        = MainScreen.BG_WIDTH - sideFrameSmallPad - it.width
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - it.height*0.97f
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.846f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.91f)
+        it.hitBox.add(it.x)
+        it.hitBox.add(it.y)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.851f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.996f)
+        it.hitBox.add(it.x)
+        it.hitBox.add(it.y + it.height)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.982f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.998f)
+        it.hitBox.add(it.x + (it.width))
+        it.hitBox.add(it.y + it.height)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.984f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.909f)
+        it.hitBox.add(it.x + (it.width))
+        it.hitBox.add(it.y)
 
         it.tapHandler = {
-            flareToButton(it.x, it.y, Vector2(-0.85f, -0.905f), shareFlareTex, false)
+            flareToButton(it.x, it.y, Vector2(it.width, it.height), shareFlareTex, false)
             appListener.share()
         }
     }
 
-    val shareAntennas = HudActor(tex = shareAntennasTex,
-        actorTexture = assets.getAsset(shareAntennasTex)).also {
-        it.scaleBy(-0.85f, -0.9f)
-        it.y = MainScreen.BG_HEIGHT * 0.367f
-        it.x = MainScreen.BG_WIDTH * 0.422f
+    val shareAntennas = HudActor(
+        tex = shareAntennasTex,
+        actorTexture = assets.getAsset(shareAntennasTex)
+    ).also {
+        it.width    = (MainScreen.BG_WIDTH - upperPanelWindowWidth - sideFrameSmallPad * 2) / 2.15f
+        it.height   = upperPanelSideHeight * 1.22f
+        it.x        = MainScreen.BG_WIDTH - sideFrameSmallPad - it.width
+        it.y        = shareButton.y - it.height*0.98f
     }
 
     val upperPanelGroup = HudGroup().also {
@@ -277,12 +309,13 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         actorTexture = assets.getAsset(deckTex),
         isOriginSize = true
     ).also {
+        it.width    = MainScreen.BG_WIDTH * 0.997f
+        it.height   = MainScreen.BG_HEIGHT * 0.2f
+        it.originX  = it.width / 2
+        it.originY  = it.height / 2
         it.x = (MainScreen.BG_WIDTH - it.width) / 2
-        it.y = MainScreen.BG_HEIGHT * 0.07f
-        it.originX = it.width / 2
-        it.originY = it.height / 2
-        val scale = Utils.getScale(0.997f, 0.2f, it.width, it.height)
-        it.scaleBy(scale.x, scale.y)
+        it.y = (bottomFramePadding * 1.25f + upperFramePadding / 2) - it.height / 2
+
     }
 
     val joystick = SpineComponent(
@@ -420,11 +453,15 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         }
     }
 
-    val clock = HudActor(tex = clockTex,
-        actorTexture = assets.getAsset(clockTex)).also {
-        it.scaleBy(-0.74f, -0.84f)
-        it.x = MainScreen.BG_WIDTH * 0.3f
-        it.y = -MainScreen.BG_HEIGHT * 0.275f
+    val clock = HudActor(
+        tex = clockTex,
+        actorTexture = assets.getAsset(clockTex)
+    ).also {
+        it.width    = MainScreen.BG_WIDTH * 0.13f
+        it.height   = it.width * 1.488f
+        it.x        = MainScreen.BG_WIDTH - sideFramePadding - it.width*1.1f
+        it.y        = MainScreen.BG_HEIGHT * 0.12f
+
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.69f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.163f)
@@ -439,7 +476,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.137f)
 
         val map = hashMapOf<String, Float>()
-        map["scaleBy"] = -0.01f
+        map["scaleBy"] = -0.02f
         map["duration"] = 0.1f
         it.interActions.add(map)
 
@@ -452,10 +489,9 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.stageZIndex = 1
         deck.stageZIndex    = 0
         clock.stageZIndex   = 1
-
         it.addActor(deck)
         it.addActor(clock)
-        it.moveBy(0f, -MainScreen.BG_HEIGHT * 0.03f)
+
     }
 
 

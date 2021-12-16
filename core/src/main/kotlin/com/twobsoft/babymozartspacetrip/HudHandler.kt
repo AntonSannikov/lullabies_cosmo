@@ -117,15 +117,18 @@ class HudHandler(val screen: MainScreen) {
                     tex = HudModel.lampLightTex,
                     actorTexture = Texture(Gdx.files.internal(HudModel.lampLightTex))
                 ).also {
-                    it.scaleBy(-0.2f, -0.8f)
-                    it.y = MainScreen.BG_HEIGHT * 0.37f
-                    it.x = MainScreen.BG_WIDTH * 0.019f
+                    it.width    = MainScreen.BG_WIDTH * 0.3f
+                    it.height   = it.width * 0.898f
+                    it.x        = (MainScreen.BG_WIDTH - it.width) / 2
+                    it.y        = MainScreen.BG_HEIGHT - HudModel.upperFramePadding / 2 - HudModel.upperPanelWindowHeight - it.height*0.85f
+                    it.originX  = it.width / 2
+                    it.originY  = it.height / 2
                     it.addAction(
                         Actions.repeat(
                             RepeatAction.FOREVER,
                             Actions.sequence(
-                                Actions.scaleBy(0.15f, 0.15f, 5f, Interpolation.fade),
-                                Actions.scaleBy(-0.15f, -0.15f, 5f, Interpolation.fade)
+                                Actions.scaleBy(0.4f, 0.4f, 5f, Interpolation.fade),
+                                Actions.scaleBy(-0.4f, -0.4f, 5f, Interpolation.fade)
                             )
                         )
                     )
