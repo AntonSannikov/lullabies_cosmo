@@ -46,10 +46,10 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         const val optionsFlareTex = "hud/loop_flare.png"
         const val shareFlareTex = "hud/share_flare.png"
 
-
         val all = arrayOf(
             frameTex, panelUpTex, optionsTex, lampLightTex, lampTex, shareButtonTex, shareAntennasTex,
-            deckTex, clockTex)
+            deckTex, clockTex
+        )
 
         val allSkeletons = arrayOf(
             "hud/joystick/skeletons.atlas", "hud/joystick/joystick.json",
@@ -203,7 +203,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.width    = MainScreen.BG_WIDTH * 0.3f
         it.height   = it.width * 0.898f
         it.x        = (MainScreen.BG_WIDTH - it.width) / 2
-        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - upperPanelWindowHeight - it.height*0.85f
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - upperPanelWindowHeight - it.height
         it.originX  = it.width / 2
         it.originY  = it.height / 2
         it.addAction(

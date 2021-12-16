@@ -13,6 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.twobsoft.babymozartspacetrip.MainScreen
 import ktx.assets.disposeSafely
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+
+import com.badlogic.gdx.Gdx
+
+
+
 
 
 class HudActor(
@@ -30,7 +36,7 @@ class HudActor(
 
     var textX = 0f
     var textY = 0f
-    val font = BitmapFont()
+    var font : BitmapFont? = null
     var textPointer = 0f
     var textPartPointer = 0f
     var textBound = MainScreen.BG_WIDTH
@@ -45,9 +51,15 @@ class HudActor(
     init {
         if (text != "") {
             isTextDrawing = true
-            font.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            font.data.scale(MainScreen.BG_HEIGHT * 0.00153f)
-            font.color.set(144 / 255f, 210 / 255f, 1f, 1f)
+            val fontFile    = Gdx.files.internal("fonts/digital-7_mono.ttf")
+            val generator   = FreeTypeFontGenerator(fontFile)
+            val parameter   = FreeTypeFontGenerator.FreeTypeFontParameter()
+            parameter.size  = 15
+            font = generator.generateFont(parameter)
+            generator.dispose()
+            font!!.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+            font!!.data.scale(MainScreen.BG_HEIGHT * 0.00153f)
+            font!!.color.set(0f, 0f, 0f, 1f)
             val glyphLayout = GlyphLayout(font, text)
             textWidth   = glyphLayout.width
             textHeight  = glyphLayout.height
@@ -105,6 +117,7 @@ class HudActor(
         return super.remove()
     }
 
+
     override fun draw(batch: Batch?, parentAlpha: Float) {
 
         batch!!.setColor(color.r, color.g, color.b, color.a * parentAlpha)
@@ -129,13 +142,13 @@ class HudActor(
                 addTextPart()
             }
 
-            font.draw(batch, text, textX + textPointer, textY)
+            font!!.draw(batch, text, textX + textPointer, textY)
             textPointer -= 0.7f
 
         }
 
         if (isTextPartAdded) {
-            font.draw(batch, text, textX + textPartPointer, textY)
+            font!!.draw(batch, text, textX + textPartPointer, textY)
             textPartPointer -= 0.7f
         }
 

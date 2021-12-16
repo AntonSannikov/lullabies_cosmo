@@ -49,13 +49,10 @@ class MenuSpineModel(val assets: Assets) {
     val radar = LayerActor(
         tex = radarTex,
         texture = assets.getAsset(radarTex),
-        isOriginalSize = true
     ).also {
-        it.x = (MainScreen.BG_WIDTH - it.width) / 2
-        it.y = -MainScreen.BG_HEIGHT * 0.05f
-        it.originX = it.width / 2
-        it.originY = it.height / 2
-        it.scaleBy(-0.05f, -0.05f)
+        it.width    = MainScreen.BG_WIDTH
+        it.height   = MainScreen.BG_HEIGHT
+        it.x        = (MainScreen.BG_WIDTH - it.width) / 2
     }
 
     val stars = LayerActor(
