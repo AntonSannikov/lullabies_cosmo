@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
+import com.badlogic.gdx.utils.FloatArray
 import com.badlogic.gdx.utils.Timer
 import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.MainScreen
@@ -57,6 +58,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             "hud/right/skeletons.atlas", "hud/right/json.json",
             "hud/play/play.atlas", "hud/play/play.json",
         )
+        val bottomPadding = MainScreen.BG_HEIGHT * 0.03f
 
         var sideFramePadding    = 0f
         var sideFrameSmallPad   = 0f
@@ -122,7 +124,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.width        = it.height * 5f
         it.x            = (MainScreen.BG_WIDTH - it.width) / 2
         it.y            = MainScreen.BG_HEIGHT - upperFramePadding / 2 - it.height * 0.95f
-        it.textX        = MainScreen.BG_WIDTH * 0.25f
+        it.textX        = sideFramePadding + layerWidth * 0.4f
         it.textY        = MainScreen.BG_HEIGHT - (upperFramePadding + upperPanelWindowHeight - it.textHeight) / 2
         it.textBound    = MainScreen.BG_WIDTH * 0.17f
     }
@@ -326,10 +328,9 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
     ).also {
         it.stageNumber = 13
         val x = MainScreen.BG_WIDTH * 0.21f
-        val y = MainScreen.BG_HEIGHT * 0.11f
+        val y = MainScreen.BG_HEIGHT * 0.11f + bottomPadding
         it.setPos(x, y)
         it.setTimeScale(timeScale)
-
         // 1
         it.hitBox.add(x - MainScreen.BG_WIDTH * 0.061f)
         it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.02f)
@@ -337,11 +338,11 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(x - MainScreen.BG_WIDTH * 0.074f)
         it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.123f)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.261f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.235f)
+        it.hitBox.add(x + MainScreen.BG_WIDTH * 0.061f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.126f)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.258f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.161f)
+        it.hitBox.add(x + MainScreen.BG_WIDTH * 0.061f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.04f)
         it.tapHandler = {
             it.state.setAnimation(0, "animation", false)
             appListener.startMenuTransition()
@@ -355,21 +356,22 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         isAlwaysAnimated = false
     ).also {
         it.stageNumber = 13
-        it.setPos(MainScreen.BG_WIDTH / 2, MainScreen.BG_HEIGHT * 0.1f)
+        val x = MainScreen.BG_WIDTH / 2
+        val y = MainScreen.BG_HEIGHT * 0.1f + bottomPadding
+        it.setPos(x, y)
         it.setTimeScale(timeScale)
-
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.402f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.121f)
+        it.hitBox.add(x - MainScreen.BG_WIDTH * 0.095f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.02f)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.381f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.196f)
+        it.hitBox.add(x - MainScreen.BG_WIDTH * 0.13f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.1f)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.614f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.196f)
+        it.hitBox.add(x + MainScreen.BG_WIDTH * 0.13f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.1f)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.588f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.121f)
+        it.hitBox.add(x + MainScreen.BG_WIDTH * 0.095f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.02f)
 
         it.tapHandler = {
             appListener.isAllowPlaying = true
@@ -397,24 +399,25 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         isAlwaysAnimated = false
     ).also {
         it.stageNumber = 13
-        it.setPos(MainScreen.BG_WIDTH * 0.31f, MainScreen.BG_HEIGHT * 0.07f)
+        val x = MainScreen.BG_WIDTH * 0.31f
+        val y = MainScreen.BG_HEIGHT * 0.07f + bottomPadding
+        it.setPos(x, y)
         it.setTimeScale(timeScale)
-
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.246f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.091f)
+        it.hitBox.add(x - MainScreen.BG_WIDTH * 0.09f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.02f)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.240f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.144f)
+        it.hitBox.add(x - MainScreen.BG_WIDTH * 0.085f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.062f)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.313f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.160f)
+        it.hitBox.add(x)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.09f)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.371f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.157f)
+        it.hitBox.add(x + MainScreen.BG_WIDTH * 0.074f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.074f)
         // 5
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.394f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.1f)
+        it.hitBox.add(x + MainScreen.BG_WIDTH * 0.091f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.02f)
 
         it.tapHandler = {
             it.state.setAnimation(0, "animation", false)
@@ -429,24 +432,26 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         isAlwaysAnimated = false
     ).also {
         it.stageNumber = 13
-        it.setPos(MainScreen.BG_WIDTH * 0.69f, MainScreen.BG_HEIGHT * 0.072f)
+        val x = MainScreen.BG_WIDTH * 0.69f
+        val y = MainScreen.BG_HEIGHT * 0.072f + bottomPadding
+        it.setPos(x, y)
         it.setTimeScale(timeScale)
 
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.595f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.094f)
+        it.hitBox.add(x - MainScreen.BG_WIDTH * 0.09f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.02f)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.619f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.15f)
+        it.hitBox.add(x - MainScreen.BG_WIDTH * 0.075f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.076f)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.671f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.157f)
+        it.hitBox.add(x - MainScreen.BG_HEIGHT * 0.005f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.082f)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.757f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.133f)
+        it.hitBox.add(x + MainScreen.BG_WIDTH * 0.045f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.074f)
         // 5
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.744f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.096f)
+        it.hitBox.add(x + MainScreen.BG_WIDTH * 0.08f)
+        it.hitBox.add(y + MainScreen.BG_HEIGHT * 0.02f)
 
         it.tapHandler = {
             it.state.setAnimation(0, "animation", false)
@@ -464,17 +469,17 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.y        = MainScreen.BG_HEIGHT * 0.12f
 
         // 1
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.69f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.163f)
+        it.hitBox.add(it.x)
+        it.hitBox.add(it.y + it.height * 0.28f + bottomPadding)
         // 2
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.710f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.268f)
+        it.hitBox.add(it.x)
+        it.hitBox.add(it.y + it.height + bottomPadding)
         // 3
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.853f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.268f)
+        it.hitBox.add(it.x + it.width)
+        it.hitBox.add(it.y + it.height + bottomPadding)
         // 4
-        it.hitBox.add(MainScreen.BG_WIDTH * 0.841f)
-        it.hitBox.add(MainScreen.BG_HEIGHT * 0.137f)
+        it.hitBox.add(it.x + it.width)
+        it.hitBox.add(it.y + bottomPadding)
 
         val map = hashMapOf<String, Float>()
         map["scaleBy"]  = -0.02f
@@ -492,6 +497,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         clock.stageZIndex   = 1
         it.addActor(deck)
         it.addActor(clock)
+        it.moveBy(0f, bottomPadding)
 
     }
 

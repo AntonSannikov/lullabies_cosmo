@@ -17,6 +17,7 @@ import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
 import java.util.*
 import kotlin.concurrent.timerTask
 import android.media.AudioManager
+import android.view.View
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat.startActivity
 
@@ -373,5 +374,6 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
     override fun initOnResumeCallback(callback: () -> Unit) {
         coreOnAppResumeCallback = callback
     }
+
 
 }

@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx
 
 
 
-
 class HudActor(
     val tex: String,
     var text: String = "",
@@ -152,13 +151,11 @@ class HudActor(
             textPartPointer -= 0.7f
         }
 
-
 //        MainScreen.shapeRenderer.set(ShapeRenderer.ShapeType.Line)
 //        MainScreen.shapeRenderer.color = Color.RED
 //        if (hitBox.size > 2) {
 //            MainScreen.shapeRenderer.polygon(hitBox.toFloatArray())
 //        }
-
 
     }
 }

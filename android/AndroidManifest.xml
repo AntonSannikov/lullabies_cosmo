@@ -5,8 +5,10 @@
 	<uses-feature android:glEsVersion="0x00020000" android:required="true"/>
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+	<uses-permission android:name="com.android.vending.BILLING" />
 
 	<application
 			android:allowBackup="true"
@@ -28,6 +30,9 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
+		<meta-data
+			android:name="com.google.android.gms.ads.APPLICATION_ID"
+			android:value="ca-app-pub-5853277310445367~9540694589" />
 		<receiver android:enabled="true" android:exported="true" android:name="com.twobsoft.babymozartspacetrip.android.NotificationActionService">
 			<intent-filter>
 				<action android:name="Previous"/>

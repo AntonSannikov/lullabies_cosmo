@@ -1,5 +1,6 @@
 package com.twobsoft.babymozartspacetrip
 
+import AdInterface
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -7,8 +8,6 @@ import ktx.assets.disposeSafely
 import ktx.async.KtxAsync
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
-import com.badlogic.gdx.graphics.GL20.GL_ONE
-import com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.input.GestureDetector
@@ -28,7 +27,8 @@ import com.twobsoft.lullabies.MyGestureListener
 import com.twobsoft.babymozartspacetrip.splash.SplashScreen
 
 
-class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>() {
+
+class LullabiesGame(val serviceApi: ServicesCoreInterface, val adServices: AdInterface) : KtxGame<KtxScreen>() {
 
     companion object {
         const val ANIMATION_TIME                    = 10f
@@ -38,6 +38,7 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>(
 
     val assets = Assets()
 
+
     override fun create() {
         MediaPlayer.serviceApi = serviceApi
         KtxAsync.initiate()
@@ -46,6 +47,15 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>(
         addScreen(SplashScreen(this))
         setScreen<SplashScreen>()
     }
+
+
+    // =============================================================================================
+    //                  IAP
+    //
+
+    //
+    //                  IAP
+    // =============================================================================================
 
 }
 
@@ -96,6 +106,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     var isBarrel = false
 
 
+
     // SHADE SHADER
     val shadeShader = ShaderProgram(
         Gdx.files.internal("shaders/shade/vertex.glsl").readString(),
@@ -140,6 +151,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
 
 
     init {
+
+
+
         //ShaderProgram.pedantic = false
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)

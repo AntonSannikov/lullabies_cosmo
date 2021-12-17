@@ -301,6 +301,8 @@ class StageInputListener(
 
 
     fun createMenu() {
+
+        screen.game.adServices.banner(false)
         screen.resetBarrelShader()
         var length = screen.stage.actors.size
 
@@ -361,6 +363,10 @@ class StageInputListener(
             }
             screen.stage.addActor(sleepBackground)
         }
+
+        val array = arrayListOf<Actor>()
+
+
 
         screen.stage.actors.forEach {
             if (it is LayerGroup && it.isNeedRemove) it.addAction(Actions.removeActor())
@@ -443,7 +449,13 @@ class StageInputListener(
     private fun changeStage(increment: Int, callback: Boolean=false) {
         screen.currentStageNumber += increment
 
+        if (screen.currentStageNumber >= 10) {
+            screen.game.adServices.connectToBilling()
+        }
+
         if (isBackground) return
+
+        screen.game.adServices.banner(true)
 
         if (!isAllowPlaying) {
             lastStage = screen.currentStageNumber
@@ -510,7 +522,6 @@ class StageInputListener(
                 }
             }
         } else { screen.isSwiping = false }
-
     }
 
 
