@@ -3,6 +3,7 @@ package com.twobsoft.babymozartspacetrip
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.babymozartspacetrip.hud.HudActor
@@ -13,27 +14,38 @@ import com.twobsoft.babymozartspacetrip.utils.HudActorComparator
 class HudHandler(val screen: MainScreen) {
 
     fun refreshHud() {
-        var length = screen.stage.actors.size - 1
-        var i = 0
-        while (i < length) {
-            val actor = screen.stage.actors[i]
-            if (actor is HudGroup || actor is HudActor) {
-                actor.actions.clear()
-                actor.remove()
-                length --
-            } else { i++ }
+
+        val tempArray = arrayListOf<Actor>()
+        for (actor in screen.stage.actors) {
+            if (actor is HudActor || actor is HudGroup) {
+                tempArray.add(actor)
+            }
         }
 
-        for (hudActor in screen.hudModel.all) {
-            if (hudActor is HudGroup) {
-                hudActor.children.forEach { it as HudActor
-                    if (it.text != "") {
-                        it.changeText(MediaPlayer.playlist[screen.currentStageNumber-1]!!)
+        if (tempArray.isEmpty()) {
+            for (hudActor in screen.hudModel.all) {
+                if (hudActor is HudGroup) {
+                    hudActor.children.forEach { it as HudActor
+                        if (it.text != "") {
+                            it.changeText(MediaPlayer.playlist[screen.currentStageNumber-1]!!)
+                        }
                     }
                 }
+                screen.stage.addActor(hudActor)
             }
-            screen.stage.addActor(hudActor)
+        } else {
+            for (actor in tempArray) {
+                if (actor is HudGroup) {
+                    actor.children.forEach { it as HudActor
+                        if (it.text != "") {
+                            it.changeText(MediaPlayer.playlist[screen.currentStageNumber-1]!!)
+                        }
+                    }
+                }
+                actor.toFront()
+            }
         }
+
         if (screen.isLooping) {
             val actor = HudActor(
                 tex = HudModel.optionsFlareTex,
@@ -98,7 +110,7 @@ class HudHandler(val screen: MainScreen) {
                     it.width    = MainScreen.BG_WIDTH * 0.3f
                     it.height   = it.width * 0.898f
                     it.x        = (MainScreen.BG_WIDTH - it.width) / 2
-                    it.y        = MainScreen.BG_HEIGHT - HudModel.upperFramePadding / 2 - HudModel.upperPanelWindowHeight - it.height*0.85f
+                    it.y        = MainScreen.BG_HEIGHT - HudModel.upperFramePadding / 2 - HudModel.upperPanelWindowHeight - it.height
                     it.originX  = it.width / 2
                     it.originY  = it.height / 2
                     it.addAction(

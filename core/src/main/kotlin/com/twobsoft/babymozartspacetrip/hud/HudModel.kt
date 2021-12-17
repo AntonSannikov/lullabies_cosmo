@@ -372,6 +372,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.121f)
 
         it.tapHandler = {
+            appListener.isAllowToPlay = true
             it.state.setAnimation(0, "animation", false)
             val timer = Timer()
             timer.scheduleTask(object : Timer.Task() {

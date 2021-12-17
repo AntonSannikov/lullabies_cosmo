@@ -34,7 +34,6 @@ class MenuSpineModel(val assets: Assets) {
             "menu/spaceship/spaceship.atlas", "menu/spaceship/json.json",
             "menu/ufo/ufo.atlas", "menu/ufo/json.json",
         )
-
     }
 
     val background = LayerActor(
@@ -445,7 +444,6 @@ class MenuSpineModel(val assets: Assets) {
         it.hitBox.add(MainScreen.BG_WIDTH * 0.92f)
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.47f)
     }
-
 
     val all = arrayOf(
         sun, mercury, jupiter, venus, earth, moon, mars, saturn,

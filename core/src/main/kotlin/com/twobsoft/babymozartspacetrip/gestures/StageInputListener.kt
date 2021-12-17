@@ -25,8 +25,9 @@ class StageInputListener(
     val hudHandler: HudHandler
     ): MyGestureListener.DirectionListener {
 
-    var isCallback = false
-    var isBackground = false
+    var isCallback          = false
+    var isBackground        = false
+    var isAllowToPlay       = false
 
     // callbacks from notification media buttons
     fun initCallbacks() {
@@ -94,7 +95,7 @@ class StageInputListener(
 
 
     override fun onLeft() {
-        println("")
+        isAllowToPlay = true
         if (screen.isSwiping || screen.currentStageNumber == 0) { return }
         if (screen.currentStageNumber == screen.AVAILABLE_STAGES) {
             screen.currentStageNumber = 1
@@ -107,6 +108,7 @@ class StageInputListener(
 
 
     override fun onRight() {
+        isAllowToPlay = true
         if (screen.isSwiping || screen.currentStageNumber == 0) { return }
         if (screen.currentStageNumber == 1) {
             screen.currentStageNumber = screen.AVAILABLE_STAGES
@@ -219,36 +221,55 @@ class StageInputListener(
         if (!MainScreen.isNightMode) {
             screen.nightShaderTime = 1.25f
             MainScreen.isNightMode = true
-            screen.stage.actors.forEach {
-                if (it is HudGroup) {
+            var removed = false
+            for (actor in screen.stage.actors) {
+                if (actor is HudGroup) {
                     var i = 0
-                    for (actor in it.children) {
-                        if (actor is HudActor && actor.tex == "hud/lamp_light.png") {
-                            actor.addAction(Actions.removeActor())
+                    for (child in actor.children) {
+                        if (child is HudActor && child.tex == "hud/lamp_light.png") {
+                            child.addAction(Actions.removeActor())
+                            removed = true
                             break
                         }
                         i++
                     }
-                } else if (it is LayerActor && it.tex.contains("background.png")) {
-                    it.changeBackground(
-                        "planets/sleep.jpg",
-                        screen.game.assets.getAsset("planets/sleep.jpg")
-                    )
+                    if (removed) break
                 }
             }
+            var i = 0
+            var length = screen.stage.actors.size
+            while (i < length) {
+                val actor = screen.stage.actors[i]
+                if (actor is LayerActor || actor is LayerGroup) {
+                    actor.remove()
+                    length--
+                } else i++
+            }
+            val sleepBackground = LayerActor(
+                tex = "planets/sleep.jpg",
+                texture = screen.game.assets.getAsset("planets/sleep.jpg")
+            ).also {
+                it.width   = MainScreen.BG_WIDTH
+                it.height  = MainScreen.BG_HEIGHT
+            }
+            screen.stage.addActor(sleepBackground)
+            sleepBackground.toBack()
+
         } else {
             MainScreen.isNightMode = false
             screen.nightShaderTime = 0.875f
             screen.isNightShader = true
             for (actor in screen.stage.actors) {
                 if (actor is LayerActor && actor.tex.contains("sleep.jpg")) {
-                    val background = getStageModel(screen.currentStageNumber).background
-                    actor.changeBackground(background.tex, background.texture)
+                    actor.addAction(Actions.removeActor())
                     break
                 }
             }
+            createStage(getStageModel(screen.currentStageNumber))
             hudHandler.addLampLight()
         }
+
+
     }
 
 
@@ -323,18 +344,29 @@ class StageInputListener(
             if (it is LayerActor) it.isNeedRemove = true
         }
 
-        stageModel.all.forEach {
-            if (it is LayerActor || it is LayerGroup) {
-                screen.stage.addActor(it)
-                if ((it is LayerActor && !it.isNeedReposition) || it is LayerGroup) {
-                    it.actions.forEach { action ->
-                        it.addAction(action)
+        if (!MainScreen.isNightMode) {
+            stageModel.all.forEach {
+                if (it is LayerActor || it is LayerGroup) {
+                    screen.stage.addActor(it)
+                    if ((it is LayerActor && !it.isNeedReposition) || it is LayerGroup) {
+                        it.actions.forEach { action ->
+                            it.addAction(action)
+                        }
+                    }
+                    if (it is LayerActor && it.isNeedReposition) {
+                        it.offsetToPosition()
                     }
                 }
-                if (it is LayerActor && it.isNeedReposition) {
-                    it.offsetToPosition()
-                }
             }
+        } else {
+            val sleepBackground = LayerActor(
+                tex = "planets/sleep.jpg",
+                texture = screen.game.assets.getAsset("planets/sleep.jpg")
+            ).also {
+                it.width   = MainScreen.BG_WIDTH
+                it.height  = MainScreen.BG_HEIGHT
+            }
+            screen.stage.addActor(sleepBackground)
         }
 
         screen.stage.actors.forEach {
@@ -342,8 +374,7 @@ class StageInputListener(
             if (it is LayerActor && it.isNeedRemove) it.addAction(Actions.removeActor())
         }
 
-        refreshStage()
-        hudHandler.refreshHud()
+        changeStage(0)
     }
 
 
@@ -422,25 +453,27 @@ class StageInputListener(
 
         if (!callback) {
             screen.isSwiping = true
-            MediaPlayer.play(screen.currentStageNumber, true)
-            screen.hudModel.play.state.timeScale = 20f
-            screen.hudModel.play.state.setAnimation(0, "animation", false)
-            val timer = Timer()
-            timer.scheduleTask(object : Timer.Task() {
-                override fun run() {
-                    screen.hudModel.play.state.timeScale = 0.5f
-                }
-            }, 0.1f)
+            if (isAllowToPlay) {
+                MediaPlayer.play(screen.currentStageNumber, true)
+                screen.hudModel.play.state.timeScale = 20f
+                screen.hudModel.play.state.setAnimation(0, "animation", false)
+                val timer = Timer()
+                timer.scheduleTask(object : Timer.Task() {
+                    override fun run() {
+                        screen.hudModel.play.state.timeScale = 0.5f
+                    }
+                }, 0.1f)
+            }
         }
 
-        for (actor in screen.stage.actors) {
-            if (actor is LayerActor) { actor.isNeedRemove = true }
-            if (actor is LayerGroup) { actor.isNeedRemove = true }
+        if (!MainScreen.isNightMode) {
+            for (actor in screen.stage.actors) {
+                if (actor is LayerActor) { actor.isNeedRemove = true }
+                if (actor is LayerGroup) { actor.isNeedRemove = true }
+            }
+            val newStageModel = getStageModel(screen.currentStageNumber)
+            createSwipeStage(newStageModel)
         }
-
-        val newStageModel = getStageModel(screen.currentStageNumber)
-
-        createSwipeStage(newStageModel)
 
         if (screen.currentStageNumber != 0) {
             hudHandler.refreshHud()
@@ -448,26 +481,29 @@ class StageInputListener(
 
         var isReseted = false
 
-        screen.stage.actors.forEach {
-            if (it is LayerActor || it is LayerGroup) {
-                if (it is LayerActor && it.isOrbit) it.stopAnimation()
-                it.addAction(
-                    Actions.sequence(
-                        Actions.fadeOut(0.5f, Interpolation.linear),
-                        Actions.parallel(
-                            Actions.fadeIn(0.5f, Interpolation.linear),
-                            Actions.run {
-                                if (!isReseted) {
-                                    isReseted = true
-                                    screen.isSwiping = false
-                                    refreshStage()
+        if (!MainScreen.isNightMode) {
+            screen.stage.actors.forEach {
+                if (it is LayerActor || it is LayerGroup) {
+                    if (it is LayerActor && it.isOrbit) it.stopAnimation()
+                    it.addAction(
+                        Actions.sequence(
+                            Actions.fadeOut(0.5f, Interpolation.linear),
+                            Actions.parallel(
+                                Actions.fadeIn(0.5f, Interpolation.linear),
+                                Actions.run {
+                                    if (!isReseted) {
+                                        isReseted = true
+                                        screen.isSwiping = false
+                                        refreshStage()
+                                    }
                                 }
-                            }
+                            )
                         )
                     )
-                )
+                }
             }
-        }
+        } else { screen.isSwiping = false }
+
     }
 
 
