@@ -43,9 +43,8 @@ class StageInputListener(
 
     fun toPause() {
         Gdx.app.postRunnable {
-            screen.hudModel.play.state.timeScale = 20f
-            screen.hudModel.play.state.setAnimation(0, "animation", false)
-            screen.hudModel.play.state.timeScale = 0.5f
+            screen.hudModel.play.state.clearTrack(0)
+            screen.hudModel.play.skeleton.setToSetupPose()
         }
     }
 
@@ -54,8 +53,10 @@ class StageInputListener(
 
 
     fun toNext() {
-        isCallback = true
-        onLeft()
+        if (isBackground) isCallback = true
+        if (!isCallback) {
+            Gdx.app.postRunnable { onLeft() }
+        } else onLeft()
         isCallback = false
     }
 

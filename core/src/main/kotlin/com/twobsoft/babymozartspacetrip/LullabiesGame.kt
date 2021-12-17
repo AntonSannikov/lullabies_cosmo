@@ -7,6 +7,8 @@ import ktx.assets.disposeSafely
 import ktx.async.KtxAsync
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.GL20.GL_ONE
+import com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.input.GestureDetector
@@ -58,7 +60,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         val shapeRenderer       = ShapeRenderer()
         val bottomPadding       = BG_HEIGHT * 0.12f
         var isNightMode         = false
-        val NIGHT_MODE_VALUE    = 0.7f
+        val NIGHT_MODE_VALUE    = 0.65f
     }
 
     val AVAILABLE_STAGES    = 15
@@ -158,7 +160,8 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     }
 
     val renderer = SkeletonRenderer().also {
-        it.setPremultipliedAlpha(true)
+        it.setPremultipliedAlpha(false)
+        it.premultipliedAlphaColors = true
     }
 
     val polygonSpriteBatch = PolygonSpriteBatch()

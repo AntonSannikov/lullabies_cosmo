@@ -215,10 +215,10 @@ class EarthModel(val assets: Assets): Entity() {
         )
     }
 
-    val leaf = LayerActor(
-        tex = leafTex,
-        texture = Texture(Gdx.files.internal(leafTex))
-    )
+//    val leaf = LayerActor(
+//        tex = leafTex,
+//        texture = Texture(Gdx.files.internal(leafTex))
+//    )
 
     override val all = arrayOf<Actor>(
         background,

@@ -68,7 +68,7 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
     }
 
     fun endOfTrackCallback() {
-        println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+        onTrackNext()
     }
 
     init {
