@@ -27,7 +27,8 @@ class StageInputListener(
 
     var isCallback          = false
     var isBackground        = false
-    var isAllowToPlay       = false
+    var isAllowPlaying      = false
+    var lastStage           = 0
 
     // callbacks from notification media buttons
     fun initCallbacks() {
@@ -95,7 +96,7 @@ class StageInputListener(
 
 
     override fun onLeft() {
-        isAllowToPlay = true
+        isAllowPlaying = true
         if (screen.isSwiping || screen.currentStageNumber == 0) { return }
         if (screen.currentStageNumber == screen.AVAILABLE_STAGES) {
             screen.currentStageNumber = 1
@@ -108,7 +109,7 @@ class StageInputListener(
 
 
     override fun onRight() {
-        isAllowToPlay = true
+        isAllowPlaying = true
         if (screen.isSwiping || screen.currentStageNumber == 0) { return }
         if (screen.currentStageNumber == 1) {
             screen.currentStageNumber = screen.AVAILABLE_STAGES
@@ -132,18 +133,17 @@ class StageInputListener(
                         Utils.floatArrayToVec2Array(spineActor.hitBox.toFloatArray()),
                         Vector2(x, MainScreen.BG_HEIGHT - y))
                 ) {
-                    spineActor.isTransitionAnimation = true
-//                    addRollingHud()
-                    screen.shaderFocusOffset = Vector2(-(xNorm-0.5f),yNorm-0.5f)
-                    screen.isBarrel = true
-                    screen.isInterStellar = true
+                    spineActor.isTransitionAnimation    = true
+                    screen.shaderFocusOffset            = Vector2(-(xNorm-0.5f),yNorm-0.5f)
+                    screen.isBarrel                     = true
+                    screen.isInterStellar               = true
                     val timer = Timer()
                     timer.scheduleTask(object : Timer.Task() {
                         override fun run() {
                             spineActor.isTransitionAnimation = false
-                            screen.isShade = true
+                            screen.isShade  = true
                             screen.isBarrel = false
-                            screen.isMenu = false
+                            screen.isMenu   = false
                             screen.resetBarrelShader()
                             screen.isInterStellar = false
                             screen.resetInterstellarShader()
@@ -219,8 +219,8 @@ class StageInputListener(
 
     fun toggleNightMode() {
         if (!MainScreen.isNightMode) {
-            screen.nightShaderTime = 1.25f
-            MainScreen.isNightMode = true
+            screen.nightShaderTime  = 1.25f
+            MainScreen.isNightMode  = true
             var removed = false
             for (actor in screen.stage.actors) {
                 if (actor is HudGroup) {
@@ -256,9 +256,9 @@ class StageInputListener(
             sleepBackground.toBack()
 
         } else {
-            MainScreen.isNightMode = false
-            screen.nightShaderTime = 0.875f
-            screen.isNightShader = true
+            MainScreen.isNightMode  = false
+            screen.nightShaderTime  = MainScreen.NIGHT_MODE_VALUE / 0.8f
+            screen.isNightShader    = true
             for (actor in screen.stage.actors) {
                 if (actor is LayerActor && actor.tex.contains("sleep.jpg")) {
                     actor.addAction(Actions.removeActor())
@@ -268,7 +268,6 @@ class StageInputListener(
             createStage(getStageModel(screen.currentStageNumber))
             hudHandler.addLampLight()
         }
-
 
     }
 
@@ -298,6 +297,7 @@ class StageInputListener(
             }
         }
     }
+
 
     fun createMenu() {
         screen.resetBarrelShader()
@@ -334,27 +334,19 @@ class StageInputListener(
 
         screen.currentStageNumber = stageModel.stageNumber
 
-        if (screen.game.serviceApi.isPlaying) {
-            screen.game.serviceApi.playMusic(screen.currentStageNumber, true)
-        } else {
-            screen.game.serviceApi.isNeedNewPlay = true
-        }
-
         screen.stage.actors.forEach {
             if (it is LayerActor) it.isNeedRemove = true
+            if (it is LayerGroup) it.isNeedRemove = true
         }
 
         if (!MainScreen.isNightMode) {
             stageModel.all.forEach {
                 if (it is LayerActor || it is LayerGroup) {
                     screen.stage.addActor(it)
-                    if ((it is LayerActor && !it.isNeedReposition) || it is LayerGroup) {
+                    if ((it is LayerActor) || it is LayerGroup) {
                         it.actions.forEach { action ->
                             it.addAction(action)
                         }
-                    }
-                    if (it is LayerActor && it.isNeedReposition) {
-                        it.offsetToPosition()
                     }
                 }
             }
@@ -385,10 +377,12 @@ class StageInputListener(
 
         stageModel.all.forEach {
             screen.stage.addActor(it)
-            if ((it is LayerActor && !it.isNeedReposition) || it is LayerGroup) {
+            if ((it is LayerActor) || it is LayerGroup) {
+//                if (it is LayerActor && it.isNeedReposition) {
+//                    it.x = ((-1..1).random() * (0..(MainScreen.BG_WIDTH / 2).toInt()).random()).toFloat()
+//                }
+
                 it.actions.forEach { action -> it.addAction(action) }
-            } else if (it is LayerActor && it.isNeedReposition) {
-                it.xOffset = (-1..1).random() * (0..MainScreen.BG_WIDTH.toInt()).random()
             }
         }
 
@@ -427,7 +421,6 @@ class StageInputListener(
                     length--
                 } else {
                     if (actor.isOrbit) actor.startAnimation()
-                    if (actor.isNeedReposition) actor.offsetToPosition()
                     actor.actions.forEach { actor.addAction(it) }
                     i++
                 }
@@ -451,18 +444,31 @@ class StageInputListener(
 
         if (isBackground) return
 
+        if (!isAllowPlaying) {
+            lastStage = screen.currentStageNumber
+        }
+
+        var isNeedToRefreshText = true
+
         if (!callback) {
             screen.isSwiping = true
-            if (isAllowToPlay) {
-                MediaPlayer.play(screen.currentStageNumber, true)
-                screen.hudModel.play.state.timeScale = 20f
-                screen.hudModel.play.state.setAnimation(0, "animation", false)
-                val timer = Timer()
-                timer.scheduleTask(object : Timer.Task() {
-                    override fun run() {
-                        screen.hudModel.play.state.timeScale = 0.5f
-                    }
-                }, 0.1f)
+            if (isAllowPlaying) {
+                if (lastStage == screen.currentStageNumber) {
+                    screen.game.serviceApi.isNeedNewPlay = false
+                    isNeedToRefreshText = false
+                } else {
+                    screen.game.serviceApi.isNeedNewPlay = true
+                    lastStage = screen.currentStageNumber
+                    MediaPlayer.play(screen.currentStageNumber, false)
+                    screen.hudModel.play.state.timeScale = 20f
+                    screen.hudModel.play.state.setAnimation(0, "animation", false)
+                    val timer = Timer()
+                    timer.scheduleTask(object : Timer.Task() {
+                        override fun run() {
+                            screen.hudModel.play.state.timeScale = 0.5f
+                        }
+                    }, 0.1f)
+                }
             }
         }
 
@@ -476,7 +482,7 @@ class StageInputListener(
         }
 
         if (screen.currentStageNumber != 0) {
-            hudHandler.refreshHud()
+            hudHandler.refreshHud(isNeedToRefreshText)
         }
 
         var isReseted = false

@@ -55,8 +55,8 @@ class MarsModel(val assets: Assets): Entity() {
         texture = Texture(Gdx.files.internal(oblako5Tex)),
         isSceneDefaultLayer = true
     ).also {
-        it.xOffset = -(MainScreen.BG_WIDTH).toInt()
         it.isNeedReposition = true
+        it.x= -MainScreen.BG_WIDTH
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -105,8 +105,8 @@ class MarsModel(val assets: Assets): Entity() {
         texture = Texture(Gdx.files.internal(oblako2Tex)),
         isSceneDefaultLayer = true
     ).also {
-        it.xOffset = -(MainScreen.BG_WIDTH * 0.8).toInt()
         it.isNeedReposition = true
+        it.x = -MainScreen.BG_WIDTH * 0.8f
         it.actions.add(
         Actions.repeat(
             RepeatAction.FOREVER,

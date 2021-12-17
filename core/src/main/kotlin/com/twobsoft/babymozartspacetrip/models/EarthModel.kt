@@ -46,8 +46,8 @@ class EarthModel(val assets: Assets): Entity() {
         texture = Texture(Gdx.files.internal(cloud1Tex)),
         isSceneDefaultLayer = true
     ).also {
-        it.xOffset = (MainScreen.BG_WIDTH * 0.2f).toInt()
         it.isNeedReposition = true
+        it.x = MainScreen.BG_WIDTH * 0.2f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,

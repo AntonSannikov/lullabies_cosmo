@@ -13,7 +13,7 @@ import com.twobsoft.babymozartspacetrip.utils.HudActorComparator
 
 class HudHandler(val screen: MainScreen) {
 
-    fun refreshHud() {
+    fun refreshHud(isNeedToChangeText: Boolean=true) {
 
         val tempArray = arrayListOf<Actor>()
         for (actor in screen.stage.actors) {
@@ -37,7 +37,7 @@ class HudHandler(val screen: MainScreen) {
             for (actor in tempArray) {
                 if (actor is HudGroup) {
                     actor.children.forEach { it as HudActor
-                        if (it.text != "") {
+                        if (it.text != "" && isNeedToChangeText) {
                             it.changeText(MediaPlayer.playlist[screen.currentStageNumber-1]!!)
                         }
                     }

@@ -29,43 +29,40 @@ class LayerActor(
     val isOrbit: Boolean = false,
     val isRepeated: Boolean = false,
     val isOriginalSize: Boolean = false,
-    val isSceneDefaultLayer: Boolean = false
-)
-    : Actor() {
+    val isSceneDefaultLayer: Boolean = false) : Actor() {
 
-    var notAct = false
-    val actions = arrayListOf<Action>()
-    val layers = arrayListOf<Texture>()
-    var isNeedRemove = false
-    var isNeedReposition = false
-    var srcWidth = 0
-    var srcHeight = 0
-    var xOffset = 0
-    var yOffset = 0
-    var xBounds = Vector2(-MainScreen.BG_WIDTH, MainScreen.BG_WIDTH)
-    var origX = 0f
-    var origY = 0f
+    var isNeedReposition    = false
+    var notAct              = false
+    val actions             = arrayListOf<Action>()
+    val layers              = arrayListOf<Texture>()
+    var isNeedRemove        = false
+    var srcWidth            = 0
+    var srcHeight           = 0
+    var xOffset             = 0
+    var yOffset             = 0
+    var xBounds             = Vector2(-MainScreen.BG_WIDTH, MainScreen.BG_WIDTH)
+
 
     // orbit
-    var orbitRadius = 0f
-    var time = 0f
-    var angle = 0f
-    var angleDelta = 0.07f
-    var isOrbiting = false
-    var startRadius = 0f
-    var orbitAnchor = Vector2(0f, 0f)
+    var orbitRadius     = 0f
+    var time            = 0f
+    var angle           = 0f
+    var angleDelta      = 0.07f
+    var isOrbiting      = false
+    var startRadius     = 0f
+    var orbitAnchor     = Vector2(0f, 0f)
 
     //repeating
-    var xDelta = 0
-    var yDelta = 0
-    var repeatTime = 0f
+    var xDelta      = 0
+    var yDelta      = 0
+    var repeatTime  = 0f
 
     // splash orbit
-    var isSplashOrbit = false
-    var splashAngleDelta = -2f
-    var splashOrbitX = 0.6f
-    var splashOrbitY = 0.15f
-    var angleOffset = 107f
+    var isSplashOrbit       = false
+    var splashAngleDelta    = -2f
+    var splashOrbitX        = 0.6f
+    var splashOrbitY        = 0.15f
+    var angleOffset         = 107f
 
 
     init {
@@ -98,8 +95,6 @@ class LayerActor(
             y = HudModel.layerYPosition
             originX = width / 2
             originY = height / 2
-            origX   = originX
-            origY   = originY
         }
 
         if (tex == "menu/stars.png") {
@@ -116,32 +111,15 @@ class LayerActor(
 
 
     fun initOrigin(_x: Float, _y: Float) {
-        origX   = _x
-        origY   = _y
         originX = _x
         originY = _y
     }
 
 
-    fun changeBackground(_tex: String, _texture: Texture) {
-        tex = _tex
-        texture = _texture
-        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        layers.clear()
-        layers.add(texture)
-        if (isRepeated) texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
-    }
-
-
-    fun offsetToPosition() {
-        x = -xOffset.toFloat()
-        xOffset = 0
-        actions.forEach { addAction(it) }
-    }
-
     fun stopAnimation() {
         isOrbiting = false
     }
+
 
     fun startAnimation() {
         angle = abs((180*kotlin.math.atan(y/x) / kotlin.math.PI).toFloat())

@@ -74,8 +74,9 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
             if (isInverseShading) {
                 shadeTime += delta
                 inverseShader.bind()
-                inverseShader.setUniformf("iResolution", MainScreen.BG_WIDTH, MainScreen.BG_HEIGHT)
-                inverseShader.setUniformf("iTime", shadeTime)
+                inverseShader.setUniformf("iResolution"     , MainScreen.BG_WIDTH, MainScreen.BG_HEIGHT)
+                inverseShader.setUniformf("iTime"           , shadeTime)
+                inverseShader.setUniformf("nightModeValue"  , 0f)
                 stage.batch.shader = inverseShader
                 if (shadeTime >= 2f) {
                     shadeTime = 0f

@@ -24,21 +24,21 @@ import androidx.core.content.ContextCompat.startActivity
 class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
-    var currentSong = 0
-    val AVAILABLE_STAGES = 15
-    override var isPlaying = false
-    override var isNeedNewPlay = false
+    var currentSong             = 0
+    val AVAILABLE_STAGES        = 15
+    override var isPlaying      = false
+    override var isNeedNewPlay  = true
 
     var isPaused = false
 
-    var lastVolume = 0f
-    var currentVolume = 0f
+    var lastVolume      = 0f
+    var currentVolume   = 0f
     var timer: Timer ?= null
 
-    var lastSelectedMinute: Int? = null
-    var lastSelectedHour: Int? = null
+    var lastSelectedMinute: Int?    = null
+    var lastSelectedHour: Int?      = null
 
-    var mediaPlayer: MediaPlayer? = null
+    var mediaPlayer: MediaPlayer?   = null
 
 
     var notificationManager: NotificationManager? = null
@@ -144,8 +144,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
                 BackgroundSoundService.playlist.size - 1
             )
             val intent = Intent(context, BackgroundSoundService::class.java)
-            intent.putExtra("songIndex", currentSong)
-            intent.putExtra("action", "playNew")
+            intent.putExtra("songIndex" , currentSong)
+            intent.putExtra("action"    , "playNew")
             context.stopService(intent)
             context.startService(intent)
         } else {
@@ -159,8 +159,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
                     BackgroundSoundService.playlist.size - 1
                 )
                 val intent = Intent(context, BackgroundSoundService::class.java)
-                intent.putExtra("songIndex", currentSong)
-                intent.putExtra("action", "pause")
+                intent.putExtra("songIndex" , currentSong)
+                intent.putExtra("action"    , "pause")
                 context.stopService(intent)
                 context.startService(intent)
             } else {
@@ -173,8 +173,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
                     BackgroundSoundService.playlist.size - 1
                 )
                 val intent = Intent(context, BackgroundSoundService::class.java)
-                intent.putExtra("songIndex", currentSong)
-                intent.putExtra("action", "resume")
+                intent.putExtra("songIndex" , currentSong)
+                intent.putExtra("action"    , "resume")
                 context.stopService(intent)
                 context.startService(intent)
             }
@@ -207,8 +207,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
                 currentVolume -= delta
                 if (currentVolume <= 0) {
                     val intent = Intent(context, BackgroundSoundService::class.java)
-                    intent.putExtra("songIndex", currentSong)
-                    intent.putExtra("action", "pause")
+                    intent.putExtra("songIndex" , currentSong)
+                    intent.putExtra("action"    , "pause")
                     context.stopService(intent)
                     context.startService(intent)
                     BackgroundSoundService.mediaPlayer!!.setVolume(lastVolume, lastVolume)
@@ -274,8 +274,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         )
 
         val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex", currentSong)
-        intent.putExtra("action", "playNew")
+        intent.putExtra("songIndex" , currentSong)
+        intent.putExtra("action"    , "playNew")
         context.startService(intent)
 
 
@@ -298,8 +298,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
         val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex", currentSong)
-        intent.putExtra("action", "resume")
+        intent.putExtra("songIndex" , currentSong)
+        intent.putExtra("action"    , "resume")
         context.startService(intent)
     }
 
@@ -319,8 +319,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
         val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex", currentSong)
-        intent.putExtra("action", "pause")
+        intent.putExtra("songIndex" , currentSong)
+        intent.putExtra("action"    , "pause")
         context.startService(intent)
     }
 
@@ -344,8 +344,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
             BackgroundSoundService.playlist.size - 1
         )
         val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex", currentSong)
-        intent.putExtra("action", "playNew")
+        intent.putExtra("songIndex" , currentSong)
+        intent.putExtra("action"    , "playNew")
         context.startService(intent)
     }
 

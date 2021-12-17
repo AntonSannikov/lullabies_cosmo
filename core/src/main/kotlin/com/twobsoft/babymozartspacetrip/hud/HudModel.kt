@@ -239,7 +239,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(it.y)
 
         val map = hashMapOf<String, Float>()
-        map["scaleBy"] = -0.03f
+        map["scaleBy"]  = -0.03f
         map["duration"] = 0.2f
         it.interActions.add(map)
 
@@ -372,7 +372,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.121f)
 
         it.tapHandler = {
-            appListener.isAllowToPlay = true
+            appListener.isAllowPlaying = true
             it.state.setAnimation(0, "animation", false)
             val timer = Timer()
             timer.scheduleTask(object : Timer.Task() {
@@ -477,7 +477,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(MainScreen.BG_HEIGHT * 0.137f)
 
         val map = hashMapOf<String, Float>()
-        map["scaleBy"] = -0.02f
+        map["scaleBy"]  = -0.02f
         map["duration"] = 0.1f
         it.interActions.add(map)
 
@@ -487,7 +487,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
 
 
     val deckGroup = HudGroup().also {
-        it.stageZIndex = 1
+        it.stageZIndex      = 1
         deck.stageZIndex    = 0
         clock.stageZIndex   = 1
         it.addActor(deck)

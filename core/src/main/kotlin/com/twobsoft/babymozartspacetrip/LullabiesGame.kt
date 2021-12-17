@@ -29,13 +29,12 @@ import com.twobsoft.babymozartspacetrip.splash.SplashScreen
 class LullabiesGame(val serviceApi: ServicesCoreInterface) : KtxGame<KtxScreen>() {
 
     companion object {
-        const val ANIMATION_TIME = 10f
-        const val BARREL_SHADER_PULSE_START_POWER = 0.33f
-        const val BARREL_SHADER_PULSE_MAX_POWER = 0.20f
+        const val ANIMATION_TIME                    = 10f
+        const val BARREL_SHADER_PULSE_START_POWER   = 0.33f
+        const val BARREL_SHADER_PULSE_MAX_POWER     = 0.20f
     }
 
     val assets = Assets()
-
 
     override fun create() {
         MediaPlayer.serviceApi = serviceApi
@@ -59,11 +58,11 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         val shapeRenderer       = ShapeRenderer()
         val bottomPadding       = BG_HEIGHT * 0.12f
         var isNightMode         = false
+        val NIGHT_MODE_VALUE    = 0.7f
     }
 
-    val STAGES_COUNT = 15
-    val AVAILABLE_STAGES = 15
-    var currentStageNumber = 1
+    val AVAILABLE_STAGES    = 15
+    var currentStageNumber  = 1
 
     val stage: Stage
     private val camera: OrthographicCamera
@@ -80,9 +79,8 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         Gdx.files.internal("shaders/night/vertex.glsl").readString(),
         Gdx.files.internal("shaders/night/fragment.glsl").readString()
     )
-    var nightShaderTime = 1.25f
-    var isNightShader = false
-
+    var nightShaderTime     = 1.25f
+    var isNightShader       = false
 
     // BARREL SHADER
     var barrelShaderPower: Float                = BARREL_SHADER_PULSE_START_POWER
@@ -101,10 +99,10 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         Gdx.files.internal("shaders/shade/vertex.glsl").readString(),
         Gdx.files.internal("shaders/shade/fragment.glsl").readString()
     )
-    var shadeTime = 0f
-    var isShade = false
-    var isInitialShading = false
-    var initialShadeDelta = 0.04f
+    var shadeTime           = 0f
+    var isShade             = false
+    var isInitialShading    = false
+    var initialShadeDelta   = 0.04f
 
 
     // INTERSTELLAR SHADER
@@ -123,20 +121,20 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         Gdx.files.internal("shaders/inverse_shade/fragment.glsl").readString()
     )
 
-    var isInverseShading = false
-    var inverseShadingTime = 0.5f
+    var isInverseShading    = false
+    var inverseShadingTime  = 0.5f
 
 
     //
     val hudHandler = HudHandler(this)
     val inputListener: StageInputListener
     val hudModel : HudModel
-    var isHudTapable = false
-    var isSwiping = false
-    var isMenu = false
-    var isHud = false
-    var isLooping = false
-    var isMenuTappable = true
+    var isHudTapable    = false
+    var isSwiping       = false
+    var isMenu          = false
+    var isHud           = false
+    var isLooping       = false
+    var isMenuTappable  = true
 
 
     init {
@@ -144,9 +142,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
 
-        camera = OrthographicCamera(BG_WIDTH, BG_HEIGHT)
-        viewport = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
-        stage = Stage(viewport)
+        camera      = OrthographicCamera(BG_WIDTH, BG_HEIGHT)
+        viewport    = FitViewport(BG_WIDTH, BG_HEIGHT, camera)
+        stage       = Stage(viewport)
 
         inputListener = StageInputListener(this, hudHandler)
         inputListener.initCallbacks()
@@ -159,11 +157,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         )
     }
 
-
     val renderer = SkeletonRenderer().also {
         it.setPremultipliedAlpha(true)
     }
-
 
     val polygonSpriteBatch = PolygonSpriteBatch()
 
@@ -175,9 +171,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
 //    }
 
     fun resetBarrelShader() {
-        barrelShaderPower = BARREL_SHADER_PULSE_START_POWER
-        powerDelta = -(barrelShaderPower - BARREL_SHADER_PULSE_MAX_POWER) / 600
-        isBarrelShaderReseted = false
+        barrelShaderPower       = BARREL_SHADER_PULSE_START_POWER
+        powerDelta              = -(barrelShaderPower - BARREL_SHADER_PULSE_MAX_POWER) / 600
+        isBarrelShaderReseted   = false
     }
 
     fun resetInterstellarShader() {
@@ -217,7 +213,6 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
             barrelShaderPower += powerDelta
         }
 
-
         fbo.begin()
         stage.act()
         stage.draw()
@@ -231,39 +226,40 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
             interStellarShader.bind()
             Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE1)
             texture0.bind(1);
-            interStellarShader.setUniformi("u_texture", 1)
-            interStellarShader.setUniformf("iFocus", shaderFocusOffset.x, shaderFocusOffset.y)
-            interStellarShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
-            interStellarShader.setUniformf("shadeTime", inverseShadingTime)
+            interStellarShader.setUniformi("u_texture"      , 1)
+            interStellarShader.setUniformf("iFocus"         , shaderFocusOffset.x, shaderFocusOffset.y)
+            interStellarShader.setUniformf("iResolution"    , BG_WIDTH, BG_HEIGHT)
+            interStellarShader.setUniformf("shadeTime"      , inverseShadingTime)
             Gdx.graphics.gL20.glActiveTexture(GL20.GL_TEXTURE0)
             rgbNoiseTex.bind(0);
-            interStellarShader.setUniformi("u_texture_noise", 0)
-            interStellarShader.setUniformf("iTime", time)
+            interStellarShader.setUniformi("u_texture_noise"    , 0)
+            interStellarShader.setUniformf("iTime"              , time)
             stage.batch.shader = interStellarShader
         }
 
         // NIGHT SHADER
-        if (!isMenu) {
-            if (isNightMode) {
-                nightShaderTime += 0.008f
-                nightShader.bind()
-                nightShader.setUniformf("isNight", 1f)
-                nightShader.setUniformf("iTime", nightShaderTime)
-                stage.batch.shader          = nightShader
-                polygonSpriteBatch.shader   = nightShader
-            } else if (isNightShader) {
-                nightShaderTime += 0.005f
-                if (nightShaderTime >= 1.25f) {
-                    nightShaderTime = 1.25f
-                    isNightShader = false
-                }
-                nightShader.bind()
-                nightShader.setUniformf("isNight", 0f)
-                nightShader.setUniformf("iTime", nightShaderTime)
-                stage.batch.shader          = nightShader
-                polygonSpriteBatch.shader   = nightShader
+        if (isNightMode) {
+            nightShaderTime += 0.008f
+            nightShader.bind()
+            nightShader.setUniformf("isNight"       , 1f)
+            nightShader.setUniformf("iTime"         , nightShaderTime)
+            nightShader.setUniformf("shadeValue"    , NIGHT_MODE_VALUE)
+            stage.batch.shader          = nightShader
+            polygonSpriteBatch.shader   = nightShader
+        } else if (isNightShader) {
+            nightShaderTime += 0.005f
+            if (nightShaderTime >= 1.25f) {
+                nightShaderTime = 1.25f
+                isNightShader   = false
             }
+            nightShader.bind()
+            nightShader.setUniformf("isNight"       , 0f)
+            nightShader.setUniformf("iTime"         , nightShaderTime)
+            nightShader.setUniformf("shadeValue"    , NIGHT_MODE_VALUE)
+            stage.batch.shader          = nightShader
+            polygonSpriteBatch.shader   = nightShader
         }
+
 
         var textureRegion = TextureRegion(texture0, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
         textureRegion.flip(false, true)
@@ -341,14 +337,16 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
             }
 
             shadeShader.bind()
-            shadeShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
-            shadeShader.setUniformf("iTime", shadeTime)
+            shadeShader.setUniformf("iResolution"   , BG_WIDTH, BG_HEIGHT)
+            shadeShader.setUniformf("iTime"         , shadeTime)
+            if (isNightMode) shadeShader.setUniformf("nightModeValue", NIGHT_MODE_VALUE)
+            else shadeShader.setUniformf("nightModeValue", 0f)
+
             stage.batch.shader = shadeShader
             if (shadeTime >= 1.4f) {
                 if (isInitialShading) isInitialShading = false
-                isShade = false
-                shadeTime = 0f
-                stage.batch.shader = null
+                isShade     = false
+                shadeTime   = 0f
                 if (isMenu) {
                     isMenuTappable = true
                 }
@@ -357,19 +355,22 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         } else if (isInverseShading) {
             if (inverseShadingTime >= 2f) {
                 inputListener.createMenu()
-                isInverseShading = false
-                isShade = true
-                inverseShadingTime += delta*3f
+                isInverseShading    = false
+                isShade             = true
+                inverseShadingTime  = 0.5f
                 shadeShader.bind()
-                inverseShadingTime = 0.5f
                 shadeShader.setUniformf("iTime", inverseShadingTime)
+                if (isNightMode) shadeShader.setUniformf("nightModeValue", NIGHT_MODE_VALUE)
+                else shadeShader.setUniformf("nightModeValue", 0f)
                 stage.batch.shader = shadeShader
 
             } else {
                 inverseShadingTime += delta*3f
                 inverseShader.bind()
-                inverseShader.setUniformf("iResolution", BG_WIDTH, BG_HEIGHT)
-                inverseShader.setUniformf("iTime", inverseShadingTime)
+                inverseShader.setUniformf("iResolution" , BG_WIDTH, BG_HEIGHT)
+                inverseShader.setUniformf("iTime"       , inverseShadingTime)
+                if (isNightMode) inverseShader.setUniformf("nightModeValue", NIGHT_MODE_VALUE)
+                else inverseShader.setUniformf("nightModeValue", 0f)
                 stage.batch.shader = inverseShader
             }
         }
@@ -377,12 +378,13 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         textureRegion = TextureRegion(fbo2.colorBufferTexture, BG_WIDTH.toInt(), BG_HEIGHT.toInt())
         textureRegion.flip(false, true)
 
+        if (!isNightShader && !isNightMode && !isBarrel && !isInterStellar && !isShade && !isInverseShading) {
+            stage.batch.shader          = null
+            polygonSpriteBatch.shader   = null
+        }
         stage.batch.begin()
         stage.batch.draw(textureRegion, 0f, 0f, BG_WIDTH, BG_HEIGHT)
         stage.batch.end()
-
-        stage.batch.shader          = null
-        polygonSpriteBatch.shader   = null
 
         shapeRenderer.end()
 
