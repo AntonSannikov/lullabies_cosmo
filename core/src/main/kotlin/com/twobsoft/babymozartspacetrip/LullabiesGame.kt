@@ -62,6 +62,7 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface, val adServices: AdInt
 
 class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxScreen {
 
+
     companion object {
         val isTablet            = Gdx.graphics.width.toFloat() >= 1600f
         val BG_WIDTH            = Gdx.graphics.width.toFloat()
@@ -73,8 +74,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         val NIGHT_MODE_VALUE    = 0.65f
     }
 
-    val AVAILABLE_STAGES    = game.serviceApi.AVAILABLE_STAGES
+
     var currentStageNumber  = 1
+    var AVAILABLE_STAGES = game.serviceApi.AVAILABLE_STAGES
 
     val stage: Stage
     private val camera: OrthographicCamera
@@ -151,9 +153,6 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
 
 
     init {
-
-
-
         //ShaderProgram.pedantic = false
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
@@ -165,6 +164,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         inputListener = StageInputListener(this, hudHandler)
         inputListener.initCallbacks()
         hudModel = HudModel(game.assets, inputListener)
+//        menuModel.all.forEach {
+//            it.initFont()
+//        }
 
         inputListener.createMenu()
 
@@ -319,6 +321,21 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
                 renderer.draw(polygonSpriteBatch, topActor!!.skeleton)
                 polygonSpriteBatch.end()
             }
+
+            if (isMenu) {
+                stage.batch.begin()
+                for (spine in menuModel.all) {
+                    spine.drawFont(stage.batch)
+//                    shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+//                    shapeRenderer.color = Color.RED
+//                    if (spine.hitBox.size > 2) {
+//                        shapeRenderer.polygon(spine.hitBox.toFloatArray())
+//                    }
+                }
+                stage.batch.end()
+
+            }
+
         } else if (isHud) {
             for (spine in hudModel.allSkeletons) {
                 spine.state.update(delta)
@@ -420,6 +437,9 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         inverseShader.disposeSafely()
         shadeShader.disposeSafely()
         barrelShader.disposeSafely()
+        for (spine in menuModel.all) {
+            spine.dispose()
+        }
         stage.disposeSafely()
         game.assets.dispose()
     }

@@ -1,21 +1,35 @@
 package com.twobsoft.babymozartspacetrip.components
 
+
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.*
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.math.Vector2
 import com.esotericsoftware.spine.*
 import com.twobsoft.babymozartspacetrip.MainScreen
+import ktx.assets.disposeSafely
+
 
 class SpineComponent(
     var atlas: TextureAtlas,
     var jsonFile: FileHandle,
     val scale: Float,
-    var isAlwaysAnimated: Boolean=true
+    var isAlwaysAnimated: Boolean=true,
+//    var font: BitmapFont?=null,
+    var fontFile: FileHandle?=null,
+    var fontPosition: Vector2=Vector2.Zero,
+    var name: String?=null,
     ) {
 
+    var font = BitmapFont()
+    var oldTransformMatrix: Matrix4?=null
+    var mx4Font = Matrix4()
+    val fontColor: Color=Color(1f,1f,1f,1f)
 
-    private var position = Vector2()
+    var position = Vector2()
     private var timeScale = 0.5f
     private val transPositionDelta = 5f
 
@@ -27,6 +41,10 @@ class SpineComponent(
     var rotation = 0f
     var isTransitionAnimation = false
     val defaultColors = arrayListOf<Color>()
+    var textWidth = 0f
+    var textHeight = 0f
+
+
 
 
     var json = SkeletonJson(atlas).also{
@@ -47,11 +65,26 @@ class SpineComponent(
     }
 
 
+
     init {
         for (slot in skeletonData.slots) {
             defaultColors.add(slot.color)
         }
+        if (fontFile != null) {
+            val generator   = FreeTypeFontGenerator(fontFile)
+            val parameter   = FreeTypeFontGenerator.FreeTypeFontParameter()
+            parameter.size  = 15
+            font = generator.generateFont(parameter)
+            generator.dispose()
+            font.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+            font.data.scale(MainScreen.BG_WIDTH * 0.0019f)
+            font.color.set(fontColor)
+            val glyphLayout = GlyphLayout(font, name)
+            textWidth   = glyphLayout.width
+            textHeight  = glyphLayout.height
+        }
     }
+
 
     fun setUnavailableColor() {
         for (slot in skeletonData.slots) {
@@ -140,6 +173,20 @@ class SpineComponent(
         }
 
         return  result
+    }
+
+
+    fun drawFont(batch: Batch) {
+        if (fontFile != null) {
+            batch.transformMatrix = mx4Font
+            font.draw(batch, name, position.x + fontPosition.x, position.y + fontPosition.y)
+            batch.transformMatrix = oldTransformMatrix
+        }
+
+    }
+
+    fun dispose() {
+        font.disposeSafely()
     }
 
 }

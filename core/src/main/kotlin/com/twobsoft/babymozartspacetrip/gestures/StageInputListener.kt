@@ -1,6 +1,7 @@
 package com.twobsoft.babymozartspacetrip.gestures
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Intersector.isPointInPolygon
 import com.badlogic.gdx.math.Vector2
@@ -20,15 +21,20 @@ import com.twobsoft.babymozartspacetrip.menu.MenuSpineModel
 import com.twobsoft.babymozartspacetrip.models.*
 import com.twobsoft.babymozartspacetrip.utils.Utils
 
+
+
+
 class StageInputListener(
     val screen: MainScreen,
     val hudHandler: HudHandler
     ): MyGestureListener.DirectionListener {
 
+
     var isCallback          = false
     var isBackground        = false
     var isAllowPlaying      = false
     var lastStage           = 0
+
 
     // callbacks from notification media buttons
     fun initCallbacks() {
@@ -134,9 +140,9 @@ class StageInputListener(
                         Utils.floatArrayToVec2Array(spineActor.hitBox.toFloatArray()),
                         Vector2(x, MainScreen.BG_HEIGHT - y))
                 ) {
-
+                    // PURCHASE DIALOG !!!!!!!!!!!!!!!!!
                     val newStageNumber = spineActor.stageNumber
-                    if (newStageNumber >= 10 && screen.game.serviceApi.AVAILABLE_STAGES == 10) {
+                    if (newStageNumber > 10 && screen.game.serviceApi.AVAILABLE_STAGES == 10) {
                         val result = screen.game.adServices.startPurchaseFlow()
                         if (!result) return
                     }
@@ -323,7 +329,9 @@ class StageInputListener(
         for (spine in screen.menuModel.all) {
             if (spine.stageNumber > screen.game.serviceApi.AVAILABLE_STAGES) {
                 spine.setUnavailableColor()
+                spine.font.color.set(0.7f, 0.7f, 0.7f, 1f)
             }
+            spine.oldTransformMatrix = screen.stage.batch.transformMatrix.cpy()
         }
         screen.stage.actors.forEach {
             if (it is LayerActor && it.tex == "menu/stars.png") {
@@ -461,7 +469,7 @@ class StageInputListener(
     private fun changeStage(increment: Int, callback: Boolean=false) {
         screen.currentStageNumber += increment
 
-        if (screen.currentStageNumber >= 10) {
+        if (screen.currentStageNumber > 10) {
             screen.game.adServices.checkPurchasesStatus()
         }
 

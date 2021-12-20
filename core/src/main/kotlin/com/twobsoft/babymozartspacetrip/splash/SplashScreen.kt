@@ -47,6 +47,7 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
         }
         game.assets.loadMenu()
         game.assets.loadHud()
+//        game.assets.loadFont()
     }
 
 
