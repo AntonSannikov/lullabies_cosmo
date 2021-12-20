@@ -41,6 +41,7 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface, val adServices: AdInt
 
     override fun create() {
         MediaPlayer.serviceApi = serviceApi
+        adServices.checkPurchasesStatus()
         KtxAsync.initiate()
         assets.loadSplash()
         assets.manager.finishLoading()

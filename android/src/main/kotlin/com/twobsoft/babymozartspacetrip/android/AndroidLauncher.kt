@@ -3,6 +3,7 @@ package com.twobsoft.babymozartspacetrip.android
 import AdInterface
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -374,7 +375,6 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
     override fun onDestroy() {
         billingClient!!.endConnection()
-        BackgroundSoundService.isNeedDestroy = true
         servicesApi?.dispose(this)
         super.onDestroy()
     }

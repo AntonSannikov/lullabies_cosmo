@@ -396,10 +396,6 @@ class StageInputListener(
             screen.stage.addActor(sleepBackground)
         }
 
-        val array = arrayListOf<Actor>()
-
-
-
         screen.stage.actors.forEach {
             if (it is LayerGroup && it.isNeedRemove) it.addAction(Actions.removeActor())
             if (it is LayerActor && it.isNeedRemove) it.addAction(Actions.removeActor())
@@ -481,10 +477,6 @@ class StageInputListener(
     private fun changeStage(increment: Int, callback: Boolean=false) {
         screen.currentStageNumber += increment
 
-        if (screen.currentStageNumber > 10) {
-            screen.game.adServices.checkPurchasesStatus()
-        }
-
         if (isBackground) return
 
         screen.game.adServices.banner(screen.game.serviceApi.AVAILABLE_STAGES != 15)
@@ -515,6 +507,8 @@ class StageInputListener(
                     }, 0.1f)
                 }
             }
+        } else {
+            lastStage = screen.currentStageNumber
         }
 
         if (!MainScreen.isNightMode) {

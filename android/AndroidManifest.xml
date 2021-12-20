@@ -35,6 +35,9 @@
 			android:value="ca-app-pub-5853277310445367~9540694589" />
 		<receiver android:enabled="true" android:exported="true" android:name="com.twobsoft.babymozartspacetrip.android.NotificationActionService">
 			<intent-filter>
+				<action android:name="android.intent.action.MEDIA_BUTTON" />
+			</intent-filter>
+			<intent-filter>
 				<action android:name="Previous"/>
 			</intent-filter>
 			<intent-filter>

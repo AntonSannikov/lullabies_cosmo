@@ -8,9 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaPlayer
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import androidx.core.app.NotificationManagerCompat
 import com.twobsoft.babymozartspacetrip.R
 import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
@@ -20,9 +17,19 @@ import android.media.AudioManager
 import android.view.View
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat.startActivity
+import android.content.ComponentName
+
+import android.content.ServiceConnection
+import android.os.*
 
 
 class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
+
+
+
+    lateinit var mService: BackgroundSoundService
+    private var mBound: Boolean = false
+    private var playlist: Array<Track>? = null
 
 
     var currentSong                 = 0
@@ -39,7 +46,6 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
     var lastSelectedMinute: Int?    = null
     var lastSelectedHour: Int?      = null
 
-    var mediaPlayer: MediaPlayer?   = null
 
 
     var notificationManager: NotificationManager? = null
@@ -72,14 +78,32 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         onTrackNext()
     }
 
-    init {
-        mediaPlayer = MediaPlayer.create(context, BackgroundSoundService.playlist[0].data)
 
-        BackgroundSoundService.mediaPlayer = mediaPlayer
-        BackgroundSoundService.endOfTrackCallback = ::endOfTrackCallback
+    // BINDER CONNECTION ===========================================================================
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as BackgroundSoundService.LocalBinder
+            mService = binder.getService()
+            mBound = true
+            mService.initEndOfTrackCallback(::endOfTrackCallback)
+            playlist = mService.playlist
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
+        }
+    }
+    // BINDER CONNECTION ===========================================================================
+
+
+    init {
         createChannel()
         context.registerReceiver(mediaButtonReceiver, IntentFilter("TRACKS_TRACKS"))
         context.startService(Intent(context, OnClearFromRecentService::class.java))
+        Intent(context, BackgroundSoundService::class.java).also {
+            context.bindService(it, connection, Context.BIND_AUTO_CREATE)
+        }
     }
 
 
@@ -133,54 +157,43 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
         currentSong = stageNumber-1
 
+        context.startService(Intent(context, BackgroundSoundService::class.java))
         if (isSwitching || isPaused || isNeedNewPlay) {
             isNeedNewPlay = false
             isPaused = false
             isPlaying = true
             CreateNotification.createNotification(
                 context,
-                BackgroundSoundService.playlist[currentSong],
+                playlist!![currentSong],
                 R.drawable.ic_baseline_pause_24,
                 stageNumber - 1,
-                BackgroundSoundService.playlist.size - 1
+                playlist!!.size - 1
             )
-            val intent = Intent(context, BackgroundSoundService::class.java)
-            intent.putExtra("songIndex" , currentSong)
-            intent.putExtra("action"    , "playNew")
-            context.stopService(intent)
-            context.startService(intent)
+            mService.play("playNew", currentSong)
+
         } else {
             if (isPlaying) {
                 isPlaying = false
                 CreateNotification.createNotification(
                     context,
-                    BackgroundSoundService.playlist[currentSong],
+                    playlist!![currentSong],
                     R.drawable.ic_baseline_play_arrow_24,
                     stageNumber - 1,
-                    BackgroundSoundService.playlist.size - 1
+                    playlist!!.size - 1
                 )
-                val intent = Intent(context, BackgroundSoundService::class.java)
-                intent.putExtra("songIndex" , currentSong)
-                intent.putExtra("action"    , "pause")
-                context.stopService(intent)
-                context.startService(intent)
+                mService.play("pause", currentSong)
             } else {
                 isPlaying = true
                 CreateNotification.createNotification(
                     context,
-                    BackgroundSoundService.playlist[currentSong],
+                    playlist!![currentSong],
                     R.drawable.ic_baseline_pause_24,
                     stageNumber - 1,
-                    BackgroundSoundService.playlist.size - 1
+                    playlist!!.size - 1
                 )
-                val intent = Intent(context, BackgroundSoundService::class.java)
-                intent.putExtra("songIndex" , currentSong)
-                intent.putExtra("action"    , "resume")
-                context.stopService(intent)
-                context.startService(intent)
+                mService.play("resume", currentSong)
             }
         }
-
     }
 
 
@@ -188,16 +201,16 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         isPlaying = false
         isPaused = true
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val volume_level = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        val volumeLevel = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
         val maxVolume: Int = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-        lastVolume = volume_level.toFloat() / maxVolume
+        lastVolume = volumeLevel.toFloat() / maxVolume
 
         CreateNotification.createNotification(
             context,
-            BackgroundSoundService.playlist[currentSong],
+            playlist!![currentSong],
             R.drawable.ic_baseline_play_arrow_24,
             currentSong,
-            BackgroundSoundService.playlist.size - 1
+            playlist!!.size - 1
         )
 
         val delta = 0.05f
@@ -207,16 +220,12 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
             timerTask {
                 currentVolume -= delta
                 if (currentVolume <= 0) {
-                    val intent = Intent(context, BackgroundSoundService::class.java)
-                    intent.putExtra("songIndex" , currentSong)
-                    intent.putExtra("action"    , "pause")
-                    context.stopService(intent)
-                    context.startService(intent)
-                    BackgroundSoundService.mediaPlayer!!.setVolume(lastVolume, lastVolume)
+                    mService.play("pause", currentSong)
+                    mService.setVolume(lastVolume)
                     corePauseCallback()
                     timer.cancel()
                 }
-                BackgroundSoundService.mediaPlayer!!.setVolume(currentVolume, currentVolume)
+                mService.setVolume(currentVolume)
             },
             0, 50
         )
@@ -224,8 +233,7 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
     override fun setLooping(value: Boolean) {
-        BackgroundSoundService.mediaPlayer!!.isLooping = value
-        BackgroundSoundService.isLooping = value
+        mService.setIsLooping(value)
     }
 
 
@@ -268,18 +276,13 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
         CreateNotification.createNotification(
             context,
-            BackgroundSoundService.playlist[currentSong],
+            playlist!![currentSong],
             R.drawable.ic_baseline_pause_24,
             currentSong,
-            BackgroundSoundService.playlist.size - 1
+            playlist!!.size - 1
         )
 
-        val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex" , currentSong)
-        intent.putExtra("action"    , "playNew")
-        context.startService(intent)
-
-
+        mService.play("playNew", currentSong)
     }
 
 
@@ -291,17 +294,13 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
         CreateNotification.createNotification(
             context,
-            BackgroundSoundService.playlist[currentSong],
+            playlist!![currentSong],
             R.drawable.ic_baseline_pause_24,
             currentSong,
-            BackgroundSoundService.playlist.size - 1
+            playlist!!.size - 1
         )
 
-
-        val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex" , currentSong)
-        intent.putExtra("action"    , "resume")
-        context.startService(intent)
+        mService.play("resume", currentSong)
     }
 
 
@@ -311,18 +310,13 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
         CreateNotification.createNotification(
             context,
-            BackgroundSoundService.playlist[currentSong],
+            playlist!![currentSong],
             R.drawable.ic_baseline_play_arrow_24,
             currentSong,
-            BackgroundSoundService.playlist.size - 1
+            playlist!!.size - 1
         )
 
-
-
-        val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex" , currentSong)
-        intent.putExtra("action"    , "pause")
-        context.startService(intent)
+        mService.play("pause", currentSong)
     }
 
 
@@ -334,30 +328,29 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         }
         isPlaying = true
 
-
         coreNextCallback()
 
         CreateNotification.createNotification(
             context,
-            BackgroundSoundService.playlist[currentSong],
+            playlist!![currentSong],
             R.drawable.ic_baseline_pause_24,
             currentSong,
-            BackgroundSoundService.playlist.size - 1
+            playlist!!.size - 1
         )
-        val intent = Intent(context, BackgroundSoundService::class.java)
-        intent.putExtra("songIndex" , currentSong)
-        intent.putExtra("action"    , "playNew")
-        context.startService(intent)
+        mService.play("playNew", currentSong)
     }
 
+
+
     fun dispose(context: Context) {
-        val intent = Intent(context, BackgroundSoundService::class.java)
-        context.stopService(intent)
+        mService.isNeedDestroy = true
+        context.unbindService(connection)
+        mBound = false
         val notificationManagerCompat = NotificationManagerCompat.from(context)
         notificationManagerCompat.cancelAll()
         context.unregisterReceiver(mediaButtonReceiver)
-
     }
+
 
     override fun onPause() {
         coreOnAppPauseCallback()
@@ -374,6 +367,5 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
     override fun initOnResumeCallback(callback: () -> Unit) {
         coreOnAppResumeCallback = callback
     }
-
-
 }
+
