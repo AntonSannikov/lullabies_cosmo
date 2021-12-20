@@ -23,8 +23,8 @@ import com.twobsoft.babymozartspacetrip.components.SpineComponent
 import com.twobsoft.babymozartspacetrip.gestures.StageInputListener
 import com.twobsoft.babymozartspacetrip.hud.HudModel
 import com.twobsoft.babymozartspacetrip.menu.MenuSpineModel
+import com.twobsoft.babymozartspacetrip.splash.MySplashScreen
 import com.twobsoft.lullabies.MyGestureListener
-import com.twobsoft.babymozartspacetrip.splash.SplashScreen
 
 
 
@@ -37,25 +37,16 @@ class LullabiesGame(val serviceApi: ServicesCoreInterface, val adServices: AdInt
     }
 
     val assets = Assets()
-
+    var mainScreen: MainScreen?=null
 
     override fun create() {
         MediaPlayer.serviceApi = serviceApi
         KtxAsync.initiate()
         assets.loadSplash()
         assets.manager.finishLoading()
-        addScreen(SplashScreen(this))
-        setScreen<SplashScreen>()
+        addScreen(MySplashScreen(this))
+        setScreen<MySplashScreen>()
     }
-
-
-    // =============================================================================================
-    //                  IAP
-    //
-
-    //
-    //                  IAP
-    // =============================================================================================
 
 }
 
@@ -176,8 +167,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     }
 
     val renderer = SkeletonRenderer().also {
-        it.setPremultipliedAlpha(false)
-        it.premultipliedAlphaColors = true
+        it.setPremultipliedAlpha(true)
     }
 
     val polygonSpriteBatch = PolygonSpriteBatch()

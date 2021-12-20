@@ -32,20 +32,20 @@ class HudGroup: Group() {
 class HudModel(val assets: Assets, val appListener: StageInputListener): Entity() {
 
     companion object {
-        const val frameTex = "hud/planka_mod.png"
+        const val frameTex          = "hud/planka_mod.png"
         // upper panel
-        const val panelUpTex = "hud/panel_up.png"
-        const val optionsTex = "hud/options.png"
-        const val lampLightTex = "hud/lamp_light.png"
-        const val lampTex = "hud/lamp.png"
-        const val shareButtonTex = "hud/share_button.png"
-        const val shareAntennasTex = "hud/share_antennas.png"
+        const val panelUpTex        = "hud/panel_up.png"
+        const val optionsTex        = "hud/options.png"
+        const val lampLightTex      = "hud/lamp_light.png"
+        const val lampTex           = "hud/lamp.png"
+        const val shareButtonTex    = "hud/share_button.png"
+        const val shareAntennasTex  = "hud/share_antennas.png"
         // deck
-        const val deckTex = "hud/deck.png"
-        const val clockTex = "hud/clock.png"
+        const val deckTex           = "hud/deck.png"
+        const val clockTex          = "hud/clock.png"
         // flares
-        const val optionsFlareTex = "hud/loop_flare.png"
-        const val shareFlareTex = "hud/share_flare.png"
+        const val optionsFlareTex   = "hud/loop_flare.png"
+        const val shareFlareTex     = "hud/share_flare.png"
 
         val all = arrayOf(
             frameTex, panelUpTex, optionsTex, lampLightTex, lampTex, shareButtonTex, shareAntennasTex,
@@ -58,7 +58,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             "hud/right/skeletons.atlas", "hud/right/json.json",
             "hud/play/play.atlas", "hud/play/play.json",
         )
-        val bottomPadding = MainScreen.BG_HEIGHT * 0.03f
+        val bottomPadding = MainScreen.BG_HEIGHT * 0.02f
 
         var sideFramePadding    = 0f
         var sideFrameSmallPad   = 0f
@@ -105,7 +105,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         layerWidth              = MainScreen.BG_WIDTH - sideFramePadding*1.9f
         layerHeight             = layerWidth * 100 / 64
         layerXPosition          = (MainScreen.BG_WIDTH - layerWidth) / 2
-        layerYPosition          = (MainScreen.BG_HEIGHT - layerHeight) / 1.5f
+        layerYPosition          = (MainScreen.BG_HEIGHT - layerHeight) / 1.6f
         upperPanelWindowHeight  = 124 * (1 + scale.y)
         upperPanelSideHeight    = 164 * (1 + scale.y)
         upperPanelWindowWidth   = 684 * (1 + scale.x)
@@ -497,7 +497,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         clock.stageZIndex   = 1
         it.addActor(deck)
         it.addActor(clock)
-        it.moveBy(0f, bottomPadding)
+        it.moveBy(0f, bottomPadding + MainScreen.BG_HEIGHT*0.017f)
 
     }
 

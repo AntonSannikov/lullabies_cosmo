@@ -77,6 +77,7 @@ class MenuSpineModel(val assets: Assets) {
         assets.skeletonLoader.resolve("menu/sun/json.json"),
         MainScreen.BG_HEIGHT / 2620,
         fontFile = Gdx.files.internal(fontFilePath),
+        fontScaling = MainScreen.BG_WIDTH * 0.003f,
         name = "The Sun"
     ).also {
         it.fontPosition = Vector2(0f, MainScreen.BG_HEIGHT * 0.36f)

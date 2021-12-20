@@ -1,6 +1,7 @@
 package com.twobsoft.babymozartspacetrip.android
 
 import AdInterface
+import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -15,10 +16,10 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.AdListener
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import com.android.billingclient.api.*
-
-
+import com.twobsoft.babymozartspacetrip.R
 
 
 const val GOOGLE_ERROR = "Error on connecting to Google Billing Services"
@@ -46,6 +47,7 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
     var subsName    = ""
     var subsPrice   = ""
+    var game: LullabiesGame?=null
 
 
     var sharedPrefs: SharedPreferences? = null
@@ -66,8 +68,10 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
         addLifecycleListener(lifecycleListener)
 
         val config = AndroidApplicationConfiguration()
+        game = LullabiesGame(servicesApi!!, this)
+
         gameView = initializeForView(
-            LullabiesGame(servicesApi!!, this),
+            game,
             config
         )
 
@@ -110,6 +114,7 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
 
+
         // =========================================================================================
         //              IAP
 
@@ -131,12 +136,14 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
                                     object: AcknowledgePurchaseResponseListener {
                                         override fun onAcknowledgePurchaseResponse(ackResult: BillingResult) {
                                             if (ackResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                                                runOnUiThread {
-                                                    Toast.makeText(context,
-                                                        "SUCCESSFULLY PURCHASED",
-                                                        Toast.LENGTH_LONG).show()
-                                                }
+//                                                runOnUiThread {
+//                                                    Toast.makeText(context,
+//                                                        "SUCCESSFULLY PURCHASED",
+//                                                        Toast.LENGTH_LONG).show()
+//                                                }
                                                 servicesApi!!.AVAILABLE_STAGES = 15
+                                                banner(false)
+                                                game!!.mainScreen!!.inputListener.unlockContent()
                                             } else {
                                                 Toast.makeText(context,
                                                     "$GOOGLE_ERROR ${ackResult.debugMessage}",
@@ -197,7 +204,6 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
                     }
                 }
-
             }
         )
     }
@@ -222,7 +228,7 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
                     list: MutableList<Purchase>
                 ) {
                     if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                       if (list.isNotEmpty() && list[0].purchaseState == 0) servicesApi!!.AVAILABLE_STAGES = 15
+                       if (list.isNotEmpty() && list[0].purchaseState == Purchase.PurchaseState.PURCHASED) servicesApi!!.AVAILABLE_STAGES = 15
                     } else {
                         runOnUiThread {
                             Toast.makeText(context,
@@ -290,15 +296,53 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
 
     override fun startPurchaseFlow(): Boolean {
-        if (skuDetails == null) return false
+//        if (skuDetails == null) {
+//            runOnUiThread {
+//                Toast.makeText(context,
+//                    "Unable to get information from Google Services",
+//                    Toast.LENGTH_LONG).show()
+//            }
+//            return false
+//        }
 
-        val flowParams = BillingFlowParams.newBuilder()
-            .setSkuDetails(skuDetails!!)
-            .build()
+        showPayWall()
 
-        billingClient!!.launchBillingFlow(this, flowParams)
+//        val flowParams = BillingFlowParams.newBuilder()
+//            .setSkuDetails(skuDetails!!)
+//            .build()
+//
+//        billingClient!!.launchBillingFlow(this, flowParams)
 
         return false
+    }
+
+
+    fun showPayWall() {
+        runOnUiThread {
+            val dialog = Dialog(this)
+//            dialog.window!!.setFlags(
+//                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+//                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+//            )
+            dialog.setCanceledOnTouchOutside(true)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(true)
+            dialog.setContentView(R.layout.inapp_paywall)
+//        val body = dialog.findViewById(R.id.body) as TextView
+//        body.text = title
+//        val yesBtn = dialog.findViewById(R.id.yesBtn) as Button
+//        val noBtn = dialog.findViewById(R.id.noBtn) as TextView
+//        yesBtn.setOnClickListener {
+//            dialog.dismiss()
+//        }
+//        noBtn.setOnClickListener { dialog.dismiss() }
+            dialog.show()
+        }
+    }
+
+
+    fun showOptions() {
+
     }
 
 

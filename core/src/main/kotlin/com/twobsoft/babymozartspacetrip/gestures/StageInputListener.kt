@@ -102,6 +102,18 @@ class StageInputListener(
     }
 
 
+    fun unlockContent() {
+        Gdx.app.postRunnable {
+            screen.menuModel.all.forEach {
+                if (it.stageNumber > 10) {
+                    it.restoreColor()
+                    it.font.color.set(it.fontColor)
+                }
+            }
+        }
+    }
+
+
     override fun onLeft() {
         isAllowPlaying = true
         if (screen.isSwiping || screen.currentStageNumber == 0) { return }
@@ -143,8 +155,8 @@ class StageInputListener(
                     // PURCHASE DIALOG !!!!!!!!!!!!!!!!!
                     val newStageNumber = spineActor.stageNumber
                     if (newStageNumber > 10 && screen.game.serviceApi.AVAILABLE_STAGES == 10) {
-                        val result = screen.game.adServices.startPurchaseFlow()
-                        if (!result) return
+                        screen.game.adServices.startPurchaseFlow()
+                        return
                     }
 
                     spineActor.isTransitionAnimation    = true

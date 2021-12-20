@@ -14,7 +14,7 @@ import com.twobsoft.babymozartspacetrip.menu.MenuSpineModel
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 
-class SplashScreen(val game: LullabiesGame): KtxScreen {
+class MySplashScreen(val game: LullabiesGame): KtxScreen {
 
     val camera = OrthographicCamera(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
     val viewport = FitViewport(camera.viewportWidth, camera.viewportHeight, camera)
@@ -47,7 +47,6 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
         }
         game.assets.loadMenu()
         game.assets.loadHud()
-//        game.assets.loadFont()
     }
 
 
@@ -89,6 +88,7 @@ class SplashScreen(val game: LullabiesGame): KtxScreen {
                 mainScreen.isShade = true
                 mainScreen.isInitialShading = true
                 isTransitionDone = true
+                game.mainScreen = mainScreen
                 game.addScreen(mainScreen)
                 this.dispose()
                 game.setScreen<MainScreen>()

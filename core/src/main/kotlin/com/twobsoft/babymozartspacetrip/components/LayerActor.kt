@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.hud.HudModel
-import com.twobsoft.babymozartspacetrip.splash.SplashScreen
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sin

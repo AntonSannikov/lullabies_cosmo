@@ -22,6 +22,8 @@ class SpineComponent(
     var fontFile: FileHandle?=null,
     var fontPosition: Vector2=Vector2.Zero,
     var name: String?=null,
+    var fontScaling: Float = MainScreen.BG_WIDTH * 0.002f,
+    var timeScaling:Float = 0.5f
     ) {
 
     var font = BitmapFont()
@@ -30,7 +32,7 @@ class SpineComponent(
     val fontColor: Color=Color(1f,1f,1f,1f)
 
     var position = Vector2()
-    private var timeScale = 0.5f
+
     private val transPositionDelta = 5f
 
     var tapHandler : (() -> Unit)? = null
@@ -40,7 +42,6 @@ class SpineComponent(
     var hitBox = arrayListOf<Float>()
     var rotation = 0f
     var isTransitionAnimation = false
-    val defaultColors = arrayListOf<Color>()
     var textWidth = 0f
     var textHeight = 0f
 
@@ -60,16 +61,14 @@ class SpineComponent(
     var stateData = AnimationStateData(skeletonData)
 
     var state = AnimationState(stateData).also {
-        it.timeScale = 0.5f
+        it.timeScale = timeScaling
         if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
     }
 
 
 
     init {
-        for (slot in skeletonData.slots) {
-            defaultColors.add(slot.color)
-        }
+
         if (fontFile != null) {
             val generator   = FreeTypeFontGenerator(fontFile)
             val parameter   = FreeTypeFontGenerator.FreeTypeFontParameter()
@@ -77,7 +76,7 @@ class SpineComponent(
             font = generator.generateFont(parameter)
             generator.dispose()
             font.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            font.data.scale(MainScreen.BG_WIDTH * 0.0019f)
+            font.data.scale(fontScaling)
             font.color.set(fontColor)
             val glyphLayout = GlyphLayout(font, name)
             textWidth   = glyphLayout.width
@@ -88,14 +87,14 @@ class SpineComponent(
 
     fun setUnavailableColor() {
         for (slot in skeletonData.slots) {
-            slot.color.set(Color.LIGHT_GRAY)
+            slot.color.set(Color(0.5f, 0.5f, 0.5f, 1f))
         }
         skeleton = Skeleton(skeletonData).also {
             it.setPosition(0f, 0f)
         }
         stateData = AnimationStateData(skeletonData)
         state = AnimationState(stateData).also {
-            it.timeScale = 0.5f
+            it.timeScale = timeScaling
             if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
         }
         setPos(position.x, position.y)
@@ -104,14 +103,14 @@ class SpineComponent(
 
     fun restoreColor() {
         for (i in 0 until skeletonData.slots.size) {
-            skeletonData.slots[i].color.set(defaultColors[i])
+            skeletonData.slots[i].color.set(1f,1f,1f,1f)
         }
         skeleton = Skeleton(skeletonData).also {
             it.setPosition(0f, 0f)
         }
         stateData = AnimationStateData(skeletonData)
         state = AnimationState(stateData).also {
-            it.timeScale = 0.5f
+            it.timeScale = timeScaling
             if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
         }
         setPos(position.x, position.y)
@@ -133,7 +132,7 @@ class SpineComponent(
 
         stateData = AnimationStateData(skeletonData)
         state = AnimationState(stateData).also {
-            it.timeScale = 0.5f
+            it.timeScale = timeScaling
             if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
         }
     }
@@ -144,7 +143,7 @@ class SpineComponent(
     }
 
     fun setTimeScale(_value: Float) {
-        timeScale = _value
+        timeScaling = _value
         state.timeScale = _value
     }
 

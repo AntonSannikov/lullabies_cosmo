@@ -1,19 +1,24 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+
 android {
 	signingConfigs {
         debug {
-            storeFile file('E:\\vault\\upload-keystore.jks')
-            storePassword 'nedolbibobra3'
-            keyPassword 'nedolbibobra3'
-            keyAlias 'upload'
+			storeFile file(keystoreProperties['storeFile'])
+			storePassword keystoreProperties['storePassword']
+			keyPassword keystoreProperties['keyPassword']
+			keyAlias keystoreProperties['keyAlias']
         }
         release {
-            storeFile file('E:\\vault\\upload-keystore.jks')
-            storePassword 'nedolbibobra3'
-            keyPassword 'nedolbibobra3'
-            keyAlias 'upload'
+			storeFile file(keystoreProperties['storeFile'])
+			storePassword keystoreProperties['storePassword']
+			keyPassword keystoreProperties['keyPassword']
+			keyAlias keystoreProperties['keyAlias']
         }
     }
     compileSdkVersion 31
@@ -47,8 +52,8 @@ android {
 		applicationId 'com.twobsoft.babymozartspacetrip'
 		minSdkVersion 21
 		targetSdkVersion 31
-		versionCode 7
-		versionName "0.9"
+		versionCode 11
+		versionName "0.96"
 		multiDexEnabled true
 	}
 	compileOptions {
@@ -59,6 +64,7 @@ android {
 	kotlinOptions.jvmTarget = "1.8"
 	buildTypes {
 		release {
+//			debuggable true
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 			signingConfig signingConfigs.release
