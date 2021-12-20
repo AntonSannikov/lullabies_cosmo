@@ -123,7 +123,7 @@ class StageInputListener(
 
     override fun onTap(x: Float, y: Float, count: Int, button: Int) {
 
-        println("${x / MainScreen.BG_WIDTH}:${1 - y / MainScreen.BG_HEIGHT}")
+//        println("${x / MainScreen.BG_WIDTH}:${1 - y / MainScreen.BG_HEIGHT}")
         val xNorm = x / MainScreen.BG_WIDTH
         val yNorm = y / MainScreen.BG_HEIGHT
 
@@ -134,6 +134,13 @@ class StageInputListener(
                         Utils.floatArrayToVec2Array(spineActor.hitBox.toFloatArray()),
                         Vector2(x, MainScreen.BG_HEIGHT - y))
                 ) {
+
+                    val newStageNumber = spineActor.stageNumber
+                    if (newStageNumber >= 10 && screen.game.serviceApi.AVAILABLE_STAGES == 10) {
+                        val result = screen.game.adServices.startPurchaseFlow()
+                        if (!result) return
+                    }
+
                     spineActor.isTransitionAnimation    = true
                     screen.shaderFocusOffset            = Vector2(-(xNorm-0.5f),yNorm-0.5f)
                     screen.isBarrel                     = true
@@ -302,7 +309,6 @@ class StageInputListener(
 
     fun createMenu() {
 
-        screen.game.adServices.banner(false)
         screen.resetBarrelShader()
         var length = screen.stage.actors.size
 
@@ -314,7 +320,11 @@ class StageInputListener(
         screen.stage.addActor(screen.menuModel.background)
         screen.stage.addActor(screen.menuModel.stars)
         screen.stage.addActor(screen.menuModel.radar)
-
+        for (spine in screen.menuModel.all) {
+            if (spine.stageNumber > screen.game.serviceApi.AVAILABLE_STAGES) {
+                spine.setUnavailableColor()
+            }
+        }
         screen.stage.actors.forEach {
             if (it is LayerActor && it.tex == "menu/stars.png") {
                 it.addAction(Actions.repeat(
@@ -323,6 +333,8 @@ class StageInputListener(
                 ))
             }
         }
+
+        screen.game.adServices.banner(screen.game.serviceApi.AVAILABLE_STAGES != 15)
 
         screen.isMenu = true
         screen.currentStageNumber = 0
@@ -450,12 +462,12 @@ class StageInputListener(
         screen.currentStageNumber += increment
 
         if (screen.currentStageNumber >= 10) {
-            screen.game.adServices.connectToBilling()
+            screen.game.adServices.checkPurchasesStatus()
         }
 
         if (isBackground) return
 
-        screen.game.adServices.banner(true)
+        screen.game.adServices.banner(screen.game.serviceApi.AVAILABLE_STAGES != 15)
 
         if (!isAllowPlaying) {
             lastStage = screen.currentStageNumber

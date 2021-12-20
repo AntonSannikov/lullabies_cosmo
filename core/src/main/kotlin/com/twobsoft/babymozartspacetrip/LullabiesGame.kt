@@ -73,7 +73,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
         val NIGHT_MODE_VALUE    = 0.65f
     }
 
-    val AVAILABLE_STAGES    = 15
+    val AVAILABLE_STAGES    = game.serviceApi.AVAILABLE_STAGES
     var currentStageNumber  = 1
 
     val stage: Stage
@@ -303,7 +303,6 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
                     spine.skeleton.rootBone.rotation = spine.rotation
                 }
                 spine.skeleton.updateWorldTransform()
-
                 if (spine.isTransitionAnimation) {
                     continue
                 }

@@ -1,6 +1,7 @@
 package com.twobsoft.babymozartspacetrip.components
 
 import com.badlogic.gdx.files.FileHandle
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Vector2
 import com.esotericsoftware.spine.*
@@ -25,6 +26,7 @@ class SpineComponent(
     var hitBox = arrayListOf<Float>()
     var rotation = 0f
     var isTransitionAnimation = false
+    val defaultColors = arrayListOf<Color>()
 
 
     var json = SkeletonJson(atlas).also{
@@ -32,6 +34,7 @@ class SpineComponent(
     }
 
     var skeletonData = json.readSkeletonData(jsonFile)
+
     var skeleton = Skeleton(skeletonData).also {
         it.setPosition(0f, 0f)
     }
@@ -41,6 +44,44 @@ class SpineComponent(
     var state = AnimationState(stateData).also {
         it.timeScale = 0.5f
         if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
+    }
+
+
+    init {
+        for (slot in skeletonData.slots) {
+            defaultColors.add(slot.color)
+        }
+    }
+
+    fun setUnavailableColor() {
+        for (slot in skeletonData.slots) {
+            slot.color.set(Color.LIGHT_GRAY)
+        }
+        skeleton = Skeleton(skeletonData).also {
+            it.setPosition(0f, 0f)
+        }
+        stateData = AnimationStateData(skeletonData)
+        state = AnimationState(stateData).also {
+            it.timeScale = 0.5f
+            if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
+        }
+        setPos(position.x, position.y)
+    }
+
+
+    fun restoreColor() {
+        for (i in 0 until skeletonData.slots.size) {
+            skeletonData.slots[i].color.set(defaultColors[i])
+        }
+        skeleton = Skeleton(skeletonData).also {
+            it.setPosition(0f, 0f)
+        }
+        stateData = AnimationStateData(skeletonData)
+        state = AnimationState(stateData).also {
+            it.timeScale = 0.5f
+            if (isAlwaysAnimated) it.setAnimation(0, "animation", true)
+        }
+        setPos(position.x, position.y)
     }
 
 

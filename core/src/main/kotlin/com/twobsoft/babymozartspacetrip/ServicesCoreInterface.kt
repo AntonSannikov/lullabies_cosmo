@@ -1,6 +1,7 @@
 package com.twobsoft.babymozartspacetrip
 
 interface ServicesCoreInterface {
+    var AVAILABLE_STAGES: Int
     var isPlaying: Boolean
     var isNeedNewPlay: Boolean
 

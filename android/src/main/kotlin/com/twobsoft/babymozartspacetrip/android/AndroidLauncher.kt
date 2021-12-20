@@ -1,6 +1,8 @@
 package com.twobsoft.babymozartspacetrip.android
 
 import AdInterface
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -17,6 +19,12 @@ import android.widget.Toast
 import com.android.billingclient.api.*
 
 
+
+
+const val GOOGLE_ERROR = "Error on connecting to Google Billing Services"
+const val CONNECTIONS_MAX_COUNT = 5
+
+
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication(), AdInterface {
 
@@ -31,10 +39,26 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
     var adRequest: AdRequest? = null
 
     var billingClient: BillingClient? = null
+    var isLocalBillingCacheEnabled = false
+    val SUBS_SKU = "test_sub"
+    var connectionsCount = 0
+    var skuDetails: SkuDetails?=null
+
+    var subsName    = ""
+    var subsPrice   = ""
+
+
+    var sharedPrefs: SharedPreferences? = null
+    val APP_PREFERENCES                 = "spacetripconf"
+    val APP_PREFRENCES_CACHE_STATUS     = "Cachestatus"
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPrefs = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 
         servicesApi = ServicesApi( this)
         lifecycleListener = AppLyfecycleListener(servicesApi!!)
@@ -88,15 +112,48 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
         // =========================================================================================
         //              IAP
+
         billingClient = BillingClient.newBuilder(this)
             .enablePendingPurchases()
             .setListener(
                 object: PurchasesUpdatedListener {
-                    override fun onPurchasesUpdated(result: BillingResult, list: MutableList<Purchase>?) {
-                        if (result.responseCode == BillingClient.BillingResponseCode.OK && list != null) {
-                            val subscription = list[0]
+                    override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
+                        if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                            val subscription = purchases[0]
                             if (!subscription.isAcknowledged && subscription.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                                println("PURCHASED")
+
+                                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                                    .setPurchaseToken(subscription.purchaseToken)
+                                    .build()
+
+                                billingClient!!.acknowledgePurchase(
+                                    acknowledgePurchaseParams,
+                                    object: AcknowledgePurchaseResponseListener {
+                                        override fun onAcknowledgePurchaseResponse(ackResult: BillingResult) {
+                                            if (ackResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                                                runOnUiThread {
+                                                    Toast.makeText(context,
+                                                        "SUCCESSFULLY PURCHASED",
+                                                        Toast.LENGTH_LONG).show()
+                                                }
+                                                servicesApi!!.AVAILABLE_STAGES = 15
+                                            } else {
+                                                Toast.makeText(context,
+                                                    "$GOOGLE_ERROR ${ackResult.debugMessage}",
+                                                    Toast.LENGTH_LONG).show()
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+                        } else if (
+                            result.responseCode != BillingClient.BillingResponseCode.OK &&
+                            result.responseCode != BillingClient.BillingResponseCode.USER_CANCELED
+                        ) {
+                            runOnUiThread {
+                                Toast.makeText(context,
+                                    "$GOOGLE_ERROR ${result.debugMessage}",
+                                    Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -104,37 +161,109 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
             )
             .build()
 
+        checkPurchases()
     }
 
 
 
-    override fun connectToBilling() {
+    // INAPP =======================================================================================
+    fun getPurchasesHistory() {
+
+        billingClient!!.queryPurchaseHistoryAsync(
+            BillingClient.SkuType.SUBS,
+            object: PurchaseHistoryResponseListener {
+                override fun onPurchaseHistoryResponse(
+                    result: BillingResult,
+                    list: MutableList<PurchaseHistoryRecord>?
+                ) {
+                    if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                        isLocalBillingCacheEnabled = true
+                        val editor = sharedPrefs!!.edit();
+                        editor.putString(APP_PREFRENCES_CACHE_STATUS, "enabled");
+                        editor.apply()
+                        getCachedPurchases()
+                    } else {
+                        if (connectionsCount < CONNECTIONS_MAX_COUNT) {
+                            connectionsCount++
+                            checkPurchasesStatus()
+                        } else {
+                            connectionsCount = 0
+                            runOnUiThread {
+                                Toast.makeText(context,
+                                    "$GOOGLE_ERROR ${result.debugMessage}",
+                                    Toast.LENGTH_LONG).show()
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        )
+    }
+
+
+    override fun checkPurchasesStatus() {
+        isLocalBillingCacheEnabled = sharedPrefs!!.contains(APP_PREFRENCES_CACHE_STATUS)
+        if (isLocalBillingCacheEnabled) {
+            getCachedPurchases()
+        } else {
+            getPurchasesHistory()
+        }
+    }
+
+
+    fun getCachedPurchases() {
+        billingClient!!.queryPurchasesAsync(
+            BillingClient.SkuType.SUBS,
+            object: PurchasesResponseListener {
+                override fun onQueryPurchasesResponse(
+                    result: BillingResult,
+                    list: MutableList<Purchase>
+                ) {
+                    if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                       if (list.isNotEmpty() && list[0].purchaseState == 0) servicesApi!!.AVAILABLE_STAGES = 15
+                    } else {
+                        runOnUiThread {
+                            Toast.makeText(context,
+                                "$GOOGLE_ERROR ${result.debugMessage}",
+                                Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+
+            }
+        )
+    }
+
+
+    fun checkPurchases() {
+
         billingClient!!.startConnection(
             object: BillingClientStateListener {
                 override fun onBillingServiceDisconnected() {
-                    connectToBilling()
+                    checkPurchases()
                 }
                 override fun onBillingSetupFinished(result: BillingResult) {
                     if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                         getProductDetails()
+                        checkPurchasesStatus()
                     } else {
                         runOnUiThread {
                             Toast.makeText(context,
                                 result.debugMessage,
                                 Toast.LENGTH_LONG).show()
                         }
-
                     }
                 }
             }
         )
-
     }
 
 
     fun getProductDetails() {
         val productsIds = arrayListOf<String>()
-        productsIds.add("test_sub")
+        productsIds.add(SUBS_SKU)
 
         val getProductDetailsQuery = SkuDetailsParams
             .newBuilder()
@@ -147,12 +276,10 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
             object: SkuDetailsResponseListener {
                 override fun onSkuDetailsResponse(result: BillingResult, list: MutableList<SkuDetails>?) {
                     if (result.responseCode == BillingClient.BillingResponseCode.OK && list != null) {
-                        val skuDetails = list[0]
-                        runOnUiThread {
-                            Toast.makeText(context,
-                                "${skuDetails.description}: ${skuDetails.price}",
-                                Toast.LENGTH_LONG).show()
-                        }
+                        if (list.isEmpty()) return
+                        skuDetails = list[0]
+                        subsName  = skuDetails!!.description
+                        subsPrice = skuDetails!!.price
                     }
                 }
 
@@ -161,15 +288,23 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
     }
 
-    override fun onDestroy() {
-        BackgroundSoundService.isNeedDestroy = true
-        servicesApi?.dispose(this)
 
-        super.onDestroy()
+    override fun startPurchaseFlow(): Boolean {
+        if (skuDetails == null) return false
+
+        val flowParams = BillingFlowParams.newBuilder()
+            .setSkuDetails(skuDetails!!)
+            .build()
+
+        billingClient!!.launchBillingFlow(this, flowParams)
+
+        return false
     }
 
 
+
     // AD ==========================================================================================
+    //
     override fun banner(isShowing: Boolean) {
         runOnUiThread {
             if (isShowing) {
@@ -180,6 +315,7 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
         }
     }
 
+
     private fun getAdSize(): AdSize? {
         val outMetrics = context.resources.displayMetrics
         val widthPixels = outMetrics.widthPixels.toFloat()
@@ -187,6 +323,16 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
         val adWidth = (widthPixels / density).toInt()
 
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+    }
+    //
+    // AD ==========================================================================================
+
+
+    override fun onDestroy() {
+        billingClient!!.endConnection()
+        BackgroundSoundService.isNeedDestroy = true
+        servicesApi?.dispose(this)
+        super.onDestroy()
     }
 }
 

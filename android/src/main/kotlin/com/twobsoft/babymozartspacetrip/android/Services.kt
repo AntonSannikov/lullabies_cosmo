@@ -25,10 +25,10 @@ import androidx.core.content.ContextCompat.startActivity
 class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
-    var currentSong             = 0
-    val AVAILABLE_STAGES        = 15
-    override var isPlaying      = false
-    override var isNeedNewPlay  = true
+    var currentSong                 = 0
+    override var AVAILABLE_STAGES   = 10
+    override var isPlaying          = false
+    override var isNeedNewPlay      = true
 
     var isPaused = false
 

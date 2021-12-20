@@ -1,4 +1,5 @@
 interface AdInterface {
     fun banner(isShowing: Boolean)
-    fun connectToBilling()
+    fun checkPurchasesStatus()
+    fun startPurchaseFlow(): Boolean
 }
