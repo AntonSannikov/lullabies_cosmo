@@ -33,18 +33,9 @@ class PayWall(
             val payButton = dialog.findViewById(R.id.buy_button) as Button
             payButton.setOnClickListener {
                 dialog.dismiss()
-                if (skuDetails == null) {
-                    Toast.makeText(context,
-                        "Unable to get information from Google Services",
-                        Toast.LENGTH_LONG).show()
-                } else {
-                    val flowParams = BillingFlowParams.newBuilder()
-                        .setSkuDetails(skuDetails)
-                        .build()
-                    billingClient!!.launchBillingFlow(activity, flowParams)
-                }
+                ChildWall(context, activity, skuDetails, billingClient)
+                    .showChildWall()
             }
-
             dialog.show()
         }
     }

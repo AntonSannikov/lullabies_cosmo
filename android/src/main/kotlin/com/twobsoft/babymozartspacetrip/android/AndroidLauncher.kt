@@ -72,7 +72,7 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
         sharedPrefs = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 
-        servicesApi = ServicesApi( this)
+        servicesApi = ServicesApi( this, this)
         lifecycleListener = AppLyfecycleListener(servicesApi!!)
 
         addLifecycleListener(lifecycleListener)
@@ -200,11 +200,11 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
                             checkPurchasesStatus()
                         } else {
                             connectionsCount = 0
-                            runOnUiThread {
-                                Toast.makeText(context,
-                                    "$GOOGLE_ERROR ${result.debugMessage}",
-                                    Toast.LENGTH_LONG).show()
-                            }
+//                            runOnUiThread {
+//                                Toast.makeText(context,
+//                                    "$GOOGLE_ERROR ${result.debugMessage}",
+//                                    Toast.LENGTH_LONG).show()
+//                            }
                         }
 
                     }
@@ -260,7 +260,6 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
                         }
                     }
                 }
-
             }
         )
     }
@@ -319,8 +318,8 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
 
     override fun startPurchaseFlow(): Boolean {
-        ChildWall(this, this, skuDetails, billingClient)
-            .showChildWall()
+        PayWall(this, this, skuDetails, billingClient)
+            .showPayWall()
         return false
     }
 

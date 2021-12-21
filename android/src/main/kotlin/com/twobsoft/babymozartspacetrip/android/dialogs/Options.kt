@@ -56,8 +56,8 @@ class OptionsDialog(
             // buy
             val buyButton = dialog.findViewById(R.id.buy_button) as Button
             buyButton.setOnClickListener {
-                ChildWall(context, activity, skuDetails, billingClient)
-                    .showChildWall()
+                PayWall(context, activity, skuDetails, billingClient)
+                    .showPayWall()
                 dialog.dismiss()
             }
 

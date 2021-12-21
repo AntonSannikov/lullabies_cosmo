@@ -10,7 +10,9 @@ import android.os.Looper
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.SkuDetails
 import com.twobsoft.babymozartspacetrip.R
 import kotlin.random.Random
@@ -74,12 +76,19 @@ class ChildWall(val context: Context,
 
 
     private fun variantButtonListener(value: Int) {
+        dialog!!.dismiss()
+
         if (value == result) {
-            dialog!!.dismiss()
-            PayWall(context, activity, skuDetails, billingClient)
-                .showPayWall()
-        } else {
-            dialog!!.dismiss()
+            if (skuDetails == null) {
+                Toast.makeText(context,
+                    "Unable to get information from Google Services",
+                    Toast.LENGTH_LONG).show()
+            } else {
+                val flowParams = BillingFlowParams.newBuilder()
+                    .setSkuDetails(skuDetails)
+                    .build()
+                billingClient!!.launchBillingFlow(activity, flowParams)
+            }
         }
     }
 

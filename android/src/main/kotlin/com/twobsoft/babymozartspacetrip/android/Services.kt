@@ -1,5 +1,6 @@
 package com.twobsoft.babymozartspacetrip.android
 
+import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.TimePickerDialog
@@ -7,27 +8,18 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.media.MediaPlayer
 import androidx.core.app.NotificationManagerCompat
 import com.twobsoft.babymozartspacetrip.R
 import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
 import java.util.*
 import kotlin.concurrent.timerTask
 import android.media.AudioManager
-import android.view.View
-import androidx.core.app.ShareCompat
-import androidx.core.content.ContextCompat.startActivity
 import android.content.ComponentName
-
 import android.content.ServiceConnection
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.*
-import androidx.appcompat.content.res.AppCompatResources
 
 
-class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
+class ServicesApi(val context: Context, val activity: Activity): ServicesCoreInterface, Playable {
 
 
 
@@ -246,7 +238,7 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
         if (lastSelectedMinute == null) lastSelectedMinute = 30
         Handler(Looper.getMainLooper()).post {
             val dialog = TimePickerDialog(
-                context,
+                activity,
                 { _, hourOfDay, minute ->
                     if (timer != null) timer!!.cancel()
                     timer = Timer()
