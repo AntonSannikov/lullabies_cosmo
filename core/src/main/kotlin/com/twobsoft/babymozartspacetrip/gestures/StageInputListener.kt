@@ -34,6 +34,7 @@ class StageInputListener(
     var isBackground        = false
     var isAllowPlaying      = false
     var lastStage           = 0
+    val removedActorsBuffer = arrayListOf<Actor>()
 
 
     // callbacks from notification media buttons
@@ -331,10 +332,14 @@ class StageInputListener(
         var length = screen.stage.actors.size
 
         while (0 < length) {
+            removedActorsBuffer.add(screen.stage.actors[0])
             screen.stage.actors[0].remove()
             length--
         }
+
+        screen.menuModel.all.forEach { it.dispose() }
         screen.menuModel = MenuSpineModel(screen.game.assets)
+
         screen.stage.addActor(screen.menuModel.background)
         screen.stage.addActor(screen.menuModel.stars)
         screen.stage.addActor(screen.menuModel.radar)
@@ -355,7 +360,7 @@ class StageInputListener(
         }
 
         screen.game.adServices.banner(screen.game.serviceApi.AVAILABLE_STAGES != 15)
-
+        disposeUnusedActors()
         screen.isMenu = true
         screen.currentStageNumber = 0
         screen.isInverseShading = false
@@ -397,8 +402,14 @@ class StageInputListener(
         }
 
         screen.stage.actors.forEach {
-            if (it is LayerGroup && it.isNeedRemove) it.addAction(Actions.removeActor())
-            if (it is LayerActor && it.isNeedRemove) it.addAction(Actions.removeActor())
+            if (it is LayerGroup && it.isNeedRemove) {
+//                it.children.forEach { child-> removedActorsBuffer.add(child) }
+                it.addAction(Actions.removeActor())
+            }
+            if (it is LayerActor && it.isNeedRemove) {
+//                removedActorsBuffer.add(it)
+                it.addAction(Actions.removeActor())
+            }
         }
 
         changeStage(0)
@@ -427,9 +438,11 @@ class StageInputListener(
         while(i < length) {
             val actor = screen.stage.actors[i]
             if (actor is LayerActor && actor.isNeedRemove) {
+                removedActorsBuffer.add(actor)
                 actor.remove()
                 length--
             } else if (actor is LayerGroup && actor.isNeedRemove) {
+                actor.children.forEach { removedActorsBuffer.add(it) }
                 actor.remove()
                 length--
             }
@@ -445,13 +458,28 @@ class StageInputListener(
     }
 
 
-    fun refreshStage() {
+    fun disposeUnusedActors() {
+        removedActorsBuffer.forEach {
+            if (it is LayerActor &&
+                it.tex != "menu/background.jpg" &&
+                it.tex != "menu/radar.png" &&
+                it.tex != "menu/stars.png" &&
+                it.tex != "planets/sleep.jpg") {
+                it.dispose()
+            }
+        }
+        removedActorsBuffer.clear()
+    }
+
+
+    fun refreshStage(isNeedToRefreshText: Boolean) {
         var i = 0
         var length = screen.stage.actors.size
         while(i < length) {
             val actor = screen.stage.actors[i]
             if (actor is LayerActor) {
                 if (actor.isNeedRemove) {
+                    removedActorsBuffer.add(actor)
                     actor.remove()
                     length--
                 } else {
@@ -461,6 +489,7 @@ class StageInputListener(
                 }
             } else if (actor is LayerGroup) {
                 if (actor.isNeedRemove) {
+                    removedActorsBuffer.add(actor)
                     actor.remove()
                     length--
                 } else {
@@ -470,6 +499,7 @@ class StageInputListener(
             }
             else { i++ }
         }
+        hudHandler.refreshHud(isNeedToRefreshText)
         screen.isHudTapable = true
     }
 
@@ -539,7 +569,8 @@ class StageInputListener(
                                     if (!isReseted) {
                                         isReseted = true
                                         screen.isSwiping = false
-                                        refreshStage()
+                                        refreshStage(isNeedToRefreshText)
+                                        disposeUnusedActors()
                                     }
                                 }
                             )
@@ -547,7 +578,14 @@ class StageInputListener(
                     )
                 }
             }
-        } else { screen.isSwiping = false }
+        } else {
+            hudHandler.refreshHud(isNeedToRefreshText)
+            screen.isSwiping = false
+            disposeUnusedActors()
+        }
+
+
+
     }
 
 

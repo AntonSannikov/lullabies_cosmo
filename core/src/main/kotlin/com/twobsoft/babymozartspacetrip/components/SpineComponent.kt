@@ -46,8 +46,6 @@ class SpineComponent(
     var textHeight = 0f
 
 
-
-
     var json = SkeletonJson(atlas).also{
         it.scale = scale
     }
@@ -185,6 +183,8 @@ class SpineComponent(
     }
 
     fun dispose() {
+        fontFile=null
+        atlas.disposeSafely()
         font.disposeSafely()
     }
 

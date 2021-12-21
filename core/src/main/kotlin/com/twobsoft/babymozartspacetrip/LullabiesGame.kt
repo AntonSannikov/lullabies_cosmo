@@ -328,7 +328,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
 
         } else if (isHud) {
             for (spine in hudModel.allSkeletons) {
-                spine.state.update(delta)
+                spine.state.update(0.03f)
                 spine.state.apply(spine.skeleton)
                 if (spine.rotation != 0f) {
                     spine.skeleton.rootBone.rotation = spine.rotation

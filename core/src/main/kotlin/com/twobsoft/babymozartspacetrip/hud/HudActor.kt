@@ -108,7 +108,6 @@ class HudActor(
         return  result.toTypedArray()
     }
 
-
     override fun remove(): Boolean {
         actorTexture.disposeSafely()
         texture.disposeSafely()

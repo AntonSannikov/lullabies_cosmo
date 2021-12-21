@@ -145,13 +145,15 @@ class ServicesApi(val context: Context, val activity: Activity): ServicesCoreInt
             type = "text/plain"
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
-        context.startActivity(shareIntent)
+        activity.startActivity(shareIntent)
     }
 
 
     override fun playMusic(stageNumber: Int, isSwitching: Boolean) {
 
         currentSong = stageNumber-1
+
+        if (currentSong == -1) currentSong = 0
 
         context.startService(Intent(context, BackgroundSoundService::class.java))
         if (isSwitching || isPaused || isNeedNewPlay) {
@@ -337,13 +339,13 @@ class ServicesApi(val context: Context, val activity: Activity): ServicesCoreInt
 
 
 
-    fun dispose(context: Context) {
+    fun dispose() {
         mService.isNeedDestroy = true
         context.unbindService(connection)
-        mBound = false
         val notificationManagerCompat = NotificationManagerCompat.from(context)
         notificationManagerCompat.cancelAll()
         context.unregisterReceiver(mediaButtonReceiver)
+        mBound = false
     }
 
 

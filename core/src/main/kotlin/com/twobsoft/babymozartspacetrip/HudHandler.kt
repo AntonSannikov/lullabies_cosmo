@@ -46,17 +46,17 @@ class HudHandler(val screen: MainScreen) {
             }
         }
 
-        if (screen.isLooping) {
-            val actor = HudActor(
-                tex = HudModel.optionsFlareTex,
-                actorTexture = Texture(Gdx.files.internal(HudModel.optionsFlareTex))
-            ).also {
-                it.x = screen.hudModel.options.x
-                it.y = screen.hudModel.options.y
-                it.scaleBy(-0.84f, -0.88f)
-            }
-            screen.stage.addActor(actor)
-        }
+//        if (screen.isLooping) {
+//            val actor = HudActor(
+//                tex = HudModel.optionsFlareTex,
+//                actorTexture = Texture(Gdx.files.internal(HudModel.optionsFlareTex))
+//            ).also {
+//                it.x = screen.hudModel.options.x
+//                it.y = screen.hudModel.options.y
+//                it.scaleBy(-0.84f, -0.88f)
+//            }
+//            screen.stage.addActor(actor)
+//        }
         screen.isHud = true
         screen.isHudTapable = true
     }
@@ -94,10 +94,10 @@ class HudHandler(val screen: MainScreen) {
     }
 
 
-    fun onLoop() {
-        screen.isLooping = !screen.isLooping
-        screen.game.serviceApi.setLooping(screen.isLooping)
-    }
+//    fun onLoop() {
+//        screen.isLooping = !screen.isLooping
+//        screen.game.serviceApi.setLooping(screen.isLooping)
+//    }
 
 
     fun addLampLight() {

@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.hud.HudModel
+import ktx.assets.disposeSafely
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sin
@@ -141,6 +142,10 @@ class LayerActor(
         if (isRepeated) {
             repeatTime += delta
         }
+    }
+
+    fun dispose() {
+        texture.disposeSafely()
     }
 
 

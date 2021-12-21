@@ -90,9 +90,9 @@ class MySplashScreen(val game: LullabiesGame): KtxScreen {
                 isTransitionDone = true
                 game.mainScreen = mainScreen
                 game.addScreen(mainScreen)
-                this.dispose()
                 game.setScreen<MainScreen>()
                 mainScreen.isMenu = true
+                this.dispose()
             }
 
             if (!isTransitionDone) {

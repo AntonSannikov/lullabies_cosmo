@@ -70,10 +70,9 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         sharedPrefs = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 
-        servicesApi = ServicesApi( this, this)
+        servicesApi = ServicesApi( applicationContext,  this)
         lifecycleListener = AppLyfecycleListener(servicesApi!!)
 
         addLifecycleListener(lifecycleListener)
@@ -358,7 +357,8 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
     override fun onDestroy() {
         billingClient!!.endConnection()
-        servicesApi?.dispose(this)
+        servicesApi?.dispose()
+        removeLifecycleListener(lifecycleListener)
         super.onDestroy()
     }
 }
