@@ -27,6 +27,7 @@ import com.twobsoft.babymozartspacetrip.R
 import AdInterface
 import android.content.ActivityNotFoundException
 import android.net.Uri
+import com.twobsoft.babymozartspacetrip.BuildConfig
 import com.twobsoft.babymozartspacetrip.android.dialogs.ChildWall
 import com.twobsoft.babymozartspacetrip.android.dialogs.OptionsDialog
 import com.twobsoft.babymozartspacetrip.android.dialogs.PayWall
@@ -97,7 +98,7 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
         bannerAdView = AdView(this)
         bannerAdView!!.visibility   = View.GONE
-        bannerAdView!!.adUnitId     = "ca-app-pub-6781199721577549/4945324556"
+        bannerAdView!!.adUnitId     = BuildConfig.BANNER_ID
         bannerAdView!!.adSize       = getAdSize()
         bannerAdView!!.adListener = object : AdListener() {
             override fun onAdLoaded() {
@@ -200,11 +201,11 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
                             checkPurchasesStatus()
                         } else {
                             connectionsCount = 0
-//                            runOnUiThread {
-//                                Toast.makeText(context,
-//                                    "$GOOGLE_ERROR ${result.debugMessage}",
-//                                    Toast.LENGTH_LONG).show()
-//                            }
+                            runOnUiThread {
+                                Toast.makeText(context,
+                                    "$GOOGLE_ERROR ${result.debugMessage}",
+                                    Toast.LENGTH_LONG).show()
+                            }
                         }
 
                     }
