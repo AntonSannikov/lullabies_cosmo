@@ -2,32 +2,64 @@
 
 
 <LinearLayout
-
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="@mipmap/dialog_frame"
     android:orientation="vertical"
-    android:paddingVertical="40dp"
-    android:paddingHorizontal="40dp">
+    android:paddingHorizontal="40dp"
+    android:paddingVertical="40dp">
 
     <Button
         android:id="@+id/buy_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enjoy ad-free Premium account and get access to all lullabies for 1.99" />
+        android:textAlignment="center"
+        android:background="@drawable/button_selector"
+        android:text="Enjoy ad-free Premium account and get access to all lullabies for 1.99$ per year" />
 
-    <Button
-        android:id="@+id/button2"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="B2" />
-
-    <Button
-        android:id="@+id/button3"
+        android:layout_marginTop="20dp"
+        android:textColor="#000"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:text="Subscription disables ads in the application and opens access to exlusive melodies.\n\n
+    Payment will be charged to your Google account at the confirmation of purchase.
+The subscription automatically renews unless it is cancelled at least 24 hours before the end of current period.
+Your account will be charged for renewal within 24 hours prior to the end of the current period.
+You can manage and cancel your subscription by going to your Play Store account settings after purchase." />
+    <TextView
+        android:id="@+id/privacyTitle"
+        android:textColor="#000"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="B3" />
+        android:layout_marginTop="40dp"
+        android:text="Privacy Policy:" />
+    <TextView
+        android:id="@+id/privacyLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:textSize="12sp"
+        android:text="https://twobsoft.github.io/baby_mozart_space_trip_privacy_policy" />
+    <TextView
+        android:id="@+id/eulaTitle"
+        android:textColor="#000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="EULA:" />
+    <TextView
+        android:id="@+id/eulaLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:textSize="12sp"
+        android:text="https://twobsoft.github.io/baby_mozart_space_trip_eula" />
 
 </LinearLayout>
+

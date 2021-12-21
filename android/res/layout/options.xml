@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@mipmap/dialog_frame"
+    android:orientation="vertical"
+    android:paddingHorizontal="40dp"
+    android:paddingVertical="40dp">
+
+    <Button
+        android:id="@+id/moreapps_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_selector"
+        android:drawableStart="@drawable/ic_baseline_dashboard_customize_24"
+        android:text="More apps"
+        android:textSize="14sp"
+        android:textAlignment="center" />
+    <Button
+        android:id="@+id/buy_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_selector"
+        android:drawableStart="@drawable/ic_crown"
+        android:layout_marginTop="20dp"
+        android:drawablePadding="10dp"
+        android:text="Remove ads &amp; unlock all music"
+        android:textSize="14sp"
+        android:textAlignment="center" />
+    <Button
+        android:id="@+id/rate_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_selector"
+        android:drawableStart="@drawable/ic_baseline_star_rate_24"
+        android:layout_marginTop="20dp"
+        android:text="Rate app"
+        android:textSize="14sp"
+        android:textAlignment="center" />
+    <Button
+        android:id="@+id/contact_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_selector"
+        android:drawableStart="@drawable/ic_baseline_email_24"
+        android:layout_marginTop="20dp"
+        android:text="Contact us"
+        android:textSize="14sp"
+        android:textAlignment="center" />
+    <Button
+        android:id="@+id/privacy_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_selector"
+        android:drawableStart="@drawable/ic_baseline_policy_24"
+        android:layout_marginTop="20dp"
+        android:text="Privacy &amp; Terms"
+        android:textSize="14sp"
+        android:textAlignment="center" />
+</LinearLayout>

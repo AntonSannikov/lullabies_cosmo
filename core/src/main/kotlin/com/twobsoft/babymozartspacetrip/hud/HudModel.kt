@@ -152,8 +152,8 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.hitBox.add(it.y)
 
         it.tapHandler = {
-            flareToButton(it.x, it.y, Vector2(it.width, it.height), optionsFlareTex)
-            appListener.hudHandler.onLoop()
+            flareToButton(it.x, it.y, Vector2(it.width, it.height), optionsFlareTex, isSwicthable = false)
+            appListener.screen.game.adServices.showOptions()
         }
     }
 

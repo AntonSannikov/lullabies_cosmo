@@ -20,7 +20,11 @@ import androidx.core.content.ContextCompat.startActivity
 import android.content.ComponentName
 
 import android.content.ServiceConnection
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.*
+import androidx.appcompat.content.res.AppCompatResources
 
 
 class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
@@ -238,9 +242,6 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
 
 
     override fun createTimer() {
-//        val cal = Calendar.getInstance()
-        //cal.get(Calendar.HOUR_OF_DAY)
-        //cal.get(Calendar.MINUTE)
         if (lastSelectedHour == null) lastSelectedHour = 0
         if (lastSelectedMinute == null) lastSelectedMinute = 30
         Handler(Looper.getMainLooper()).post {
@@ -259,6 +260,8 @@ class ServicesApi(val context: Context): ServicesCoreInterface, Playable {
                 lastSelectedHour!!, lastSelectedMinute!!,
                 true
             )
+//            val drw = AppCompatResources.getDrawable(context, R.mipmap.dialog_frame)
+//            dialog.window?.setBackgroundDrawable(drw)
             dialog.show()
         }
     }

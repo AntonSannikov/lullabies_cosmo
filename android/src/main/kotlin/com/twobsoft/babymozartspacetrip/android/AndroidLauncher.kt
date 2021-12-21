@@ -1,10 +1,12 @@
 package com.twobsoft.babymozartspacetrip.android
 
-import AdInterface
+
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -18,12 +20,19 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.AdListener
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.Toast
 import com.android.billingclient.api.*
 import com.twobsoft.babymozartspacetrip.R
+import AdInterface
+import android.content.ActivityNotFoundException
+import android.net.Uri
+import com.twobsoft.babymozartspacetrip.android.dialogs.ChildWall
+import com.twobsoft.babymozartspacetrip.android.dialogs.OptionsDialog
+import com.twobsoft.babymozartspacetrip.android.dialogs.PayWall
 
 
-const val GOOGLE_ERROR = "Error on connecting to Google Billing Services"
+const val GOOGLE_ERROR = "Error on connecting to Google Billing Services: "
 const val CONNECTIONS_MAX_COUNT = 5
 
 
@@ -84,7 +93,7 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
             .build()
         MobileAds.setRequestConfiguration(requestConfiguration)
         MobileAds.initialize(this)
-        { println("ADMOB STATUS $it") }
+//        { println("ADMOB STATUS $it") }
 
         bannerAdView = AdView(this)
         bannerAdView!!.visibility   = View.GONE
@@ -92,7 +101,7 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
         bannerAdView!!.adSize       = getAdSize()
         bannerAdView!!.adListener = object : AdListener() {
             override fun onAdLoaded() {
-                println("BANNER AD LOADED")
+//                println("BANNER AD LOADED")
             }
         }
 
@@ -137,11 +146,6 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
                                     object: AcknowledgePurchaseResponseListener {
                                         override fun onAcknowledgePurchaseResponse(ackResult: BillingResult) {
                                             if (ackResult.responseCode == BillingClient.BillingResponseCode.OK) {
-//                                                runOnUiThread {
-//                                                    Toast.makeText(context,
-//                                                        "SUCCESSFULLY PURCHASED",
-//                                                        Toast.LENGTH_LONG).show()
-//                                                }
                                                 servicesApi!!.AVAILABLE_STAGES = 15
                                                 banner(false)
                                                 game!!.mainScreen!!.inputListener.unlockContent()
@@ -229,7 +233,25 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
                     list: MutableList<Purchase>
                 ) {
                     if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                       if (list.isNotEmpty() && list[0].purchaseState == Purchase.PurchaseState.PURCHASED) servicesApi!!.AVAILABLE_STAGES = 15
+                       if (list.isNotEmpty() && list[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
+
+                           if (!list[0].isAcknowledged) {
+                               val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                                   .setPurchaseToken(list[0].purchaseToken)
+                                   .build()
+                               billingClient!!.acknowledgePurchase(
+                                   acknowledgePurchaseParams,
+                                   object: AcknowledgePurchaseResponseListener {
+                                       override fun onAcknowledgePurchaseResponse(ackResult: BillingResult) {
+                                           servicesApi!!.AVAILABLE_STAGES = 15
+                                       }
+                                   }
+                               )
+                           } else {
+                               servicesApi!!.AVAILABLE_STAGES = 15
+                           }
+
+                       }
                     } else {
                         runOnUiThread {
                             Toast.makeText(context,
@@ -297,55 +319,16 @@ class AndroidLauncher : AndroidApplication(), AdInterface {
 
 
     override fun startPurchaseFlow(): Boolean {
-//        if (skuDetails == null) {
-//            runOnUiThread {
-//                Toast.makeText(context,
-//                    "Unable to get information from Google Services",
-//                    Toast.LENGTH_LONG).show()
-//            }
-//            return false
-//        }
-
-        showPayWall()
-
-//        val flowParams = BillingFlowParams.newBuilder()
-//            .setSkuDetails(skuDetails!!)
-//            .build()
-//
-//        billingClient!!.launchBillingFlow(this, flowParams)
-
+        ChildWall(this, this, skuDetails, billingClient)
+            .showChildWall()
         return false
     }
 
 
-    fun showPayWall() {
-        runOnUiThread {
-            val dialog = Dialog(this)
-//            dialog.window!!.setFlags(
-//                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-//                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-//            )
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(true)
-            dialog.setContentView(R.layout.inapp_paywall)
-//        val body = dialog.findViewById(R.id.body) as TextView
-//        body.text = title
-//        val yesBtn = dialog.findViewById(R.id.yesBtn) as Button
-//        val noBtn = dialog.findViewById(R.id.noBtn) as TextView
-//        yesBtn.setOnClickListener {
-//            dialog.dismiss()
-//        }
-//        noBtn.setOnClickListener { dialog.dismiss() }
-            dialog.show()
-        }
+    override fun showOptions() {
+        OptionsDialog(this, this, skuDetails, billingClient)
+            .showOptions()
     }
-
-
-    fun showOptions() {
-
-    }
-
 
 
     // AD ==========================================================================================
