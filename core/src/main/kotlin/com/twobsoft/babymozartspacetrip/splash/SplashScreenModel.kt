@@ -92,7 +92,7 @@ class SplashScreenModel(val assets: Assets) : Entity() {
         val scale = Utils.getScale(0.7f, 0.7f * ratio, it.width, it.height)
         it.width = it.srcWidth + it.srcWidth*scale.x
         it.height = it.srcHeight + it.srcHeight*scale.y
-        it.x = (MainScreen.BG_WIDTH - it.width) / 3
+        it.x = (MainScreen.BG_WIDTH - it.width) / 2
         it.y = (MainScreen.BG_HEIGHT - it.height) / 2
         it.originX = it.width / 2
         it.originY = it.height / 2
