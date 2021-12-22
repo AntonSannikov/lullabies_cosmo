@@ -53,8 +53,8 @@ android {
 		applicationId 'com.twobsoft.babymozartspacetrip'
 		minSdkVersion 21
 		targetSdkVersion 31
-		versionCode 13
-		versionName "0.98"
+		versionCode 14
+		versionName "0.99"
 		multiDexEnabled true
 	}
 	compileOptions {
