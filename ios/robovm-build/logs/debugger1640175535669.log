@@ -1,0 +1,47 @@
+19:18:55.727 INFO: JdwpDebugServer: handling req: VirtualMachine(1).IDSizes(7)
+19:18:55.727 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.727 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=100, eventKind=CLASS_PREPARE, suspendPolicy=NONE, predicates=[]}
+19:18:55.727 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.727 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=101, eventKind=CLASS_UNLOAD, suspendPolicy=NONE, predicates=[]}
+19:18:55.749 INFO: JdwpDebugServer: handling req: VirtualMachine(1).Version(1)
+19:18:55.750 INFO: JdwpDebugServer: handling req: VirtualMachine(1).capabilitiesNew(17)
+19:18:55.750 INFO: JdwpDebugServer: handling req: VirtualMachine(1).capabilities(12)
+19:18:55.750 INFO: JdwpDebugServer: handling req: VirtualMachine(1).AllClassesWithGeneric(20)
+19:18:55.755 INFO: JdwpDebugServer: handling req: VirtualMachine(1).TopLevelThreadGroups(5)
+19:18:55.756 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.756 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=102, eventKind=THREAD_START, suspendPolicy=NONE, predicates=[]}
+19:18:55.756 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.756 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=103, eventKind=THREAD_DEATH, suspendPolicy=NONE, predicates=[]}
+19:18:55.758 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.758 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=104, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=sun.instrument.InstrumentationImpl]}
+19:18:55.758 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.758 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=105, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=sun.instrument.InstrumentationImpl]}
+19:18:55.760 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.760 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=106, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=com.twobsoft.babymozartspacetrip.splash.SplashScreenModel$title$1]}
+19:18:55.761 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.761 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=107, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=com.twobsoft.babymozartspacetrip.splash.SplashScreenModel$title$1$*]}
+19:18:55.761 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.761 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=108, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=com.twobsoft.babymozartspacetrip.splash.SplashScreenModel]}
+19:18:55.761 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.761 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=109, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=com.twobsoft.babymozartspacetrip.splash.SplashScreenModel$*]}
+19:18:55.761 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+19:18:55.761 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=110, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=com.twobsoft.babymozartspacetrip.splash.ComposableSingletons$SplashScreenModelKt$*]}
+19:18:56.187 INFO: JdwpDebugServer: handling req: VirtualMachine(1).Exit(10)
+19:18:56.187 SEVERE: Debugger: Thread JDWP server socket thread crashed
+org.robovm.debugger.DebuggerException: Terminating due exit command
+	at org.robovm.debugger.jdwp.JdwpDebugServer.doSocketWork(JdwpDebugServer.java:211)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+19:18:56.188 SEVERE: Debugger: Thread HooksChannel socket thread crashed
+org.robovm.debugger.DebuggerException: org.robovm.debugger.DebuggerException: java.lang.InterruptedException: sleep interrupted
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:149)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+Caused by: org.robovm.debugger.DebuggerException: java.lang.InterruptedException: sleep interrupted
+	at org.robovm.compiler.plugin.debug.DebuggerLaunchPlugin$DebuggerLauncherCallback.connect(DebuggerLaunchPlugin.java:279)
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:86)
+	... 2 more
+Caused by: java.lang.InterruptedException: sleep interrupted
+	at java.base/java.lang.Thread.sleep(Native Method)
+	at org.robovm.compiler.plugin.debug.DebuggerLaunchPlugin$DebuggerLauncherCallback.connect(DebuggerLaunchPlugin.java:274)
+	... 3 more
