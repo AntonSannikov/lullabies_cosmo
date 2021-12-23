@@ -57,7 +57,7 @@ class CometModel(val assets: Assets): Entity() {
                 Actions.parallel(
                     Actions.sequence(
                         Actions.scaleBy(0.08f, 0.08f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.scaleBy(-0.12f, -0.08f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                        Actions.scaleBy(-0.08f, -0.08f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                     ),
                     Actions.sequence(
                         Actions.rotateBy(4f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
@@ -73,6 +73,8 @@ class CometModel(val assets: Assets): Entity() {
         texture = Texture(Gdx.files.internal(plan2Tex)),
         isSceneDefaultLayer = true
     ).also {
+        it.originX = 0f
+        it.originY = 0f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -80,12 +82,6 @@ class CometModel(val assets: Assets): Entity() {
                     Actions.sequence(
                         Actions.scaleBy(0.02f, 0.02f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                         Actions.scaleBy(-0.02f, -0.02f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    ),
-                    Actions.sequence(
-                        Actions.moveBy(20f,15f, LullabiesGame.ANIMATION_TIME / 2, Interpolation.fade),
-                        Actions.moveBy(10f,10f, LullabiesGame.ANIMATION_TIME / 2, Interpolation.fade),
-                        Actions.moveBy(-5f, -20f,  LullabiesGame.ANIMATION_TIME / 2, Interpolation.fade),
-                        Actions.moveBy(-25f, -5f,  LullabiesGame.ANIMATION_TIME / 2, Interpolation.fade),
                     ),
                 )
             )

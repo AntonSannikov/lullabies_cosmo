@@ -29,7 +29,7 @@ class ServicesApi(val context: Context, val activity: Activity): ServicesCoreInt
 
 
     var currentSong                 = 0
-    override var AVAILABLE_STAGES   = 10
+    override var AVAILABLE_STAGES   = 15
     override var isPlaying          = false
     override var isNeedNewPlay      = true
 
