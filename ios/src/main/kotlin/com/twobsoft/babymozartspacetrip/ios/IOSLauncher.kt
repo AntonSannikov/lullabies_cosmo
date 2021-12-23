@@ -38,19 +38,20 @@ class IOSLauncher : IOSApplication.Delegate(), AdInterface {
 
 
     override fun banner(isShowing: Boolean) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun checkPurchasesStatus() {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun startPurchaseFlow(): Boolean {
-        TODO("Not yet implemented")
+        println("")
+        return false
     }
 
     override fun showOptions() {
-        TODO("Not yet implemented")
+        println("")
     }
 }
 

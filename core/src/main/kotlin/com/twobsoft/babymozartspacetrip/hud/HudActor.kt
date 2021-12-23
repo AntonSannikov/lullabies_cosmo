@@ -57,7 +57,7 @@ class HudActor(
             font = generator.generateFont(parameter)
             generator.dispose()
             font!!.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-            font!!.data.scale(MainScreen.BG_HEIGHT * 0.00153f)
+            font!!.data.scale(MainScreen.BG_HEIGHT * 0.001f)
             font!!.color.set(0f, 0f, 0f, 1f)
             val glyphLayout = GlyphLayout(font, text)
             textWidth   = glyphLayout.width

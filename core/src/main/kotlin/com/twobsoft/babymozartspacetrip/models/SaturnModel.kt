@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.LullabiesGame
+import com.twobsoft.babymozartspacetrip.MainScreen
 import com.twobsoft.babymozartspacetrip.components.LayerActor
 
 class SaturnModel(val assets: Assets): Entity() {
@@ -63,12 +64,14 @@ class SaturnModel(val assets: Assets): Entity() {
         texture = Texture(Gdx.files.internal(ringTex)),
         isSceneDefaultLayer = true
     ).also {
+        it.originX = MainScreen.BG_WIDTH
+        it.originY = 0f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
                 Actions.sequence(
-                    Actions.scaleBy(0.07f, 0.07f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    Actions.scaleBy(-0.07f, -0.07f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    Actions.scaleBy(0.03f, 0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
+                    Actions.scaleBy(-0.03f, -0.03f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                 ),
             )
         )

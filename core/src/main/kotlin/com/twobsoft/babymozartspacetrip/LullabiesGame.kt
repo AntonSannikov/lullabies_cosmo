@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.BufferUtils
 import com.esotericsoftware.spine.*
 import com.twobsoft.babymozartspacetrip.LullabiesGame.Companion.BARREL_SHADER_PULSE_MAX_POWER
 import com.twobsoft.babymozartspacetrip.LullabiesGame.Companion.BARREL_SHADER_PULSE_START_POWER

@@ -22,7 +22,7 @@ class SpineComponent(
     var fontFile: FileHandle?=null,
     var fontPosition: Vector2=Vector2.Zero,
     var name: String?=null,
-    var fontScaling: Float = MainScreen.BG_WIDTH * 0.002f,
+    var fontScaling: Float = MainScreen.BG_WIDTH * 0.0015f,
     var timeScaling:Float = 0.5f
     ) {
 

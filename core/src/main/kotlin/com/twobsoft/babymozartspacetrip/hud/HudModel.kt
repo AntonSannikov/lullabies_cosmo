@@ -22,6 +22,7 @@ import com.twobsoft.babymozartspacetrip.gestures.StageInputListener
 import com.twobsoft.babymozartspacetrip.models.Entity
 import com.twobsoft.babymozartspacetrip.utils.Utils
 import ktx.scene2d.vis.visTextTooltip
+import kotlin.math.abs
 
 
 class HudGroup: Group() {
@@ -58,7 +59,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             "hud/right/skeletons.atlas", "hud/right/json.json",
             "hud/play/play.atlas", "hud/play/play.json",
         )
-        val bottomPadding = MainScreen.BG_HEIGHT * 0.02f
+        val bottomPadding = MainScreen.BG_HEIGHT * 0.015f
 
         var sideFramePadding    = 0f
         var sideFrameSmallPad   = 0f
@@ -94,24 +95,27 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
             scale = Utils.getScale(1.1f, 1.5f, it.width, it.height)
             it.scaleBy(scale.x, scale.y)
         } else {
-            scale = Utils.getScale(1.42f, 1.5f, it.width, it.height)
+            scale = Utils.getScale(1.42f, 1.35f, it.width, it.height)
             it.scaleBy(scale.x, scale.y)
         }
+        it.y = (MainScreen.BG_HEIGHT - it.height) / 1.98f
+
+        val yOffset = abs((it.height - MainScreen.BG_HEIGHT)/2-abs(it.y))
 
         sideFramePadding        = 276 * (1 + scale.x) - (it.width * (1 + scale.x) - MainScreen.BG_WIDTH) / 2
         sideFrameSmallPad       = 248 * (1 + scale.x) - (it.width * (1 + scale.x) - MainScreen.BG_WIDTH) / 2
-        upperFramePadding       = 627 * (1 + scale.y) - (it.height * (1 + scale.y) - MainScreen.BG_HEIGHT) / 2
-        bottomFramePadding      = 815 * (1 + scale.y) - (it.height * (1 + scale.y) - MainScreen.BG_HEIGHT) / 2
+        upperFramePadding       = 627 * (1 + scale.y) + yOffset - (it.height * (1 + scale.y) - MainScreen.BG_HEIGHT) / 2
+        bottomFramePadding      = 815 * (1 + scale.y) - yOffset - (it.height * (1 + scale.y) - MainScreen.BG_HEIGHT) / 2
         layerWidth              = MainScreen.BG_WIDTH - sideFramePadding*1.9f
         layerHeight             = layerWidth * 100 / 64
         layerXPosition          = (MainScreen.BG_WIDTH - layerWidth) / 2
-        layerYPosition          = (MainScreen.BG_HEIGHT - layerHeight) / 1.6f
+        layerYPosition          = (MainScreen.BG_HEIGHT - layerHeight) / 2f + bottomPadding
         upperPanelWindowHeight  = 124 * (1 + scale.y)
         upperPanelSideHeight    = 164 * (1 + scale.y)
         upperPanelWindowWidth   = 684 * (1 + scale.x)
 
-        it.y = (MainScreen.BG_HEIGHT - it.height) / 2 + upperFramePadding / 2
     }
+
 
     // upper panel
     val panelUp = HudActor(
@@ -123,9 +127,9 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.height       = upperPanelSideHeight * 1.1f
         it.width        = it.height * 5f
         it.x            = (MainScreen.BG_WIDTH - it.width) / 2
-        it.y            = MainScreen.BG_HEIGHT - upperFramePadding / 2 - it.height * 0.95f
+        it.y            = MainScreen.BG_HEIGHT - upperFramePadding - it.height*1.05f
         it.textX        = sideFramePadding + layerWidth * 0.4f
-        it.textY        = MainScreen.BG_HEIGHT - (upperFramePadding + upperPanelWindowHeight - it.textHeight) / 2
+        it.textY        = MainScreen.BG_HEIGHT - upperFramePadding - (upperPanelWindowHeight-it.textHeight)/2
         it.textBound    = MainScreen.BG_WIDTH * 0.17f
     }
 
@@ -136,7 +140,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.width    = (MainScreen.BG_WIDTH - upperPanelWindowWidth - sideFrameSmallPad * 2) / 2.15f
         it.height   = upperPanelSideHeight * 1.7f
         it.x        = sideFrameSmallPad
-        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - it.height*0.98f
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding - it.height*0.95f
 
         // 1
         it.hitBox.add(it.x)
@@ -205,7 +209,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.width    = MainScreen.BG_WIDTH * 0.3f
         it.height   = it.width * 0.898f
         it.x        = (MainScreen.BG_WIDTH - it.width) / 2
-        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - upperPanelWindowHeight - it.height
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding - upperPanelWindowHeight - it.height
         it.originX  = it.width / 2
         it.originY  = it.height / 2
         it.addAction(
@@ -225,7 +229,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.width    = layerWidth * 0.11f
         it.height   = it.width * 1.763f
         it.x        = (MainScreen.BG_WIDTH - it.width) / 2
-        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - upperPanelWindowHeight - it.height
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding - upperPanelWindowHeight - it.height*0.98f
 
         // 1
         it.hitBox.add(it.x)
@@ -255,7 +259,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.width    = (MainScreen.BG_WIDTH - upperPanelWindowWidth - sideFrameSmallPad * 2) / 2.15f
         it.height   = upperPanelSideHeight * 1.22f
         it.x        = MainScreen.BG_WIDTH - sideFrameSmallPad - it.width
-        it.y        = MainScreen.BG_HEIGHT - upperFramePadding / 2 - it.height*0.97f
+        it.y        = MainScreen.BG_HEIGHT - upperFramePadding - it.height*0.95f
         // 1
         it.hitBox.add(it.x)
         it.hitBox.add(it.y)
@@ -316,8 +320,7 @@ class HudModel(val assets: Assets, val appListener: StageInputListener): Entity(
         it.originX  = it.width / 2
         it.originY  = it.height / 2
         it.x = (MainScreen.BG_WIDTH - it.width) / 2
-        it.y = (bottomFramePadding * 1.25f + upperFramePadding / 2) - it.height / 2
-
+        it.y = bottomFramePadding*1.1f - it.height / 2
     }
 
     val joystick = SpineComponent(

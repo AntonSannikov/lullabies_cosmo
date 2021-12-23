@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.twobsoft.babymozartspacetrip.Assets
 import com.twobsoft.babymozartspacetrip.components.LayerActor
 import com.twobsoft.babymozartspacetrip.LullabiesGame
+import com.twobsoft.babymozartspacetrip.MainScreen
 
 
 class VenusModel(val assets: Assets): Entity() {
@@ -34,6 +35,8 @@ class VenusModel(val assets: Assets): Entity() {
         texture = Texture(Gdx.files.internal(plan4Tex)),
         isSceneDefaultLayer = true
     ).also {
+        it.originX = MainScreen.BG_WIDTH
+        it.originY = 0f
         it.actions.add(
             Actions.repeat(
                 RepeatAction.FOREVER,
@@ -41,10 +44,6 @@ class VenusModel(val assets: Assets): Entity() {
                     Actions.sequence(
                         Actions.scaleBy(0.02f, 0.02f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                         Actions.scaleBy(-0.02f, -0.02f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                    ),
-                    Actions.sequence(
-                        Actions.moveBy(50f, 50f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
-                        Actions.moveBy(-50f, -50f, LullabiesGame.ANIMATION_TIME, Interpolation.fade),
                     ),
                 )
             )

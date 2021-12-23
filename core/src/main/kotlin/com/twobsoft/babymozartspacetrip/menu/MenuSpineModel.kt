@@ -1,6 +1,7 @@
 package com.twobsoft.babymozartspacetrip.menu
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Vector2
 import com.twobsoft.babymozartspacetrip.Assets
@@ -11,6 +12,7 @@ import com.twobsoft.babymozartspacetrip.components.SpineComponent
 import com.badlogic.gdx.math.Vector3
 
 
+const val heightDivider = 2700
 
 
 class MenuSpineModel(val assets: Assets) {
@@ -47,11 +49,9 @@ class MenuSpineModel(val assets: Assets) {
     val background = LayerActor(
         tex = backgroundTex,
         isMenu = true,
-        assets.getAsset(backgroundTex)
-    ).also {
-        it.width = MainScreen.BG_WIDTH
-        it.height = MainScreen.BG_HEIGHT
-    }
+        texture = assets.getAsset(backgroundTex),
+    )
+
 
     val radar = LayerActor(
         tex = radarTex,
@@ -75,7 +75,7 @@ class MenuSpineModel(val assets: Assets) {
     val sun = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/sun/sun.atlas")),
         assets.skeletonLoader.resolve("menu/sun/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         fontScaling = MainScreen.BG_WIDTH * 0.003f,
         name = "The Sun"
@@ -109,7 +109,7 @@ class MenuSpineModel(val assets: Assets) {
     val mercury = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/mercury/mercury.atlas")),
         assets.skeletonLoader.resolve("menu/mercury/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Mercury"
     ).also {
@@ -134,7 +134,7 @@ class MenuSpineModel(val assets: Assets) {
     val venus = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/venus/venus.atlas")),
         assets.skeletonLoader.resolve("menu/venus/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Venus"
     ).also {
@@ -162,7 +162,7 @@ class MenuSpineModel(val assets: Assets) {
     val earth = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/earth/earth.atlas")),
         assets.skeletonLoader.resolve("menu/earth/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Earth"
     ).also {
@@ -191,13 +191,13 @@ class MenuSpineModel(val assets: Assets) {
     val moon = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/moon/moon.atlas")),
         assets.skeletonLoader.resolve("menu/moon/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Moon"
     ).also {
         it.stageNumber = 5
         it.setPos(MainScreen.BG_WIDTH * 0.6f, MainScreen.BG_HEIGHT * 0.5f)
-        it.fontPosition = Vector2(-it.textWidth*1.7f, MainScreen.BG_HEIGHT * 0.08f)
+        it.fontPosition = Vector2(-it.textWidth*1.5f, MainScreen.BG_HEIGHT * 0.08f)
         it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.563f)
@@ -219,13 +219,13 @@ class MenuSpineModel(val assets: Assets) {
     val mars = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/mars/mars.atlas")),
         assets.skeletonLoader.resolve("menu/mars/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Mars"
     ).also {
         it.stageNumber = 6
-        it.setPos(MainScreen.BG_WIDTH * 0.877f, MainScreen.BG_HEIGHT * 0.63f)
-        it.fontPosition = Vector2(-it.textWidth*1.5f, it.textHeight*2)
+        it.setPos(MainScreen.BG_WIDTH * 0.87f, MainScreen.BG_HEIGHT * 0.63f)
+        it.fontPosition = Vector2(-it.textWidth, it.textHeight)
         it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.89f)
@@ -244,7 +244,7 @@ class MenuSpineModel(val assets: Assets) {
     val jupiter = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/saturn/saturn.atlas")),
         assets.skeletonLoader.resolve("menu/saturn/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Jupiter"
     ).also {
@@ -281,7 +281,7 @@ class MenuSpineModel(val assets: Assets) {
     val saturn = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/jupiter/jupiter.atlas")),
         assets.skeletonLoader.resolve("menu/jupiter/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Saturn"
     ).also {
@@ -309,13 +309,13 @@ class MenuSpineModel(val assets: Assets) {
     val uranus = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/uranus/uranus.atlas")),
         assets.skeletonLoader.resolve("menu/uranus/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Uranus"
     ).also {
         it.stageNumber = 9
         it.setPos(MainScreen.BG_WIDTH * 0.807f, MainScreen.BG_HEIGHT * 0.76f)
-        it.fontPosition = Vector2(0f, MainScreen.BG_HEIGHT * 0.16f)
+        it.fontPosition = Vector2(-it.textWidth/3, MainScreen.BG_HEIGHT * 0.16f)
         it.setTimeScale(timeScale)
         // 1
         it.hitBox.add(MainScreen.BG_WIDTH * 0.64f)
@@ -337,7 +337,7 @@ class MenuSpineModel(val assets: Assets) {
     val neptune = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/neptune/neptune.atlas")),
         assets.skeletonLoader.resolve("menu/neptune/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Neptune"
     ).also {
@@ -362,7 +362,7 @@ class MenuSpineModel(val assets: Assets) {
     val pluto = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/pluto/pluto.atlas")),
         assets.skeletonLoader.resolve("menu/pluto/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Pluto"
     ).also {
@@ -388,7 +388,7 @@ class MenuSpineModel(val assets: Assets) {
     val asteroid = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/asteroid/asteroid.atlas")),
         assets.skeletonLoader.resolve("menu/asteroid/json.json"),
-        MainScreen.BG_HEIGHT / 2620,
+        MainScreen.BG_HEIGHT / heightDivider,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Asteroid"
     ).also {
@@ -422,10 +422,10 @@ class MenuSpineModel(val assets: Assets) {
         name = "Comet"
     ).also {
         it.stageNumber = 13
-        it.setPos(MainScreen.BG_WIDTH * 0.31f, MainScreen.BG_HEIGHT * 0.46f)
+        it.setPos(MainScreen.BG_WIDTH * 0.33f, MainScreen.BG_HEIGHT * 0.46f)
         it.fontPosition = Vector2(0f, 0f)
         it.mx4Font.rotate(Vector3(0f, 0f, 1f), 40f)
-        it.mx4Font.trn(it.position.x*1.8f, MainScreen.BG_HEIGHT * 0.085f, 0f)
+        it.mx4Font.trn(it.position.x*1.92f, MainScreen.BG_HEIGHT * 0.085f, 0f)
         it.setTimeScale(0.1f)
 
         // 1
@@ -448,13 +448,13 @@ class MenuSpineModel(val assets: Assets) {
     val spaceship = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/spaceship/spaceship.atlas")),
         assets.skeletonLoader.resolve("menu/spaceship/json.json"),
-        MainScreen.BG_HEIGHT / 3144,
+        MainScreen.BG_HEIGHT / 3200,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "Spaceship"
     ).also {
         it.stageNumber = 14
         it.setPos(MainScreen.BG_WIDTH * 0.45f, MainScreen.BG_HEIGHT * 0.65f)
-        it.fontPosition = Vector2(0f, it.textHeight*1.5f)
+        it.fontPosition = Vector2(-it.textWidth/2, it.textHeight)
         it.setTimeScale(timeScale)
         it.rotation = -6f
 
@@ -478,7 +478,7 @@ class MenuSpineModel(val assets: Assets) {
     val alienship = SpineComponent(
         TextureAtlas(assets.skeletonLoader.resolve("menu/ufo/ufo.atlas")),
         assets.skeletonLoader.resolve("menu/ufo/json.json"),
-        MainScreen.BG_HEIGHT / 3144,
+        MainScreen.BG_HEIGHT / 3200,
         fontFile = Gdx.files.internal(fontFilePath),
         name = "UFO"
     ).also {

@@ -1,6 +1,7 @@
 package com.twobsoft.babymozartspacetrip
 
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
@@ -32,7 +33,6 @@ class Assets {
     // UI
     fun loadHud() {
         HudModel.allSkeletons.forEach { skeletonLoader.loadSync(manager, AssetDescriptor(it, SkeletonData::class.java)) }
-        manager.finishLoading()
         HudModel.all.forEach { manager.load(it, Texture::class.java) }
     }
 

@@ -471,7 +471,6 @@ class StageInputListener(
         removedActorsBuffer.clear()
     }
 
-
     fun refreshStage(isNeedToRefreshText: Boolean) {
         var i = 0
         var length = screen.stage.actors.size

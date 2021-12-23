@@ -66,11 +66,6 @@ class LayerActor(
 
 
     init {
-//        if (MainScreen.isNightMode && !isMenu && tex.contains("background.png")) {
-//            tex = "planets/sleep.jpg"
-//            texture = Texture(Gdx.files.internal("planets/sleep.jpg"))
-//        }
-
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         if (isRepeated) texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         if (isOrbit) isOrbiting = true

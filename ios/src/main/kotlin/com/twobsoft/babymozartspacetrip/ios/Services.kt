@@ -5,74 +5,74 @@ import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
 
 class ServicesApi : ServicesCoreInterface, Playable {
 
-    override var AVAILABLE_STAGES: Int = 10
+    override var AVAILABLE_STAGES: Int = 15
     override var isPlaying: Boolean = false
     override var isNeedNewPlay: Boolean = true
 
 
 
     override fun initPlayCallback(callback: () -> Unit) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun initPauseCallback(callback: () -> Unit) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun initPreviousCallback(callback: () -> Unit) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun initNextCallback(callback: () -> Unit) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun share() {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun playMusic(stageNumber: Int, isSwitching: Boolean) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun setLooping(value: Boolean) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun createTimer() {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun onPause() {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun onResume() {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun initOnPauseCallback(callback: () -> Unit) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun initOnResumeCallback(callback: () -> Unit) {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun onTrackPrevious() {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun onTrackPlay() {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun onTrackPause() {
-        TODO("Not yet implemented")
+        println("")
     }
 
     override fun onTrackNext() {
-        TODO("Not yet implemented")
+        println("")
     }
 
 
