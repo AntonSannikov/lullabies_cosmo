@@ -3,7 +3,7 @@ apply plugin: 'robovm'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 ext {
-	mainClassName = "com.twobsoft.babymozartspacetrip.ios.IOSLauncher"
+	mainClassName = "com.oldcaledonia.babymozartspacetrip.ios.IOSLauncher"
 }
 
 launchIPhoneSimulator.dependsOn build
@@ -22,8 +22,6 @@ dependencies {
 	implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
 	implementation "com.robovmx:robovm-cocoatouch:$robovmxVersion"
 	implementation "com.robovmx:robovm-rt:$robovmxVersion"
-//	implementation "com.mobidevelop.robovm:robovm-cocoatouch:$robovmVersion"
-//	implementation "com.mobidevelop.robovm:robovm-rt:$robovmVersion"
 	implementation "de.tomgrill.gdxdialogs:gdx-dialogs-ios:$dialogsVersion"
 	implementation project(':core')
 	implementation "com.esotericsoftware.spine:spine-libgdx:4.0.18.1"

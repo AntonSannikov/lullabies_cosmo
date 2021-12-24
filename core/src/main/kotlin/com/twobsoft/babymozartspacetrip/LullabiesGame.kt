@@ -146,6 +146,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
 
     init {
         //ShaderProgram.pedantic = false
+        game.serviceApi.init()
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
 

@@ -6,6 +6,7 @@ interface ServicesCoreInterface {
     var isPlaying: Boolean
     var isNeedNewPlay: Boolean
 
+    fun init()
     fun initPlayCallback(callback: () -> Unit)
     fun initPauseCallback(callback: () -> Unit)
     fun initPreviousCallback(callback: () -> Unit)

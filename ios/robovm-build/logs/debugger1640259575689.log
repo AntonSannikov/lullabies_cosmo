@@ -405,3 +405,43 @@
 18:40:43.943 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
 18:40:43.945 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
 18:40:43.947 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:55.936 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:55.982 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.004 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.023 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.042 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.056 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.069 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.073 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.076 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.080 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.095 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.108 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.122 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.139 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.152 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.163 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.167 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:45:56.170 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+19:13:12.584 INFO: JdwpDebugServer: handling req: VirtualMachine(1).Exit(10)
+19:13:12.585 SEVERE: Debugger: Thread JDWP server socket thread crashed
+org.robovm.debugger.DebuggerException: Terminating due exit command
+	at org.robovm.debugger.jdwp.JdwpDebugServer.doSocketWork(JdwpDebugServer.java:211)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+19:13:13.086 SEVERE: Debugger: Thread HooksChannel socket thread crashed
+org.robovm.debugger.DebuggerException: java.io.IOException: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:149)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+Caused by: java.io.IOException: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.libimobiledevice.IDeviceConnection$DeviceInputStream.read(IDeviceConnection.java:203)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferWriter.writeFromStream(DataBufferWriter.java:89)
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:116)
+	... 2 more
+Caused by: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.libimobiledevice.IDevice.checkResult(IDevice.java:206)
+	at org.robovm.libimobiledevice.IDeviceConnection.receive(IDeviceConnection.java:110)
+	at org.robovm.libimobiledevice.IDeviceConnection.receive(IDeviceConnection.java:81)
+	at org.robovm.libimobiledevice.IDeviceConnection$DeviceInputStream.read(IDeviceConnection.java:201)
+	... 4 more
