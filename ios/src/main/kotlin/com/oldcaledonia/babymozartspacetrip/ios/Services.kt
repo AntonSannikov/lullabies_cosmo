@@ -3,17 +3,20 @@ package com.oldcaledonia.babymozartspacetrip.ios
 import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
 import org.robovm.apple.avfoundation.*
 import org.robovm.apple.avkit.AVPlayerViewController
+import org.robovm.apple.coregraphics.CGPoint
+import org.robovm.apple.coregraphics.CGRect
 import org.robovm.apple.coregraphics.CGSize
-import org.robovm.apple.foundation.NSBundle
 import org.robovm.apple.mediaplayer.*
 import org.robovm.objc.block.Block1
 import org.robovm.apple.dispatch.DispatchQueue
-import org.robovm.apple.foundation.NSArray
-import org.robovm.apple.foundation.NSData
-import org.robovm.apple.foundation.NSObject
+import org.robovm.apple.foundation.*
 import org.robovm.apple.uikit.*
 import org.robovm.objc.Selector
+import org.robovm.objc.annotation.BindSelector
+import org.robovm.objc.annotation.Method
+import org.robovm.objc.annotation.TypeEncoding
 import org.robovm.objc.block.VoidBlock1
+import org.robovm.rt.bro.annotation.Callback
 
 
 class ServicesApi : ServicesCoreInterface, Playable {
@@ -25,8 +28,9 @@ class ServicesApi : ServicesCoreInterface, Playable {
     var player: AVAudioPlayer?=null
     var image: UIImage?=null
 
+
+
     override fun init() {
-//        UIApplication.getSharedApplication().beginReceivingRemoteControlEvents()
         val url = NSBundle.getMainBundle().findResourceURL(
                 "iphone-notification-icon-20@3x",
                 "png"
@@ -77,7 +81,11 @@ class ServicesApi : ServicesCoreInterface, Playable {
 
     override fun share() {
         DispatchQueue.getMainQueue().async {
-            val dialog = UIAlertController("Test", "Message", UIAlertControllerStyle.Alert)
+            val dialog = UIAlertController(
+                    "Test",
+                    "Message",
+                    UIAlertControllerStyle.Alert
+            )
             dialog.addAction(
                     UIAlertAction(
                             "Action 1",
@@ -143,30 +151,61 @@ class ServicesApi : ServicesCoreInterface, Playable {
         println("")
     }
 
+
     override fun createTimer() {
-        DispatchQueue.getMainQueue().async {
-            val timePicker = UIDatePicker().also {
-                it.datePickerMode = UIDatePickerMode.Time
-                it.addTarget(
-                        it,
-                        Selector.register("timePickerValueChanged"),
-                        UIControlEvents.ValueChanged
+
+        val view = NSBundle.getMainBundle().loadNib(
+                "timepicker", null, null)[0] as UIView
+
+        val image = view.getViewWithTag(100)
+        image.backgroundColor = UIColor.fromPatternImage(
+                resize(
+                        UIImage.getImage("dialog_frame.png"),
+                        CGSize(image.bounds.width, image.bounds.height)
                 )
-                it.frame.size = CGSize(150.0, 150.0)
-            }
+        )
 
-            UIApplication.getSharedApplication().windows[0].rootViewController.presentViewController(
-                    timePicker.inputViewController,
-                    true,
-                    Runnable {  }
-            )
-        }
+        val okButton = view.getViewWithTag(33) as UIButton
+        okButton.addAction(
+                UIAction(
+                    VoidBlock1 {
+                        println("OK")
+                        view.removeFromSuperview()
+                    }
+                ),
+                UIControlEvents.TouchUpInside
+        )
 
+        val cancelButton = view.getViewWithTag(22) as UIButton
+        cancelButton.addAction(
+                UIAction(
+                        VoidBlock1 {
+                            println("CANCEL")
+                            view.removeFromSuperview()
+                        }
+                ),
+                UIControlEvents.TouchUpInside
+        )
+
+        val outsideTapRecognizer = UITapGestureRecognizer(
+                UIGestureRecognizer.OnGestureListener {
+                    view.removeFromSuperview()
+                }
+        )
+
+        outsideTapRecognizer.setCancelsTouchesInView(false)
+        view.isUserInteractionEnabled = true
+        view.addGestureRecognizer(outsideTapRecognizer)
+
+        UIApplication.getSharedApplication().windows[0].addSubview(view)
 
     }
 
-    fun timePickerValueChanged(sender: UIDatePicker) {
-        println("")
+
+    fun resize(image: UIImage, size: CGSize): UIImage {
+       return UIGraphicsImageRenderer(size).toImage {
+           image.draw(CGRect(CGPoint.Zero(), size))
+       }
     }
 
 
