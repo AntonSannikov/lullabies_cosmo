@@ -7,7 +7,9 @@ import com.badlogic.gdx.backends.iosrobovm.IOSApplication
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import org.robovm.apple.foundation.NSAutoreleasePool
+import org.robovm.apple.foundation.NSCoder
 import org.robovm.apple.uikit.UIApplication
+import org.robovm.apple.uikit.UIViewController
 
 
 /** Launches the iOS (RoboVM) application. */
@@ -35,6 +37,7 @@ class IOSLauncher : IOSApplication.Delegate(), AdInterface {
             pool.close()
         }
     }
+
 
 
     override fun banner(isShowing: Boolean) {

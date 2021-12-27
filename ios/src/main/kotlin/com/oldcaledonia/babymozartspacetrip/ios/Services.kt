@@ -3,17 +3,17 @@ package com.oldcaledonia.babymozartspacetrip.ios
 import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
 import org.robovm.apple.avfoundation.*
 import org.robovm.apple.avkit.AVPlayerViewController
+import org.robovm.apple.coregraphics.CGSize
 import org.robovm.apple.foundation.NSBundle
 import org.robovm.apple.mediaplayer.*
-import org.robovm.apple.uikit.UIApplication
 import org.robovm.objc.block.Block1
 import org.robovm.apple.dispatch.DispatchQueue
 import org.robovm.apple.foundation.NSArray
 import org.robovm.apple.foundation.NSData
 import org.robovm.apple.foundation.NSObject
-import org.robovm.apple.uikit.UIImage
+import org.robovm.apple.uikit.*
 import org.robovm.objc.Selector
-import java.io.File
+import org.robovm.objc.block.VoidBlock1
 
 
 class ServicesApi : ServicesCoreInterface, Playable {
@@ -23,39 +23,38 @@ class ServicesApi : ServicesCoreInterface, Playable {
     override var isNeedNewPlay: Boolean = true
 
     var player: AVAudioPlayer?=null
-    var commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
-    val nowPlayingInfoCenter = MPNowPlayingInfoCenter.getDefaultCenter()
-    val audioSession = AVAudioSession.getSharedInstance()
-
+    var image: UIImage?=null
 
     override fun init() {
-        UIApplication.getSharedApplication().beginReceivingRemoteControlEvents()
+//        UIApplication.getSharedApplication().beginReceivingRemoteControlEvents()
+        val url = NSBundle.getMainBundle().findResourceURL(
+                "iphone-notification-icon-20@3x",
+                "png"
+        )
+        val data = NSData.read(url)
+        image = UIImage(data)
     }
 
     private fun setupNowPlaying() {
-        DispatchQueue.getMainQueue().async {
-            val url = NSBundle.getMainBundle().findResourceURL(
-                    "iphone-notification-icon-20@3x",
-                    "png"
-            )
-            val data = NSData.read(url)
-            val image = UIImage(data)
-            val artwork = MPMediaItemArtwork(
-                    image.size,
-                    Block1 {
-                        return@Block1 image
-                    }
-            )
-            val nowPlayingInfo = MPNowPlayingInfo()
-                    .setArtwork(artwork)
-                    .setArtist("Test")
-                    .setTitle("Title")
-                    .setArtist("Artist")
-                    .setAlbumTitle("Album Title")
-                    .setPlaybackDuration(10.0)
-                    .setPlaybackRate(1.0)
-            nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+
+        val artwork = MPMediaItemArtwork(
+                image!!.size,
+                Block1 {
+                    return@Block1 image
+                }
+        )
+        val nowPlayingInfo = MPNowPlayingInfo().also {
+            it.artwork = artwork
+            it.artist = "Test Artist"
+            it.title = "Title"
+            it.albumTitle = "Album Title"
+            it.playbackRate = 1.0
+            it.playbackDuration = 40.0
+            it.elapsedPlaybackTime = 10.0
+            it.playbackQueueCount = 2
+            it.playbackQueueIndex = 1
         }
+        MPNowPlayingInfoCenter.getDefaultCenter().nowPlayingInfo = nowPlayingInfo
 
     }
 
@@ -77,93 +76,99 @@ class ServicesApi : ServicesCoreInterface, Playable {
     }
 
     override fun share() {
-        println("")
-    }
-
-    fun setCommandTargets() {
-        commandCenter.playCommand.isEnabled = true
-        commandCenter.pauseCommand.isEnabled = true
-        commandCenter!!.playCommand.addTarget(
-                Block1 {
-
-                    return@Block1 MPRemoteCommandHandlerStatus.Success
-                }
-        )
-        commandCenter!!.pauseCommand.addTarget(
-                Block1 {
-
-                    return@Block1 MPRemoteCommandHandlerStatus.Success
-                }
-        )
-//        commandCenter!!.previousTrackCommand.addTarget(
-//                Block1 {
-//                    return@Block1 MPRemoteCommandHandlerStatus.Success
-//                }
-//        )
-//        commandCenter!!.nextTrackCommand.addTarget(
-//                Block1 {
-//                    return@Block1 MPRemoteCommandHandlerStatus.Success
-//                }
-//        )
-    }
-
-    override fun playMusic(stageNumber: Int, isSwitching: Boolean) {
         DispatchQueue.getMainQueue().async {
-            audioSession.setCategory(
-                    AVAudioSessionCategory.Playback,
+            val dialog = UIAlertController("Test", "Message", UIAlertControllerStyle.Alert)
+            dialog.addAction(
+                    UIAlertAction(
+                            "Action 1",
+                            UIAlertActionStyle.Default,
+                            VoidBlock1 {
+                                println("ACTION")
+                            }
+                    )
             )
-            audioSession.setActive(true)
-            val url = NSBundle.getMainBundle().findResourceURL("file1", "mp3")
-            player?.release()
-            player = AVAudioPlayer(url)
-            player!!.numberOfLoops = -1
-            player!!.play()
-            setupLockScreen()
-//        setCommandTargets()
-//        setupNowPlaying()
+
+            UIApplication.getSharedApplication().windows[0].rootViewController.presentViewController(
+                    dialog,
+                    true,
+                    Runnable {  }
+            )
 
         }
+    }
+
+
+    override fun playMusic(stageNumber: Int, isSwitching: Boolean) {
+
+        val audioSession = AVAudioSession.getSharedInstance()
+        audioSession.category = null
+        audioSession.category = AVAudioSessionCategory.Playback
+        audioSession.setActive(true)
+        val url = NSBundle.getMainBundle().findResourceURL("file1", "mp3")
+        player?.release()
+        player = AVAudioPlayer(url)
+        setupLockScreen()
+        player!!.numberOfLoops = -1
+        player!!.prepareToPlay()
+        player!!.play()
 
     }
 
 
     fun setupLockScreen() {
-        DispatchQueue.getMainQueue().async {
-            val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
-            commandCenter.togglePlayPauseCommand.isEnabled = true
-            commandCenter.nextTrackCommand.isEnabled = true
-            commandCenter.togglePlayPauseCommand.addTarget(
-                    Block1 {
-                        controlPlay()
-                        return@Block1 MPRemoteCommandHandlerStatus.Success
-                    }
-            )
-            setupNowPlaying()
-        }
 
+        val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
+        commandCenter.nextTrackCommand.isEnabled = true
+        commandCenter.previousTrackCommand.isEnabled = true
+        commandCenter!!.playCommand.addTarget(
+                Block1 {
+                    isPlaying = true
+                    player?.play()
+                    return@Block1 MPRemoteCommandHandlerStatus.Success
+                }
+        )
+        commandCenter.pauseCommand.addTarget(
+                Block1 {
+                    isPlaying = false
+                    player?.pause()
+                    return@Block1 MPRemoteCommandHandlerStatus.Success
+                }
+        )
+
+        setupNowPlaying()
     }
 
-
-    fun controlPlay() {
-        DispatchQueue.getMainQueue().async {
-            if (isPlaying) {
-                player?.pause()
-                isPlaying = false
-            } else {
-                player?.play()
-                isPlaying = true
-            }
-        }
-
-    }
 
     override fun setLooping(value: Boolean) {
         println("")
     }
 
     override fun createTimer() {
+        DispatchQueue.getMainQueue().async {
+            val timePicker = UIDatePicker().also {
+                it.datePickerMode = UIDatePickerMode.Time
+                it.addTarget(
+                        it,
+                        Selector.register("timePickerValueChanged"),
+                        UIControlEvents.ValueChanged
+                )
+                it.frame.size = CGSize(150.0, 150.0)
+            }
+
+            UIApplication.getSharedApplication().windows[0].rootViewController.presentViewController(
+                    timePicker.inputViewController,
+                    true,
+                    Runnable {  }
+            )
+        }
+
+
+    }
+
+    fun timePickerValueChanged(sender: UIDatePicker) {
         println("")
     }
+
 
     override fun onPause() {
         println("")
