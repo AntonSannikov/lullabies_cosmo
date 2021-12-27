@@ -346,3 +346,25 @@
 18:13:04.236 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
 18:13:04.253 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
 18:13:04.286 INFO: JdwpEventCenterDelegate: THREAD_RESUMED: thread (33, main, main)
+18:14:52.979 INFO: JdwpDebugServer: handling req: VirtualMachine(1).Exit(10)
+18:14:52.980 SEVERE: Debugger: Thread JDWP server socket thread crashed
+org.robovm.debugger.DebuggerException: Terminating due exit command
+	at org.robovm.debugger.jdwp.JdwpDebugServer.doSocketWork(JdwpDebugServer.java:211)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+18:14:53.486 SEVERE: Debugger: Thread HooksChannel socket thread crashed
+org.robovm.debugger.DebuggerException: java.io.IOException: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:149)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+Caused by: java.io.IOException: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.libimobiledevice.IDeviceConnection$DeviceInputStream.read(IDeviceConnection.java:203)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferWriter.writeFromStream(DataBufferWriter.java:89)
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:116)
+	... 2 more
+Caused by: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.libimobiledevice.IDevice.checkResult(IDevice.java:206)
+	at org.robovm.libimobiledevice.IDeviceConnection.receive(IDeviceConnection.java:110)
+	at org.robovm.libimobiledevice.IDeviceConnection.receive(IDeviceConnection.java:81)
+	at org.robovm.libimobiledevice.IDeviceConnection$DeviceInputStream.read(IDeviceConnection.java:201)
+	... 4 more

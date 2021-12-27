@@ -13,7 +13,6 @@ interface ServicesCoreInterface {
     fun initNextCallback(callback: () -> Unit)
     fun share()
     fun playMusic(stageNumber: Int, isSwitching: Boolean)
-    fun setLooping(value: Boolean)
     fun createTimer()
 
     fun onPause()
