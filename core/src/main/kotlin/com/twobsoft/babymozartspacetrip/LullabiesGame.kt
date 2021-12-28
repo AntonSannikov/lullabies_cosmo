@@ -1,6 +1,8 @@
 package com.twobsoft.babymozartspacetrip
 
-import AdInterface
+
+
+import DialogInterface
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -29,7 +31,7 @@ import com.twobsoft.lullabies.MyGestureListener
 
 
 
-class LullabiesGame(val serviceApi: ServicesCoreInterface, val adServices: AdInterface) : KtxGame<KtxScreen>() {
+class LullabiesGame(val serviceApi: ServicesCoreInterface, val adServices: DialogInterface) : KtxGame<KtxScreen>() {
 
     companion object {
         const val ANIMATION_TIME                    = 10f
@@ -100,7 +102,6 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
     var isBarrel = false
 
 
-
     // SHADE SHADER
     val shadeShader = ShaderProgram(
         Gdx.files.internal("shaders/shade/vertex.glsl").readString(),
@@ -146,7 +147,7 @@ class MainScreen(val game: LullabiesGame, var menuModel: MenuSpineModel) : KtxSc
 
     init {
         //ShaderProgram.pedantic = false
-        game.serviceApi.init()
+        game.serviceApi.initialize()
         shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
 

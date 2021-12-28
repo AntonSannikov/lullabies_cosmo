@@ -6,7 +6,7 @@ interface ServicesCoreInterface {
     var isPlaying: Boolean
     var isNeedNewPlay: Boolean
 
-    fun init()
+    fun initialize()
     fun initPlayCallback(callback: () -> Unit)
     fun initPauseCallback(callback: () -> Unit)
     fun initPreviousCallback(callback: () -> Unit)
@@ -15,8 +15,6 @@ interface ServicesCoreInterface {
     fun playMusic(stageNumber: Int, isSwitching: Boolean)
     fun createTimer()
 
-    fun onPause()
-    fun onResume()
 
     fun initOnPauseCallback(callback: () -> Unit)
     fun initOnResumeCallback(callback: () -> Unit)

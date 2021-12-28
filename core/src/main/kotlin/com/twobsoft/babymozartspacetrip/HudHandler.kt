@@ -110,7 +110,7 @@ class HudHandler(val screen: MainScreen) {
                     it.width    = MainScreen.BG_WIDTH * 0.3f
                     it.height   = it.width * 0.898f
                     it.x        = (MainScreen.BG_WIDTH - it.width) / 2
-                    it.y        = MainScreen.BG_HEIGHT - HudModel.upperFramePadding / 2 - HudModel.upperPanelWindowHeight - it.height
+                    it.y        = MainScreen.BG_HEIGHT - HudModel.upperFramePadding - HudModel.upperPanelWindowHeight - it.height
                     it.originX  = it.width / 2
                     it.originY  = it.height / 2
                     it.addAction(

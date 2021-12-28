@@ -103,18 +103,6 @@ class StageInputListener(
     }
 
 
-    fun unlockContent() {
-        Gdx.app.postRunnable {
-            screen.menuModel.all.forEach {
-                if (it.stageNumber > 10) {
-                    it.restoreColor()
-                    it.font.color.set(it.fontColor)
-                }
-            }
-        }
-    }
-
-
     override fun onLeft() {
         isAllowPlaying = true
         if (screen.isSwiping || screen.currentStageNumber == 0) { return }
@@ -153,12 +141,6 @@ class StageInputListener(
                         Utils.floatArrayToVec2Array(spineActor.hitBox.toFloatArray()),
                         Vector2(x, MainScreen.BG_HEIGHT - y))
                 ) {
-                    // PURCHASE DIALOG !!!!!!!!!!!!!!!!!
-                    val newStageNumber = spineActor.stageNumber
-                    if (newStageNumber > 10 && screen.game.serviceApi.AVAILABLE_STAGES == 10) {
-                        screen.game.adServices.startPurchaseFlow()
-                        return
-                    }
 
                     spineActor.isTransitionAnimation    = true
                     screen.shaderFocusOffset            = Vector2(-(xNorm-0.5f),yNorm-0.5f)
@@ -359,7 +341,6 @@ class StageInputListener(
             }
         }
 
-        screen.game.adServices.banner(screen.game.serviceApi.AVAILABLE_STAGES != 15)
         disposeUnusedActors()
         screen.isMenu = true
         screen.currentStageNumber = 0
@@ -507,8 +488,6 @@ class StageInputListener(
         screen.currentStageNumber += increment
 
         if (isBackground) return
-
-        screen.game.adServices.banner(screen.game.serviceApi.AVAILABLE_STAGES != 15)
 
         if (!isAllowPlaying) {
             lastStage = screen.currentStageNumber

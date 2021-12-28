@@ -2,18 +2,16 @@
 
 package com.oldcaledonia.babymozartspacetrip.ios
 
-import AdInterface
+import DialogInterface
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration
 import com.twobsoft.babymozartspacetrip.LullabiesGame
 import org.robovm.apple.foundation.NSAutoreleasePool
-import org.robovm.apple.foundation.NSCoder
 import org.robovm.apple.uikit.UIApplication
-import org.robovm.apple.uikit.UIViewController
 
 
 /** Launches the iOS (RoboVM) application. */
-class IOSLauncher : IOSApplication.Delegate(), AdInterface {
+class IOSLauncher : IOSApplication.Delegate(), DialogInterface {
     var servicesApi: ServicesApi?=null
 
 	override fun createApplication(): IOSApplication {
@@ -22,11 +20,9 @@ class IOSLauncher : IOSApplication.Delegate(), AdInterface {
 		return IOSApplication(
                 LullabiesGame(servicesApi!!, this),
                 IOSApplicationConfiguration().apply {
-
-                }).also {
-        }
+                }
+        ).also { it.addLifecycleListener(servicesApi) }
 	}
-
 
     companion object {
         @JvmStatic fun main(args: Array<String>) {
@@ -39,19 +35,6 @@ class IOSLauncher : IOSApplication.Delegate(), AdInterface {
     }
 
 
-
-    override fun banner(isShowing: Boolean) {
-        println("")
-    }
-
-    override fun checkPurchasesStatus() {
-        println("")
-    }
-
-    override fun startPurchaseFlow(): Boolean {
-        println("")
-        return false
-    }
 
     override fun showOptions() {
         println("")

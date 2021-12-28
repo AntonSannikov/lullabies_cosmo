@@ -715,3 +715,53 @@
 00:03:01.018 INFO: JdwpDebugServer: handling req: EventRequest(15).Clear(2)
 00:03:01.019 INFO: JdwpDebugServer: handling req: EventRequest(15).Clear(2)
 00:03:04.257 INFO: JdwpEventCenterDelegate: THREAD_DETTACHED: thread (123, Thread-7, main)
+00:05:05.750 SEVERE: Debugger: Thread HooksChannel socket thread crashed
+org.robovm.debugger.DebuggerException: java.io.IOException: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:149)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+Caused by: java.io.IOException: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.libimobiledevice.IDeviceConnection$DeviceInputStream.read(IDeviceConnection.java:203)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferWriter.writeFromStream(DataBufferWriter.java:89)
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:116)
+	... 2 more
+Caused by: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.libimobiledevice.IDevice.checkResult(IDevice.java:206)
+	at org.robovm.libimobiledevice.IDeviceConnection.receive(IDeviceConnection.java:110)
+	at org.robovm.libimobiledevice.IDeviceConnection.receive(IDeviceConnection.java:81)
+	at org.robovm.libimobiledevice.IDeviceConnection$DeviceInputStream.read(IDeviceConnection.java:201)
+	... 4 more
+00:05:06.252 SEVERE: Debugger: Thread EventCenterThread crashed
+org.robovm.debugger.DebuggerException: java.lang.InterruptedException
+	at org.robovm.debugger.hooks.HooksChannel.sendCommand(HooksChannel.java:183)
+	at org.robovm.debugger.hooks.HooksChannel.readMemory(HooksChannel.java:196)
+	at org.robovm.debugger.hooks.unitls.TargetByteBufferReader.readLong(TargetByteBufferReader.java:68)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferReader.readPointer(DataBufferReader.java:220)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferReader.readPointer(DataBufferReader.java:205)
+	at org.robovm.debugger.state.classdata.RuntimeClassInfoLoader.resolveObjectRuntimeDataTypeInfo(RuntimeClassInfoLoader.java:59)
+	at org.robovm.debugger.delegates.JdwpEventCenterDelegate.processThreadStoppedEvent(JdwpEventCenterDelegate.java:691)
+	at org.robovm.debugger.delegates.JdwpEventCenterDelegate.processSingleEvent(JdwpEventCenterDelegate.java:537)
+	at org.robovm.debugger.delegates.JdwpEventCenterDelegate.processEventsCycle(JdwpEventCenterDelegate.java:486)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+Caused by: java.lang.InterruptedException
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedNanos(AbstractQueuedSynchronizer.java:1081)
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer.tryAcquireSharedNanos(AbstractQueuedSynchronizer.java:1369)
+	at java.base/java.util.concurrent.Semaphore.tryAcquire(Semaphore.java:415)
+	at org.robovm.debugger.hooks.HookReqHolder.aquire(HookReqHolder.java:41)
+	at org.robovm.debugger.hooks.HooksChannel.sendCommand(HooksChannel.java:179)
+	... 10 more
+00:05:06.252 SEVERE: Debugger: Thread JDWP server socket thread crashed
+org.robovm.debugger.DebuggerException: java.net.SocketException: Socket closed
+	at org.robovm.debugger.jdwp.JdwpDebugServer.doSocketWork(JdwpDebugServer.java:215)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+Caused by: java.net.SocketException: Socket closed
+	at java.base/java.net.SocketInputStream.socketRead0(Native Method)
+	at java.base/java.net.SocketInputStream.socketRead(SocketInputStream.java:115)
+	at java.base/java.net.SocketInputStream.read(SocketInputStream.java:168)
+	at java.base/java.net.SocketInputStream.read(SocketInputStream.java:140)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferWriter.writeFromStream(DataBufferWriter.java:89)
+	at org.robovm.debugger.jdwp.protocol.JdwpRequestHeader.readFromStream(JdwpRequestHeader.java:36)
+	at org.robovm.debugger.jdwp.JdwpDebugServer.doSocketWork(JdwpDebugServer.java:185)
+	... 2 more

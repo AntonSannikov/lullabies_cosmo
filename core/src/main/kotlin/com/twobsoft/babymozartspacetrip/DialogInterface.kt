@@ -1,0 +1,3 @@
+interface DialogInterface {
+    fun showOptions()
+}

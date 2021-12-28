@@ -12,8 +12,7 @@ import com.twobsoft.babymozartspacetrip.menu.MenuSpineModel
 import com.twobsoft.babymozartspacetrip.splash.SplashScreenModel
 import ktx.assets.async.loadSync
 import ktx.assets.getAsset
-
-
+import ktx.assets.unloadSafely
 
 
 class Assets {
@@ -27,7 +26,7 @@ class Assets {
     }
 
     fun unloadSplash() {
-        SplashScreenModel.all.forEach { manager.unload(it) }
+        SplashScreenModel.all.forEach { manager.unloadSafely(it) }
     }
 
     // UI
