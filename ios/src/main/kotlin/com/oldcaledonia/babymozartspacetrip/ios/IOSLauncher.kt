@@ -35,7 +35,6 @@ class IOSLauncher : IOSApplication.Delegate(), DialogInterface {
     }
 
 
-
     override fun showOptions() {
         println("")
     }

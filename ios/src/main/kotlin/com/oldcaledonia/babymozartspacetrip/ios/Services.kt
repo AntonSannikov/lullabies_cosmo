@@ -74,16 +74,13 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
             Track("Kirie Eleison", "", 14,
                     NSBundle.getMainBundle().findResourceURL("file14", "mp3")),
             Track("Sinfonia Concertante", "", 15,
-                    NSBundle.getMainBundle().findResourceURL("file15", "mp3")),
-            Track("Serenade in D major", "Haffner", 16,
-                    NSBundle.getMainBundle().findResourceURL("file16", "mp3")),
+                    NSBundle.getMainBundle().findResourceURL("file15", "mp3"))
     )
-
 
 
     override fun initialize() {
         val url = NSBundle.getMainBundle().findResourceURL(
-                "iphone-notification-icon-20@3x",
+                "notification",
                 "png"
         )
         val data = NSData.read(url)
@@ -100,7 +97,6 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
                 AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
         ))
         initRemoteCenter()
-
     }
 
     fun initRemoteCenter() {
@@ -332,8 +328,7 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
         val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
         commandCenter.playCommand.isEnabled = !isPlaying
         commandCenter.pauseCommand.isEnabled = isPlaying
-
-        setupNowPlaying()
+        if (player != null) { setupNowPlaying() }
     }
 
 
@@ -345,14 +340,14 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
                 }
         )
         val nowPlayingInfo = MPNowPlayingInfo().also {
-            it.artwork = artwork
-            it.artist = playlist[currentTrack].artist
-            it.title = playlist[currentTrack].title
-            it.playbackRate = if (isPlaying) 1.0 else 0.0
-            it.playbackDuration = player!!.duration.toDouble()
-            it.elapsedPlaybackTime = player!!.currentTime.toDouble()
-            it.playbackQueueCount = 2
-            it.playbackQueueIndex = 1
+            it.artwork              = artwork
+            it.artist               = playlist[currentTrack].artist
+            it.title                = playlist[currentTrack].title
+            it.playbackRate         = if (isPlaying) 1.0 else 0.0
+            it.playbackDuration     = player!!.duration.toDouble()
+            it.elapsedPlaybackTime  = player!!.currentTime.toDouble()
+            it.playbackQueueCount   = 2
+            it.playbackQueueIndex   = 1
         }
         MPNowPlayingInfoCenter.getDefaultCenter().nowPlayingInfo = nowPlayingInfo
         audioSession
