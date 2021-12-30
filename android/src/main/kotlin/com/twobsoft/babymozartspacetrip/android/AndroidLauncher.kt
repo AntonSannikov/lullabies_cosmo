@@ -24,7 +24,6 @@ import android.widget.Button
 import android.widget.Toast
 import com.android.billingclient.api.*
 import com.twobsoft.babymozartspacetrip.R
-import AdInterface
 import android.content.ActivityNotFoundException
 import android.net.Uri
 import com.twobsoft.babymozartspacetrip.BuildConfig
@@ -38,7 +37,7 @@ const val CONNECTIONS_MAX_COUNT = 5
 
 
 /** Launches the Android application. */
-class AndroidLauncher : AndroidApplication(), AdInterface {
+class AndroidLauncher : AndroidApplication() {
 
 
     var servicesApi: ServicesApi?=null

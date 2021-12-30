@@ -1,7 +1,7 @@
 buildscript {
 	repositories {
-		mavenCentral()
 		mavenLocal()
+		mavenCentral()
 		google()
 		gradlePluginPortal()
 		maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
@@ -13,7 +13,6 @@ buildscript {
 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 	}
 }
-
 
 allprojects {
 	apply plugin: 'eclipse'
@@ -39,8 +38,8 @@ subprojects {
 	version = '0.0.1'
 	ext.appName = 'lullabies-game'
 	repositories {
-		mavenCentral()
 		mavenLocal()
+		mavenCentral()
 		gradlePluginPortal()
 		maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 		maven { url 'https://jitpack.io' }

@@ -1,6 +1,6 @@
 package com.oldcaledonia.babymozartspacetrip.ios
 
-import com.badlogic.gdx.Gdx
+
 import com.badlogic.gdx.LifecycleListener
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession
 import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
@@ -104,21 +104,37 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
 
     fun initRemoteCenter() {
         val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
-        commandCenter.nextTrackCommand.isEnabled = true
-        commandCenter.previousTrackCommand.isEnabled = true
-        commandCenter.playCommand.isEnabled = !isPlaying
-        commandCenter.playCommand.addTarget(
+
+        addPlayCommand()
+
+        commandCenter.nextTrackCommand.isEnabled        = true
+        commandCenter.previousTrackCommand.isEnabled    = true
+
+        commandCenter.previousTrackCommand.addTarget(
                 Block1 {
-                    isPlaying = true
-                    isNeedNewPlay = false
-                    player!!.play()
-                    corePlayCallback()
-                    setupLockScreen()
+                    currentTrack--
+                    corePreviousCallback()
+                    playMusic(currentTrack+1, true)
                     return@Block1 MPRemoteCommandHandlerStatus.Success
                 }
         )
 
-        commandCenter.pauseCommand.isEnabled = isPlaying
+        commandCenter.nextTrackCommand.addTarget(
+                Block1 {
+                    currentTrack++
+                    coreNextCallback()
+                    playMusic(currentTrack+1, true)
+                    return@Block1 MPRemoteCommandHandlerStatus.Success
+                }
+        )
+    }
+
+
+    fun addPauseCommand() {
+        val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
+        commandCenter.playCommand.isEnabled = false
+        commandCenter.playCommand.removeTarget(null)
+        commandCenter.pauseCommand.isEnabled = true
         commandCenter.pauseCommand.addTarget(
                 Block1 {
                     isPlaying = false
@@ -129,26 +145,24 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
                     return@Block1 MPRemoteCommandHandlerStatus.Success
                 }
         )
+    }
 
-        commandCenter.previousTrackCommand.addTarget(
+
+    fun addPlayCommand() {
+        val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
+        commandCenter.pauseCommand.isEnabled = false
+        commandCenter.pauseCommand.removeTarget(null)
+        commandCenter.playCommand.addTarget(
                 Block1 {
-                    currentTrack--
-                    corePreviousCallback()
-                    isNeedNewPlay = true
-                    playMusic(currentTrack+1, true)
+                    isPlaying = true
+                    isNeedNewPlay = false
+                    player?.play()
+                    corePlayCallback()
+                    setupLockScreen()
                     return@Block1 MPRemoteCommandHandlerStatus.Success
                 }
         )
-
-        commandCenter.nextTrackCommand.addTarget(
-                Block1 {
-                    currentTrack++
-                    coreNextCallback()
-                    isNeedNewPlay = true
-                    playMusic(currentTrack+1, true)
-                    return@Block1 MPRemoteCommandHandlerStatus.Success
-                }
-        )
+        commandCenter.playCommand.isEnabled = true
     }
 
 
@@ -178,7 +192,6 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
 
     // =============================================================================================
     //                  SHARE
-
     override fun share() {
         val item = NSURL("https://apps.apple.com")
         val activityVc = UIActivityViewController(NSArray(item), null)
@@ -276,7 +289,7 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
                     currentVolume -= delta
                     if (currentVolume <= 0) {
                         player!!.volume = 0f
-                        player!!.stop()
+                        player!!.pause()
                         player!!.volume = lastVolume
                         player!!.currentTime = 0.0
                         corePauseCallback()
@@ -303,28 +316,32 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
         }
 
         if (isNeedNewPlay || isSwitching || isPaused) {
-            player?.stop()
-            isPaused = false
-            isNeedNewPlay = false
-            isPlaying = true
+            if (player == null) {
+                isPlaying = true
+            }
+            player?.pause()
+            player          = null
+            isPaused        = false
+            isNeedNewPlay   = false
+
             val url = playlist[currentTrack].url
+            audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
+                    AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
+            ))
             player = AVAudioPlayer(url)
             player!!.delegate = this
-//            audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
-//                    AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
-//            ))
             player!!.prepareToPlay()
-            player!!.play()
+            if (isPlaying) {
+                player!!.play()
+            }
+
         } else {
             if (isPlaying) {
-                isPlaying = false
                 player!!.pause()
+                isPlaying = false
             } else {
-//                audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
-//                        AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
-//                ))
-                isPlaying = true
                 player!!.play()
+                isPlaying = true
             }
         }
 
@@ -333,14 +350,17 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
 
 
     fun setupLockScreen() {
-        val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
-        commandCenter.playCommand.isEnabled = !isPlaying
-        commandCenter.pauseCommand.isEnabled = isPlaying
+        if (isPlaying) {
+            addPauseCommand()
+        } else {
+            addPlayCommand()
+        }
         if (player != null) { setupNowPlaying() }
     }
 
 
     private fun setupNowPlaying() {
+
         val artwork = MPMediaItemArtwork(
                 image!!.size,
                 Block1 {
@@ -354,8 +374,6 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
             it.playbackRate         = if (isPlaying) 1.0 else 0.0
             it.playbackDuration     = player!!.duration.toDouble()
             it.elapsedPlaybackTime  = player!!.currentTime.toDouble()
-            it.playbackQueueCount   = 2
-            it.playbackQueueIndex   = 1
         }
         MPNowPlayingInfoCenter.getDefaultCenter().nowPlayingInfo = nowPlayingInfo
     }
@@ -374,27 +392,14 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
 
 
     override fun resume() {
-        audioSession.setCategory(
-                AVAudioSessionCategory.Playback,
-                AVAudioSessionMode.Default.toString(),
-                AVAudioSessionRouteSharingPolicy.LongFormAudio,
-                AVAudioSessionCategoryOptions.with(
-                        AVAudioSessionCategoryOptions.None
-                )
-        )
-        audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
-                AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
-        ))
         coreOnAppResumeCallback()
-        setupLockScreen()
-
     }
 
 
     override fun dispose() {
         player!!.stop()
-        player!!.release()
-//        audioSession.setActive(false)
+        player = null
+        audioSession.setActive(false)
     }
 
     override fun didFinishPlaying(player: AVAudioPlayer?, flag: Boolean) {

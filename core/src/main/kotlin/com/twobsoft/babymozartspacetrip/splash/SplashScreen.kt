@@ -21,7 +21,7 @@ class MySplashScreen(val game: LullabiesGame): KtxScreen {
     val stage = Stage(viewport)
 
     companion object {
-        val shapeRenderer = ShapeRenderer()
+//        val shapeRenderer = ShapeRenderer()
     }
 
     // INVERSE SHADING SHADER
@@ -37,7 +37,7 @@ class MySplashScreen(val game: LullabiesGame): KtxScreen {
     var isTransitionDone = false
 
     init {
-        shapeRenderer.setAutoShapeType(true)
+//        shapeRenderer.setAutoShapeType(true)
         Gdx.gl.glLineWidth(10f)
 
         val model = SplashScreenModel(game.assets)
@@ -63,7 +63,7 @@ class MySplashScreen(val game: LullabiesGame): KtxScreen {
         gl.glClearColor(0f, 0f, 0f, 1f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        shapeRenderer.begin()
+//        shapeRenderer.begin()
 
         if (game.assets.manager.update()) {
             if (!isAssetsLoaded) {
@@ -105,7 +105,7 @@ class MySplashScreen(val game: LullabiesGame): KtxScreen {
             stage.draw()
         }
 
-        shapeRenderer.end()
+//        shapeRenderer.end()
 
     }
 
