@@ -1,0 +1,70 @@
+23:02:47.626 INFO: JdwpDebugServer: handling req: VirtualMachine(1).IDSizes(7)
+23:02:47.626 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+23:02:47.626 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=100, eventKind=CLASS_PREPARE, suspendPolicy=NONE, predicates=[]}
+23:02:47.627 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+23:02:47.627 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=101, eventKind=CLASS_UNLOAD, suspendPolicy=NONE, predicates=[]}
+23:02:47.646 INFO: JdwpDebugServer: handling req: VirtualMachine(1).Version(1)
+23:02:47.646 INFO: JdwpDebugServer: handling req: VirtualMachine(1).capabilitiesNew(17)
+23:02:47.646 INFO: JdwpDebugServer: handling req: VirtualMachine(1).capabilities(12)
+23:02:47.646 INFO: JdwpDebugServer: handling req: VirtualMachine(1).AllClassesWithGeneric(20)
+23:02:47.650 INFO: JdwpDebugServer: handling req: VirtualMachine(1).TopLevelThreadGroups(5)
+23:02:47.651 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+23:02:47.651 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=102, eventKind=THREAD_START, suspendPolicy=NONE, predicates=[]}
+23:02:47.651 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+23:02:47.651 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=103, eventKind=THREAD_DEATH, suspendPolicy=NONE, predicates=[]}
+23:02:47.653 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+23:02:47.653 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=104, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=sun.instrument.InstrumentationImpl]}
+23:02:47.653 INFO: JdwpDebugServer: handling req: EventRequest(15).Set(1)
+23:02:47.653 INFO: JdwpEventCenterDelegate: jdwpSetEventRequest: JdwpEventRequest{requestId=105, eventKind=CLASS_PREPARE, suspendPolicy=EVENT_THREAD, predicates=[className=sun.instrument.InstrumentationImpl]}
+23:02:48.245 INFO: JdwpDebugServer: handling req: VirtualMachine(1).Resume(9)
+23:02:48.299 INFO: JdwpEventCenterDelegate: THREAD_STARTED: thread (33, main, main)
+23:02:48.317 INFO: JdwpEventCenterDelegate: THREAD_STARTED: thread (48, ReferenceQueueDaemon, main)
+23:02:48.322 SEVERE: Debugger: Thread HooksChannel socket thread crashed
+org.robovm.debugger.DebuggerException: java.io.IOException: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:149)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+Caused by: java.io.IOException: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.libimobiledevice.IDeviceConnection$DeviceInputStream.read(IDeviceConnection.java:203)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferWriter.writeFromStream(DataBufferWriter.java:89)
+	at org.robovm.debugger.hooks.HooksChannel.doSocketWork(HooksChannel.java:116)
+	... 2 more
+Caused by: org.robovm.libimobiledevice.LibIMobileDeviceException: IDEVICE_E_UNKNOWN_ERROR
+	at org.robovm.libimobiledevice.IDevice.checkResult(IDevice.java:206)
+	at org.robovm.libimobiledevice.IDeviceConnection.receive(IDeviceConnection.java:110)
+	at org.robovm.libimobiledevice.IDeviceConnection.receive(IDeviceConnection.java:81)
+	at org.robovm.libimobiledevice.IDeviceConnection$DeviceInputStream.read(IDeviceConnection.java:201)
+	... 4 more
+23:02:48.331 INFO: JdwpDebugServer: handling req: VirtualMachine(1).Exit(10)
+23:02:48.331 SEVERE: Debugger: Thread JDWP server socket thread crashed
+org.robovm.debugger.DebuggerException: Terminating due exit command
+	at org.robovm.debugger.jdwp.JdwpDebugServer.doSocketWork(JdwpDebugServer.java:211)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+23:02:48.332 SEVERE: Debugger: Thread EventCenterThread crashed
+org.robovm.debugger.DebuggerException: java.lang.InterruptedException
+	at org.robovm.debugger.hooks.HooksChannel.sendCommand(HooksChannel.java:183)
+	at org.robovm.debugger.hooks.HooksChannel.readMemory(HooksChannel.java:196)
+	at org.robovm.debugger.hooks.unitls.TargetByteBufferReader.readLong(TargetByteBufferReader.java:68)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferReader.readPointer(DataBufferReader.java:220)
+	at org.robovm.debugger.utils.bytebuffer.DataBufferReader.readPointer(DataBufferReader.java:205)
+	at org.robovm.debugger.state.classdata.RuntimeClassInfoLoader.buildPrimitiveClassInfo(RuntimeClassInfoLoader.java:128)
+	at org.robovm.debugger.delegates.InstanceUtils.getFieldValue(InstanceUtils.java:196)
+	at org.robovm.debugger.delegates.InstanceUtils.getFieldValue(InstanceUtils.java:168)
+	at org.robovm.debugger.delegates.InstanceUtils.getFieldValue(InstanceUtils.java:155)
+	at org.robovm.debugger.delegates.InstanceUtils.readStringValue(InstanceUtils.java:122)
+	at org.robovm.debugger.delegates.InstanceUtils.createThreadInstance(InstanceUtils.java:676)
+	at org.robovm.debugger.delegates.InstanceUtils.instanceByPointer(InstanceUtils.java:441)
+	at org.robovm.debugger.delegates.InstanceUtils.instanceByPointer(InstanceUtils.java:451)
+	at org.robovm.debugger.delegates.JdwpEventCenterDelegate.processThreadEvent(JdwpEventCenterDelegate.java:652)
+	at org.robovm.debugger.delegates.JdwpEventCenterDelegate.processSingleEvent(JdwpEventCenterDelegate.java:514)
+	at org.robovm.debugger.delegates.JdwpEventCenterDelegate.processEventsCycle(JdwpEventCenterDelegate.java:486)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	at org.robovm.debugger.utils.DebuggerThread.run(DebuggerThread.java:42)
+Caused by: java.lang.InterruptedException
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedNanos(AbstractQueuedSynchronizer.java:1081)
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer.tryAcquireSharedNanos(AbstractQueuedSynchronizer.java:1369)
+	at java.base/java.util.concurrent.Semaphore.tryAcquire(Semaphore.java:415)
+	at org.robovm.debugger.hooks.HookReqHolder.aquire(HookReqHolder.java:41)
+	at org.robovm.debugger.hooks.HooksChannel.sendCommand(HooksChannel.java:179)
+	... 17 more

@@ -1,6 +1,8 @@
 package com.oldcaledonia.babymozartspacetrip.ios
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.LifecycleListener
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession
 import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
 import org.robovm.apple.avfoundation.*
 import org.robovm.apple.coregraphics.CGPoint
@@ -12,12 +14,13 @@ import org.robovm.apple.mediaplayer.*
 import org.robovm.objc.block.Block1
 import org.robovm.apple.foundation.*
 import org.robovm.apple.uikit.*
+import org.robovm.objc.Selector
 import org.robovm.objc.block.VoidBlock1
 import org.robovm.rt.bro.annotation.Callback
 import java.lang.Exception
 
 
-class ServicesApi : ServicesCoreInterface, LifecycleListener {
+class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDelegate {
 
     override var AVAILABLE_STAGES: Int = 15
     override var isPlaying: Boolean = false
@@ -291,8 +294,6 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
     // =============================================================================================
 
 
-
-
     override fun playMusic(stageNumber: Int, isSwitching: Boolean) {
         currentTrack = stageNumber-1
         if (currentTrack == -1) {
@@ -308,6 +309,10 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
             isPlaying = true
             val url = playlist[currentTrack].url
             player = AVAudioPlayer(url)
+            player!!.delegate = this
+//            audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
+//                    AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
+//            ))
             player!!.prepareToPlay()
             player!!.play()
         } else {
@@ -315,6 +320,9 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
                 isPlaying = false
                 player!!.pause()
             } else {
+//                audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
+//                        AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
+//                ))
                 isPlaying = true
                 player!!.play()
             }
@@ -350,7 +358,6 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
             it.playbackQueueIndex   = 1
         }
         MPNowPlayingInfoCenter.getDefaultCenter().nowPlayingInfo = nowPlayingInfo
-        audioSession
     }
 
 
@@ -367,7 +374,6 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
 
 
     override fun resume() {
-        coreOnAppResumeCallback()
         audioSession.setCategory(
                 AVAudioSessionCategory.Playback,
                 AVAudioSessionMode.Default.toString(),
@@ -379,14 +385,32 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener {
         audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
                 AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
         ))
+        coreOnAppResumeCallback()
         setupLockScreen()
+
     }
 
 
     override fun dispose() {
         player!!.stop()
         player!!.release()
-        audioSession.setActive(false)
+//        audioSession.setActive(false)
+    }
+
+    override fun didFinishPlaying(player: AVAudioPlayer?, flag: Boolean) {
+        currentTrack++
+        coreNextCallback()
+        isNeedNewPlay = true
+        playMusic(currentTrack+1, true)
+    }
+
+    override fun decodeErrorDidOccur(player: AVAudioPlayer?, error: NSError?) {
+    }
+
+    override fun beginInterruption(player: AVAudioPlayer?) {
+    }
+
+    override fun endInterruption(player: AVAudioPlayer?, flags: Long) {
     }
 
 }

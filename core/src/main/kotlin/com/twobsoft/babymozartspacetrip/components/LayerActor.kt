@@ -67,6 +67,7 @@ class LayerActor(
 
     init {
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+
         if (isRepeated) texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         if (isOrbit) isOrbiting = true
 
