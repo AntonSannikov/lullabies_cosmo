@@ -20,7 +20,8 @@ import org.robovm.rt.bro.annotation.Callback
 import java.lang.Exception
 
 
-class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDelegate {
+class ServicesApi : ServicesCoreInterface, LifecycleListener,
+        AVAudioPlayerDelegate {
 
     override var AVAILABLE_STAGES: Int = 15
     override var isPlaying: Boolean = false
@@ -37,6 +38,7 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
     var currentVolume = 0f
     var currentTrack = 0
     var currentTime = 0.0
+    var isPlaybackPositionChanged = false
 
     val audioSession = AVAudioSession.getSharedInstance()
 
@@ -124,6 +126,17 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
                     currentTrack++
                     coreNextCallback()
                     playMusic(currentTrack+1, true)
+                    return@Block1 MPRemoteCommandHandlerStatus.Success
+                }
+        )
+
+        commandCenter.changePlaybackPositionCommand.isEnabled = true
+        commandCenter.changePlaybackPositionCommand.addTarget(
+                Block1 {
+                    currentTime = (it as MPChangePlaybackPositionCommandEvent).positionTime
+                    isPlaybackPositionChanged = true
+                    player?.currentTime = currentTime
+                    setupLockScreen()
                     return@Block1 MPRemoteCommandHandlerStatus.Success
                 }
         )
@@ -246,7 +259,8 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
                         VoidBlock1 {
                             timer?.invalidate()
                             timer = NSTimer(
-                                    selectedTime,
+                                    10.0,
+//                                    selectedTime,
                                     false,
                                     VoidBlock1 {
                                         pauseMusic()
@@ -319,22 +333,28 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
             if (player == null) {
                 isPlaying = true
             }
-            player?.pause()
-            player          = null
             isPaused        = false
             isNeedNewPlay   = false
-
-            val url = playlist[currentTrack].url
             audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
-                    AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation
+                    AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation,
             ))
-            player = AVAudioPlayer(url)
+            player?.removeKeyValueObserver(
+                    "currentTime",
+                    ::valueObserver,
+            )
+            player = AVAudioPlayer(playlist[currentTrack].url)
             player!!.delegate = this
             player!!.prepareToPlay()
             if (isPlaying) {
                 player!!.play()
             }
-
+            player!!.addKeyValueObserver(
+                    "currentTime",
+                    ::valueObserver,
+                    NSKeyValueObservingOptions.with(
+                            NSKeyValueObservingOptions.New,
+                    )
+            )
         } else {
             if (isPlaying) {
                 player!!.pause()
@@ -348,6 +368,10 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
         setupLockScreen()
     }
 
+
+    fun valueObserver(arg1: String, arg2: NSObject, agr3: NSKeyValueChangeInfo) {
+        println("CHANGED...............")
+    }
 
     fun setupLockScreen() {
         if (isPlaying) {
@@ -373,7 +397,12 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
             it.title                = playlist[currentTrack].title
             it.playbackRate         = if (isPlaying) 1.0 else 0.0
             it.playbackDuration     = player!!.duration.toDouble()
-            it.elapsedPlaybackTime  = player!!.currentTime.toDouble()
+            if (!isPlaybackPositionChanged) {
+                it.elapsedPlaybackTime = player!!.currentTime.toDouble()
+            } else {
+                isPlaybackPositionChanged = false
+                it.elapsedPlaybackTime = currentTime
+            }
         }
         MPNowPlayingInfoCenter.getDefaultCenter().nowPlayingInfo = nowPlayingInfo
     }
@@ -397,10 +426,15 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener, AVAudioPlayerDeleg
 
 
     override fun dispose() {
-        player!!.stop()
+        player!!.pause()
+        player!!.removeKeyValueObserver(
+                "currentTime",
+                ::valueObserver,
+        )
         player = null
         audioSession.setActive(false)
     }
+
 
     override fun didFinishPlaying(player: AVAudioPlayer?, flag: Boolean) {
         currentTrack++

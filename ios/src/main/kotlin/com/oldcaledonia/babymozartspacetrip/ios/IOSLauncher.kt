@@ -73,11 +73,11 @@ class IOSLauncher : IOSApplication.Delegate(), DialogInterface, MFMailComposeVie
         moreappsButton.addAction(
                 UIAction(
                         VoidBlock1 {
-//                            UIApplication.getSharedApplication().openURL(
-//                                    NSURL("itms-apps://itunes.apple.com/developer/"),
-//                                    UIApplicationOpenURLOptions(),
-//                                    VoidBooleanBlock {  }
-//                            )
+                            UIApplication.getSharedApplication().openURL(
+                                    NSURL("itms-apps://?action=search&kind=iosSoftware&q=Old%20Caledonian%20Investments%20Ltd"),
+                                    UIApplicationOpenURLOptions(),
+                                    VoidBooleanBlock {  }
+                            )
                         }
                 ),
                 UIControlEvents.TouchUpInside
@@ -96,7 +96,11 @@ class IOSLauncher : IOSApplication.Delegate(), DialogInterface, MFMailComposeVie
         starButton.addAction(
                 UIAction(
                         VoidBlock1 {
-
+                            UIApplication.getSharedApplication().openURL(
+                                    NSURL("itms-apps://itunes.apple.com/app/id1601957839?mt=8&action=write-review"),
+                                    UIApplicationOpenURLOptions(),
+                                    VoidBooleanBlock {  }
+                            )
                         }
                 ),
                 UIControlEvents.TouchUpInside

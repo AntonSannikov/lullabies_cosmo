@@ -35,11 +35,11 @@ class MyGestureListener(private val directionListener: DirectionListener)
     override fun fling(velocityX: Float, velocityY: Float, button: Int): Boolean {
         if (abs(velocityX) > abs(velocityY)) {
             if (velocityX > 0) {
-                if (velocityX > 3000) {
+                if (velocityX > 1000) {
                     directionListener.onRight()
                 }
             } else {
-                if (velocityX < -3000) {
+                if (velocityX < -1000) {
                     directionListener.onLeft()
                 }
             }
