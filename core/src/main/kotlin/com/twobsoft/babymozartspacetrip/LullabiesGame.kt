@@ -34,7 +34,7 @@ import com.twobsoft.lullabies.MyGestureListener
 class LullabiesGame(val serviceApi: ServicesCoreInterface, val adServices: DialogInterface) : KtxGame<KtxScreen>() {
 
     companion object {
-        const val ANIMATION_TIME                    = 10f
+        const val ANIMATION_TIME                    = 20f
         const val BARREL_SHADER_PULSE_START_POWER   = 0.33f
         const val BARREL_SHADER_PULSE_MAX_POWER     = 0.20f
     }

@@ -5,9 +5,11 @@ import com.badlogic.gdx.LifecycleListener
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession
 import com.twobsoft.babymozartspacetrip.ServicesCoreInterface
 import org.robovm.apple.avfoundation.*
+import org.robovm.apple.avkit.AVPlayerViewController
 import org.robovm.apple.coregraphics.CGPoint
 import org.robovm.apple.coregraphics.CGRect
 import org.robovm.apple.coregraphics.CGSize
+import org.robovm.apple.dispatch.DispatchBlockFlags
 import org.robovm.apple.dispatch.DispatchQueue
 import org.robovm.apple.dispatch.DispatchQueueAttr
 import org.robovm.apple.mediaplayer.*
@@ -17,6 +19,7 @@ import org.robovm.apple.uikit.*
 import org.robovm.objc.Selector
 import org.robovm.objc.block.VoidBlock1
 import org.robovm.rt.bro.annotation.Callback
+import org.robovm.rt.bro.ptr.VoidPtr
 import java.lang.Exception
 
 
@@ -30,7 +33,8 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener,
 
     var timer: NSTimer?=null
     var selectedTime = 1800.0
-
+    var initialPlayState = false
+    var initialTrack = 0
 
     var player: AVAudioPlayer?=null
     var image: UIImage?=null
@@ -104,10 +108,37 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener,
         initRemoteCenter()
     }
 
+
     fun initRemoteCenter() {
+
         val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
 
-        addPlayCommand()
+        commandCenter.playCommand.isEnabled = true
+        commandCenter.playCommand.addTarget {
+            DispatchQueue.getMainQueue().async {
+                isPlaying = true
+                isNeedNewPlay = false
+                player?.play()
+                corePlayCallback()
+                setupLockScreen()
+            }
+            return@addTarget MPRemoteCommandHandlerStatus.Success
+        }
+
+        commandCenter.pauseCommand.isEnabled = true
+        commandCenter.pauseCommand.addTarget(
+                Block1 {
+                    DispatchQueue.getMainQueue().async {
+                        isPlaying = false
+                        isNeedNewPlay = false
+                        player?.pause()
+                        corePauseCallback()
+                        setupLockScreen()
+                    }
+
+                    return@Block1 MPRemoteCommandHandlerStatus.Success
+                }
+        )
 
         commandCenter.nextTrackCommand.isEnabled        = true
         commandCenter.previousTrackCommand.isEnabled    = true
@@ -140,42 +171,17 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener,
                     return@Block1 MPRemoteCommandHandlerStatus.Success
                 }
         )
+
     }
 
 
     fun addPauseCommand() {
         val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
-        commandCenter.playCommand.isEnabled = false
-        commandCenter.playCommand.removeTarget(null)
-        commandCenter.pauseCommand.isEnabled = true
-        commandCenter.pauseCommand.addTarget(
-                Block1 {
-                    isPlaying = false
-                    isNeedNewPlay = false
-                    player?.pause()
-                    corePauseCallback()
-                    setupLockScreen()
-                    return@Block1 MPRemoteCommandHandlerStatus.Success
-                }
-        )
     }
 
 
     fun addPlayCommand() {
         val commandCenter = MPRemoteCommandCenter.getSharedCommandCenter()
-        commandCenter.pauseCommand.isEnabled = false
-        commandCenter.pauseCommand.removeTarget(null)
-        commandCenter.playCommand.addTarget(
-                Block1 {
-                    isPlaying = true
-                    isNeedNewPlay = false
-                    player?.play()
-                    corePlayCallback()
-                    setupLockScreen()
-                    return@Block1 MPRemoteCommandHandlerStatus.Success
-                }
-        )
-        commandCenter.playCommand.isEnabled = true
     }
 
 
@@ -241,9 +247,9 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener,
                 )
         )
 
-        val datePicker = view.getViewWithTag(11) as UIDatePicker
+        val datePicker      = view.getViewWithTag(11) as UIDatePicker
         datePicker.timeZone = NSTimeZone("UTC")
-        datePicker.date = NSDate(selectedTime)
+        datePicker.date     = NSDate(selectedTime)
         datePicker.addAction(
                 UIAction(
                         VoidBlock1 {
@@ -316,62 +322,54 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener,
         )
 
     }
-    //
     //                                              TIMER
     // =============================================================================================
 
 
     override fun playMusic(stageNumber: Int, isSwitching: Boolean) {
+
         currentTrack = stageNumber-1
         if (currentTrack == -1) {
             currentTrack = AVAILABLE_STAGES - 1
         } else if (currentTrack == 15) {
             currentTrack = 0
         }
-
+        audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
+                AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation,
+        ))
         if (isNeedNewPlay || isSwitching || isPaused) {
+            player?.pause()
             if (player == null) {
                 isPlaying = true
             }
+            player          = null
             isPaused        = false
             isNeedNewPlay   = false
-            audioSession.setActive(true, AVAudioSessionSetActiveOptions.with(
-                    AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation,
-            ))
-            player?.removeKeyValueObserver(
-                    "currentTime",
-                    ::valueObserver,
-            )
             player = AVAudioPlayer(playlist[currentTrack].url)
+            player!!.isRateEnabled = true
             player!!.delegate = this
             player!!.prepareToPlay()
             if (isPlaying) {
                 player!!.play()
             }
-            player!!.addKeyValueObserver(
-                    "currentTime",
-                    ::valueObserver,
-                    NSKeyValueObservingOptions.with(
-                            NSKeyValueObservingOptions.New,
-                    )
-            )
         } else {
             if (isPlaying) {
+                player!!.rate = 0f
                 player!!.pause()
                 isPlaying = false
             } else {
+                player!!.rate = 1f
                 player!!.play()
                 isPlaying = true
             }
         }
 
-        setupLockScreen()
+        DispatchQueue.getMainQueue().async {
+            setupLockScreen()
+        }
+
     }
 
-
-    fun valueObserver(arg1: String, arg2: NSObject, agr3: NSKeyValueChangeInfo) {
-        println("CHANGED...............")
-    }
 
     fun setupLockScreen() {
         if (isPlaying) {
@@ -404,7 +402,15 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener,
                 it.elapsedPlaybackTime = currentTime
             }
         }
-        MPNowPlayingInfoCenter.getDefaultCenter().nowPlayingInfo = nowPlayingInfo
+        DispatchQueue.getMainQueue().async {
+            MPNowPlayingInfoCenter.getDefaultCenter().nowPlayingInfo = nowPlayingInfo
+//            try {
+//                MPNowPlayingInfoCenter.getDefaultCenter().playbackState =
+//                        if (isPlaying) MPNowPlayingPlaybackState.Playing
+//                        else MPNowPlayingPlaybackState.Paused
+//            }catch (e: Exception) {}
+        }
+
     }
 
 
@@ -416,21 +422,21 @@ class ServicesApi : ServicesCoreInterface, LifecycleListener,
 
 
     override fun pause() {
+        initialPlayState    = isPlaying
+        initialTrack        = currentTrack
         coreOnAppPauseCallback()
     }
 
 
     override fun resume() {
-        coreOnAppResumeCallback()
+        if (!(initialPlayState == isPlaying && initialTrack == currentTrack))  {
+            coreOnAppResumeCallback()
+        }
     }
 
 
     override fun dispose() {
         player!!.pause()
-        player!!.removeKeyValueObserver(
-                "currentTime",
-                ::valueObserver,
-        )
         player = null
         audioSession.setActive(false)
     }

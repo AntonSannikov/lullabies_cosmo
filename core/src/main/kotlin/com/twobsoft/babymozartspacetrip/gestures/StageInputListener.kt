@@ -69,8 +69,10 @@ class StageInputListener(
 
 
     fun toPrevious() {
-        isCallback = true
-        onRight()
+        if (isBackground) isCallback = true
+        if (!isCallback) {
+            Gdx.app.postRunnable { onRight() }
+        } else onRight()
         isCallback = false
     }
 
